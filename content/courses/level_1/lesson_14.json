@@ -1,0 +1,29 @@
+{
+  "id": "l1_14",
+  "course_id": "level_1",
+  "unit": "unit_4",
+  "order": 14,
+  "title": "闪击——暗藏杀机",
+  "description": "学习闪击战术，移开一个棋子露出身后的攻击",
+  "estimated_minutes": 20,
+  "steps": [
+    {
+      "type": "text",
+      "content": "闪击（Discovered Attack）是指你移动一个棋子后，露出身后另一个棋子的攻击线。如果被露出的攻击是将军，就叫'闪将'（Discovered Check），威力更大！"
+    },
+    {
+      "type": "board_demo",
+      "fen": "r1bqk2r/pppp1ppp/2n5/2b1N3/2B1P3/8/PPPP1PPP/RNBQK2R w KQkq - 0 4",
+      "description": "白马e5如果跳到f7（Nxf7），叉王和车的同时，身后c4的象也能发挥作用。闪击的关键是移动的棋子和被露出的棋子同时产生威胁。",
+      "highlights": ["e5", "c4"]
+    }
+  ],
+  "exercises": [
+    {
+      "type": "choice",
+      "question": "闪将比普通闪击更强，因为？",
+      "options": ["将军必须应对，移动的棋子可以去任何地方", "闪将能直接将杀", "闪将不需要两个棋子"],
+      "correct": 0
+    }
+  ]
+}

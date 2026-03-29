@@ -1,0 +1,160 @@
+{
+  "version": "1.0",
+  "achievements": [
+    {
+      "slug": "first_game",
+      "name": "初出茅庐",
+      "description": "完成你的第一局对弈，踏出棋艺旅程的第一步。",
+      "icon": "🎮",
+      "category": "milestone",
+      "condition": {
+        "type": "game_count",
+        "threshold": 1
+      },
+      "reward": {
+        "type": "xp",
+        "amount": 50
+      }
+    },
+    {
+      "slug": "first_win",
+      "name": "初尝胜果",
+      "description": "赢得你人生中第一场对局，胜利的滋味真甜！",
+      "icon": "🏆",
+      "category": "milestone",
+      "condition": {
+        "type": "win_count",
+        "threshold": 1
+      },
+      "reward": {
+        "type": "xp",
+        "amount": 100
+      }
+    },
+    {
+      "slug": "ten_wins",
+      "name": "小有所成",
+      "description": "累计赢得10场对局，你已经不是当初的那个新手了。",
+      "icon": "⭐",
+      "category": "progress",
+      "condition": {
+        "type": "win_count",
+        "threshold": 10
+      },
+      "reward": {
+        "type": "xp",
+        "amount": 300
+      }
+    },
+    {
+      "slug": "speed_master",
+      "name": "闪电决策",
+      "description": "在限时模式下完成一局对局，展现你的快速思维能力。",
+      "icon": "⚡",
+      "category": "skill",
+      "condition": {
+        "type": "timed_game_complete",
+        "threshold": 1
+      },
+      "reward": {
+        "type": "xp",
+        "amount": 150
+      }
+    },
+    {
+      "slug": "comeback",
+      "name": "绝地反击",
+      "description": "在明显劣势的情况下逆转取胜，展现了真正的棋士精神。",
+      "icon": "🔥",
+      "category": "special",
+      "condition": {
+        "type": "win_from_disadvantage",
+        "threshold": 1,
+        "disadvantage_threshold": -200
+      },
+      "reward": {
+        "type": "xp",
+        "amount": 500
+      }
+    },
+    {
+      "slug": "studious",
+      "name": "勤学苦练",
+      "description": "完成10节课程学习，知识就是力量，每一课都算数。",
+      "icon": "📚",
+      "category": "learning",
+      "condition": {
+        "type": "lesson_complete_count",
+        "threshold": 10
+      },
+      "reward": {
+        "type": "xp",
+        "amount": 200
+      }
+    },
+    {
+      "slug": "puzzle_eye",
+      "name": "战术之眼",
+      "description": "连续正确解答5道战术题，你对棋盘的洞察力令人惊叹。",
+      "icon": "🎯",
+      "category": "skill",
+      "condition": {
+        "type": "puzzle_streak",
+        "threshold": 5
+      },
+      "reward": {
+        "type": "xp",
+        "amount": 250
+      }
+    },
+    {
+      "slug": "perfect_streak",
+      "name": "完美连胜",
+      "description": "连续赢得5场对局，证明你的实力绝非偶然。",
+      "icon": "💎",
+      "category": "progress",
+      "condition": {
+        "type": "win_streak",
+        "threshold": 5
+      },
+      "reward": {
+        "type": "xp",
+        "amount": 400
+      }
+    },
+    {
+      "slug": "persistent",
+      "name": "坚持就是胜利",
+      "description": "连续7天登录并参与学习，持之以恒是棋手最重要的品质。",
+      "icon": "🌟",
+      "category": "dedication",
+      "condition": {
+        "type": "daily_login_streak",
+        "threshold": 7
+      },
+      "reward": {
+        "type": "xp",
+        "amount": 350
+      }
+    },
+    {
+      "slug": "all_rounder",
+      "name": "全能棋手",
+      "description": "在对局、课程和战术题三个模块各完成至少5次，均衡发展才是王道。",
+      "icon": "👑",
+      "category": "milestone",
+      "condition": {
+        "type": "multi_category",
+        "requirements": {
+          "game_count": 5,
+          "lesson_complete_count": 5,
+          "puzzle_complete_count": 5
+        }
+      },
+      "reward": {
+        "type": "xp",
+        "amount": 600
+      }
+    }
+  ]
+}

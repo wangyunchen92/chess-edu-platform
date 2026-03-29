@@ -1,0 +1,59 @@
+{
+  "level": "intermediate",
+  "title": "中级评估",
+  "description": "测试中级战术眼光",
+  "total_questions": 5,
+  "rating_range": [800, 1400],
+  "questions": [
+    {
+      "id": "a_int_01",
+      "fen": "r2qr1k1/ppp2ppp/2np4/2b1p1B1/2B1P1b1/2NP1N2/PPP2PPP/R2Q1RK1 w - - 0 8",
+      "solution": ["Nd5"],
+      "themes": ["positional", "fork_basic"],
+      "difficulty_rating": 900,
+      "rating_value": 1000,
+      "description": "白方走。白方有一步强力的中心跳马。",
+      "explanation": "Nd5——马跳到d5中心强格，同时攻击c7和e7两个格子。c5象也受到威胁。黑方很难应对这个多重威胁。"
+    },
+    {
+      "id": "a_int_02",
+      "fen": "r1bq1rk1/pppp1ppp/2n2n2/2b1p3/2B1P3/3P1N2/PPP1NPPP/R1BQ1RK1 w - - 6 6",
+      "solution": ["Bg5"],
+      "themes": ["pin"],
+      "difficulty_rating": 850,
+      "rating_value": 1000,
+      "description": "白方走。找到一步钉住对方棋子的走法。",
+      "explanation": "Bg5——钉住f6马。如果马移开，白方Bxd8吃后。这个钉子给黑方制造了很大的压力。"
+    },
+    {
+      "id": "a_int_03",
+      "fen": "r1b2rk1/pp3ppp/2n1pn2/q1ppN3/3P1P2/2NBPN2/PP4PP/R1BQ1RK1 w - - 0 10",
+      "solution": ["Nxc6"],
+      "themes": ["tactical_exchange"],
+      "difficulty_rating": 1000,
+      "rating_value": 1100,
+      "description": "白方走。找到最佳的兑换走法。",
+      "explanation": "Nxc6——吃掉c6马。bxc6后白方dxc5赢一兵同时打开d线攻击。如果不吃回则白方多子。"
+    },
+    {
+      "id": "a_int_04",
+      "fen": "r4rk1/pp2ppbp/2np1np1/q7/2PNP1b1/2N1BP2/PP2B1PP/R2Q1RK1 w - - 0 10",
+      "solution": ["Nd5"],
+      "themes": ["positional", "center_control"],
+      "difficulty_rating": 1100,
+      "rating_value": 1200,
+      "description": "白方走。在中心建立一个无法驱赶的马前哨。",
+      "explanation": "Nd5——马到d5占据完美的中心前哨。这个马被e4兵和c4兵支撑，黑方很难驱赶它。马攻击c7、e7、b6、f6多个关键格。"
+    },
+    {
+      "id": "a_int_05",
+      "fen": "r1bqk2r/pppp1pp1/2n2n1p/2b1p3/2BPP3/2P2N2/PP3PPP/RNBQK2R w KQkq - 0 5",
+      "solution": ["dxe5"],
+      "themes": ["tactical_exchange"],
+      "difficulty_rating": 1200,
+      "rating_value": 1400,
+      "description": "白方走。打开中心的最佳时机。",
+      "explanation": "dxe5——打开中心。如果Nxe5则Bxf7+叉王和马，白方Qd5+后赢回子。整个战术组合建立在f7弱点上。"
+    }
+  ]
+}

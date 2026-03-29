@@ -1,0 +1,29 @@
+{
+  "id": "l1_06",
+  "course_id": "level_1",
+  "unit": "unit_2",
+  "order": 6,
+  "title": "如何将杀对方",
+  "description": "学习将杀的基本条件和常见将杀模式",
+  "estimated_minutes": 20,
+  "steps": [
+    {
+      "type": "text",
+      "content": "将杀是国际象棋的终极目标！将杀需要满足两个条件：1. 国王正在被将军；2. 国王无法逃、挡、吃——没有任何合法走法可以解除将军。"
+    },
+    {
+      "type": "board_demo",
+      "fen": "6k1/5ppp/8/8/8/8/8/4R1K1 w - - 0 1",
+      "description": "Re8# 就是底线杀：车冲到第8行将杀。黑王被自己的兵困住，无路可逃。",
+      "highlights": ["e1"]
+    }
+  ],
+  "exercises": [
+    {
+      "type": "choice",
+      "question": "将杀时国王必须处于什么状态？",
+      "options": ["被将军且无法解除", "被两个棋子将军", "没有兵保护"],
+      "correct": 0
+    }
+  ]
+}

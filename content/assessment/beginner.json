@@ -1,0 +1,59 @@
+{
+  "level": "beginner",
+  "title": "零基础评估",
+  "description": "测试基本规则知识",
+  "total_questions": 5,
+  "rating_range": [0, 400],
+  "questions": [
+    {
+      "id": "a_beg_01",
+      "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+      "solution": ["e4"],
+      "themes": ["opening_basics"],
+      "difficulty_rating": 200,
+      "rating_value": 200,
+      "description": "这是初始局面，白方先走。请选一个好的开局走法。",
+      "explanation": "e4是最经典的开局第一步，占据中心并打开象和后的通路。d4也是好选择。"
+    },
+    {
+      "id": "a_beg_02",
+      "fen": "6k1/5ppp/8/8/8/8/8/4R1K1 w - - 0 1",
+      "solution": ["Re8#"],
+      "themes": ["mate_in_1"],
+      "difficulty_rating": 300,
+      "rating_value": 300,
+      "description": "白方走，一步将杀。黑王被自己的兵围住了。",
+      "explanation": "Re8#——车冲入底线将杀。黑王被f7、g7、h7兵堵住，无法逃脱。这就是经典的\"底线杀\"。"
+    },
+    {
+      "id": "a_beg_03",
+      "fen": "r1bqkbnr/pppp1ppp/2n5/4N3/4P3/8/PPPP1PPP/RNBQKB1R b KQkq - 0 3",
+      "solution": ["Nxe5"],
+      "themes": ["simple_capture"],
+      "difficulty_rating": 300,
+      "rating_value": 300,
+      "description": "黑方走。白马在e5没有保护，吃掉它！",
+      "explanation": "Nxe5——黑马吃掉无保护的白马，赢得3分的棋子。每次走棋前都要看看对方有没有\"挂着\"的子。"
+    },
+    {
+      "id": "a_beg_04",
+      "fen": "k7/8/1K6/8/8/8/8/1R6 w - - 0 1",
+      "solution": ["Rb8#"],
+      "themes": ["mate_in_1"],
+      "difficulty_rating": 350,
+      "rating_value": 350,
+      "description": "白方走，一步将杀。白王已经控制了黑王的逃跑路线。",
+      "explanation": "Rb8#——车到b8将杀。白王控制a7、b7、c7，车在b8将军同时控制b8和a8，黑王无路可走。"
+    },
+    {
+      "id": "a_beg_05",
+      "fen": "rnbqkbnr/pppp1ppp/4p3/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2",
+      "solution": ["d4"],
+      "themes": ["opening_basics"],
+      "difficulty_rating": 250,
+      "rating_value": 400,
+      "description": "白方走。黑方走了法兰西防御（e6），白方应该怎么应对？",
+      "explanation": "d4——推进到中心，形成理想的双兵中心（e4+d4）。这控制了大量中心格子。"
+    }
+  ]
+}

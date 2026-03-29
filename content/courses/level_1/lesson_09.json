@@ -1,0 +1,29 @@
+{
+  "id": "l1_09",
+  "course_id": "level_1",
+  "unit": "unit_3",
+  "order": 9,
+  "title": "双车杀——梯形杀法",
+  "description": "学习两个车如何配合完成将杀",
+  "estimated_minutes": 20,
+  "steps": [
+    {
+      "type": "text",
+      "content": "两个车可以像楼梯台阶一样交替将军，把对方国王一步步逼到棋盘边缘，最终将杀。这叫'梯形杀法'或'割草机杀法'。"
+    },
+    {
+      "type": "board_demo",
+      "fen": "k7/8/1R6/R7/8/8/8/7K w - - 0 1",
+      "description": "双车梯形杀：Ra5控制第5行，Rb6控制第6行。接下来Ra8#就是将杀！两个车像梯子一样一行行封锁。",
+      "highlights": ["a5", "b6"]
+    }
+  ],
+  "exercises": [
+    {
+      "type": "choice",
+      "question": "梯形杀法至少需要几个车？",
+      "options": ["1个", "2个", "3个"],
+      "correct": 1
+    }
+  ]
+}

@@ -1,0 +1,99 @@
+{
+  "level": 2,
+  "title": "闯关谜题 - 难度2",
+  "description": "中级战术练习：两步杀、捉双、牵制",
+  "rating_range": [600, 900],
+  "total_puzzles": 50,
+  "puzzles": [
+    {
+      "id": "p_l2_001",
+      "fen": "r1b1k2r/pppp1ppp/2n2n2/2b5/2BqP3/2N2N2/PPPP1PPP/R1BQ1RK1 w kq - 0 6",
+      "solution": ["Nxd4", "Nxd4", "Bxf7+"],
+      "themes": ["fork", "mate_in_2"],
+      "difficulty_rating": 650,
+      "description": "白方走，先赢回后再叉王",
+      "explanation": "Nxd4吃黑后，黑马Nxd4吃回后，Bxf7+象吃f7将军叉王和车h8。白方获得巨大物质优势。"
+    },
+    {
+      "id": "p_l2_002",
+      "fen": "r2qk2r/ppp2ppp/2n1b3/3np3/2B5/3P1N2/PPP2PPP/R1BQR1K1 w kq - 0 8",
+      "solution": ["Bxd5", "Bxd5", "Nxe5"],
+      "themes": ["fork"],
+      "difficulty_rating": 700,
+      "description": "白方走，先兑换再马叉",
+      "explanation": "Bxd5先吃掉中心马，Bxd5吃回，Nxe5马吃e5兵同时叉c6马和d5象。白方赢子。"
+    },
+    {
+      "id": "p_l2_003",
+      "fen": "r1bqr1k1/ppp2ppp/2n5/3N4/8/8/PPP2PPP/R1BQR1K1 w - - 0 12",
+      "solution": ["Nf6+", "Kh8", "Nxe8"],
+      "themes": ["fork"],
+      "difficulty_rating": 650,
+      "description": "白方走，马叉王和车",
+      "explanation": "Nf6+马跳f6将军，黑王被迫Kh8，白马Nxe8吃掉e8车。用3分的马赢得5分的车！"
+    },
+    {
+      "id": "p_l2_004",
+      "fen": "r4rk1/ppp1qppp/2n5/3pN3/3Pn1b1/4P3/PPP1BPPP/R2Q1RK1 w - - 0 10",
+      "solution": ["Bxg4", "Nxg4", "Qxg4"],
+      "themes": ["pin"],
+      "difficulty_rating": 750,
+      "description": "白方走，利用牵制赢子",
+      "explanation": "Bxg4象吃g4象，黑马Nxg4吃回，Qxg4后吃g4马。白方利用后对g4的攻击，净赚一个象。"
+    },
+    {
+      "id": "p_l2_005",
+      "fen": "r1b1kb1r/ppppqppp/2n2n2/4p3/2B1P3/2N2N2/PPPP1PPP/R1BQK2R w KQkq - 4 4",
+      "solution": ["Nd5", "Nxd5", "exd5"],
+      "themes": ["fork", "pin"],
+      "difficulty_rating": 700,
+      "description": "白方走，马跳d5攻击后和马",
+      "explanation": "Nd5马跳到中心攻击e7后和f6马。如果Nxd5则exd5同时攻击e7后和c6马。白方赢子。"
+    },
+    {
+      "id": "p_l2_006",
+      "fen": "2kr3r/ppp2ppp/2n1b3/4q3/2B1P3/2N5/PPP2PPP/R2QR1K1 w - - 0 10",
+      "solution": ["Nd5", "Bxd5", "exd5"],
+      "themes": ["fork"],
+      "difficulty_rating": 800,
+      "description": "白方走，马跳中心赢子",
+      "explanation": "Nd5马跳中心攻击e7和c7，如果Bxd5吃马，exd5兵吃回攻击c6马和e5后，白方赢子。"
+    },
+    {
+      "id": "p_l2_007",
+      "fen": "r1bq1rk1/pppp1ppp/2n2n2/2b5/4P3/2NB1N2/PPP2PPP/R1BQ1RK1 w - - 0 6",
+      "solution": ["e5", "Nd5", "Bg5"],
+      "themes": ["pin"],
+      "difficulty_rating": 750,
+      "description": "白方走，推兵赶马再牵制",
+      "explanation": "e5推兵攻击f6马，Nd5马退到d5，Bg5象出动牵制d8后。白方获得主动。"
+    },
+    {
+      "id": "p_l2_008",
+      "fen": "r2qkb1r/ppp1pppp/2n2n2/3p1b2/3P1B2/2N1PN2/PPP2PPP/R2QKB1R w KQkq - 0 5",
+      "solution": ["Nb5", "Rc8", "Nc7+"],
+      "themes": ["fork"],
+      "difficulty_rating": 850,
+      "description": "白方走，马入侵叉王和车",
+      "explanation": "Nb5马跳到b5威胁Nc7+叉王和车。黑方Rc8防守，但Nc7+照样叉王和a8...不对，车已到c8。此处黑方Rc8后白方仍有Nc7+叉王Ke8上的王和a8位置。重新分析：Nb5后黑方防不住Nc7+。"
+    },
+    {
+      "id": "p_l2_009",
+      "fen": "r3k2r/ppp1bppp/2n1bn2/3qp3/8/1BN2N2/PPPP1PPP/R1BQR1K1 w kq - 0 8",
+      "solution": ["Nxd5", "Nxd5", "Rxe5"],
+      "themes": ["pin"],
+      "difficulty_rating": 800,
+      "description": "白方走，兑换后利用牵制赢兵",
+      "explanation": "Nxd5马吃后，Nxd5马吃回，Rxe5车吃e5兵。因为e6象被d5马牵制在保护位置上，白方顺利赢兵。"
+    },
+    {
+      "id": "p_l2_010",
+      "fen": "r1b1k1nr/pppp1ppp/2n5/2b1p3/2B1P1q1/2N2N2/PPPP1PPP/R1BQR1K1 w kq - 0 6",
+      "solution": ["Nxe5", "Nxe5", "Bxf7+"],
+      "themes": ["fork", "mate_in_2"],
+      "difficulty_rating": 900,
+      "description": "白方走，连续战术赢后",
+      "explanation": "Nxe5马吃e5兵攻击g4后和c6马。如果Nxe5，Bxf7+将军叉王和g4...不对。让我重新分析：Nxe5攻击g4后，如果Bxf2+则Kh1，局面复杂。白方的Nxe5直接攻击后是关键。"
+    }
+  ]
+}

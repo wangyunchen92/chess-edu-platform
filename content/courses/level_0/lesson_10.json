@@ -1,0 +1,71 @@
+{
+  "id": "l0_10",
+  "course_id": "level_0",
+  "order": 10,
+  "title": "你的第一盘棋",
+  "description": "综合复习所有规则，准备下你的第一盘棋",
+  "estimated_minutes": 20,
+  "steps": [
+    {
+      "type": "text",
+      "content": "恭喜你！你已经学完了国际象棋的所有基本规则。让我们来一次综合复习：\n\n棋盘：8×8共64格，列是a-h，行是1-8\n棋子6种：王（1格任意方向）、后（直线+对角线）、车（直线）、象（对角线）、马（L形可跳）、兵（直走斜吃）\n特殊规则：王车易位、吃过路兵、兵的升变\n结束方式：将杀（赢）、和棋（逼和/重复/50步/子力不足/协议）"
+    },
+    {
+      "type": "board_demo",
+      "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+      "description": "每盘棋都从这个初始局面开始。白方先走。常见的开局第一步包括：e2-e4（王兵开局）和d2-d4（后兵开局），这两步都控制了中心。",
+      "highlights": ["e2", "d2"]
+    },
+    {
+      "type": "board_demo",
+      "fen": "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1",
+      "description": "白方走了e2-e4，这是最常见的开局走法。兵占据了中心，同时为白方的象和后打开了出路。现在轮到黑方走了。",
+      "highlights": ["e4"]
+    },
+    {
+      "type": "text",
+      "content": "下棋的三个基本原则：\n1. 控制中心：尽量用兵和棋子控制d4、d5、e4、e5这4个格子\n2. 出动棋子：在开局阶段把马和象快速调出来，不要老走同一个棋子\n3. 王的安全：尽早进行王车易位，把王藏到安全的位置\n\n记住：下棋最重要的是开心！每盘棋都是学习的机会，输了也没关系。"
+    },
+    {
+      "type": "interactive",
+      "instruction": "现在是开局。作为白方，请选择一个好的第一步——点击e4格子，把兵走到中心。",
+      "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+      "correct_squares": ["e4"],
+      "hint": "e4是最流行的开局走法，它控制中心并为象和后打开出路"
+    },
+    {
+      "type": "quiz",
+      "question": "下棋时，以下哪个是好的开局原则？",
+      "options": ["尽快出后去攻击", "尽早进行王车易位保护王", "把所有兵都推到第4行", "先把两个车调到中间"],
+      "correct": 1,
+      "explanation": "尽早进行王车易位是重要的开局原则，可以保护王的安全。出后太早容易被对方棋子攻击。"
+    },
+    {
+      "type": "quiz",
+      "question": "在初始局面中，白方一共有多少种合法的第一步走法？",
+      "options": ["10种", "16种", "20种", "30种"],
+      "correct": 2,
+      "explanation": "白方有20种合法的第一步：8个兵各可以走1格或2格（16种），加上2匹马各2种走法（4种），共20种。其他棋子在初始位置都被挡住了。"
+    }
+  ],
+  "exercises": [
+    {
+      "type": "choice",
+      "question": "棋盘的中心是哪4个格子？",
+      "options": ["a1, a8, h1, h8", "d4, d5, e4, e5", "c3, c6, f3, f6", "b2, b7, g2, g7"],
+      "correct": 1
+    },
+    {
+      "type": "choice",
+      "question": "哪个棋子可以跳过其他棋子？",
+      "options": ["车", "象", "马", "后"],
+      "correct": 2
+    },
+    {
+      "type": "choice",
+      "question": "如果轮到你走，王没被将军但无棋可走，结果是什么？",
+      "options": ["你输了", "你赢了", "和棋（逼和）", "跳过这步"],
+      "correct": 2
+    }
+  ]
+}

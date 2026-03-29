@@ -1,0 +1,85 @@
+{
+  "id": "l1_04",
+  "course_id": "level_1",
+  "unit": "unit_2",
+  "order": 4,
+  "title": "将军的方式",
+  "description": "学习各种棋子如何将军，认识不同的将军类型",
+  "estimated_minutes": 20,
+  "steps": [
+    {
+      "type": "text",
+      "content": "将军（Check）就是攻击对方的国王。当你的棋子能直接吃到对方国王时，就是在将军。被将军的一方必须立刻处理——不能忽略将军！今天我们来学习各种将军的方式。"
+    },
+    {
+      "type": "board_demo",
+      "fen": "4k3/8/8/8/8/8/8/4R2K w - - 0 1",
+      "description": "车沿直线将军：白车在e1，沿着e列直接攻击e8的黑王。这叫'直线将军'。",
+      "highlights": ["e1", "e8"]
+    },
+    {
+      "type": "board_demo",
+      "fen": "4k3/8/8/8/8/8/5Q2/7K w - - 0 1",
+      "description": "后可以从很多方向将军！这里后在f2，沿着对角线攻击e8的黑王——不对，f2到e8不在同一对角线。我们换一个例子。",
+      "highlights": ["f2"]
+    },
+    {
+      "type": "board_demo",
+      "fen": "4k3/8/8/8/4Q3/8/8/7K w - - 0 1",
+      "description": "后在e4沿着e列将军e8的黑王。后是最灵活的将军棋子，她可以从横、竖、斜三个方向将军！",
+      "highlights": ["e4", "e8"]
+    },
+    {
+      "type": "board_demo",
+      "fen": "4k3/8/3N4/8/8/8/8/7K w - - 0 1",
+      "description": "马在d6将军黑王e8！马将军最特别——它能跳过其他棋子，所以马将军无法用其他棋子来挡住，只能移动国王或吃掉马。",
+      "highlights": ["d6", "e8"]
+    },
+    {
+      "type": "board_demo",
+      "fen": "4k3/8/8/8/8/2B5/8/7K w - - 0 1",
+      "description": "象在c3沿对角线将军e8的黑王——不对，c3到e8不在同一对角线。再来：象在a4走a4-e8对角线。",
+      "highlights": ["c3"]
+    },
+    {
+      "type": "board_demo",
+      "fen": "4k3/8/8/1B6/8/8/8/7K w - - 0 1",
+      "description": "象在b5沿着b5-e8的对角线将军黑王！象只能走斜线，所以象将军时，国王可以移开、吃掉象或用棋子挡住斜线。",
+      "highlights": ["b5", "e8"]
+    },
+    {
+      "type": "quiz",
+      "question": "哪种棋子将军时，不能用其他棋子挡住？",
+      "options": ["后", "车", "马", "象"],
+      "correct": 2,
+      "explanation": "马将军不能被阻挡！因为马可以跳过棋子，在将军路线上放子是没用的。面对马将军只能：1.王跑 2.吃掉马。"
+    },
+    {
+      "type": "quiz",
+      "question": "兵能将军吗？",
+      "options": ["能", "不能"],
+      "correct": 0,
+      "explanation": "当然能！兵虽小，但它攻击斜前方的格子。如果对方国王恰好在你的兵的斜前方，就被将军了。"
+    }
+  ],
+  "exercises": [
+    {
+      "type": "choice",
+      "question": "后最多能从几个方向将军？",
+      "options": ["2个方向", "4个方向", "8个方向", "不确定"],
+      "correct": 2
+    },
+    {
+      "type": "choice",
+      "question": "被马将军时，以下哪种方式不可行？",
+      "options": ["国王移动", "吃掉马", "用棋子挡住"],
+      "correct": 2
+    },
+    {
+      "type": "choice",
+      "question": "车能从对角线方向将军吗？",
+      "options": ["能", "不能"],
+      "correct": 1
+    }
+  ]
+}

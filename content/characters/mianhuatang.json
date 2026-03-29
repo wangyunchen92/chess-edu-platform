@@ -1,0 +1,28 @@
+{
+  "id": "mianhuatang",
+  "name": "棉花糖",
+  "tier": "beginner_plus",
+  "avatar": "/assets/characters/mianhuatang/avatar.png",
+  "description": "活泼好动的棉花糖，粉嫩蓬松，喜欢进攻！她总是抢先出击，虽然有时冒进，但胜利的欲望让她越战越勇。",
+  "personality": "活泼好胜，进攻欲强，喜欢挑战，输了会小撅嘴但很快恢复",
+  "play_style": "进攻型，倾向走中心，喜欢战术组合，偶尔贪吃子",
+  "rating": 650,
+  "unlock_condition": "win_douding",
+  "engine_params": {
+    "depth_min": 4,
+    "depth_max": 6,
+    "error_rate": 0.3,
+    "prefer_aggressive": true,
+    "prefer_center_control": true,
+    "avoid_long_endgames": true
+  },
+  "expressions": {
+    "idle": "/assets/characters/mianhuatang/idle.png",
+    "happy": "/assets/characters/mianhuatang/happy.png",
+    "sad": "/assets/characters/mianhuatang/sad.png",
+    "surprised": "/assets/characters/mianhuatang/surprised.png",
+    "thinking": "/assets/characters/mianhuatang/thinking.png",
+    "celebrate": "/assets/characters/mianhuatang/celebrate.png",
+    "attack": "/assets/characters/mianhuatang/attack.png"
+  }
+}

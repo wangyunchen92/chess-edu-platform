@@ -1,0 +1,28 @@
+{
+  "id": "guigui",
+  "name": "龟龟",
+  "tier": "intermediate",
+  "avatar": "/assets/characters/guigui/avatar.png",
+  "description": "慢悠悠的龟龟爷爷，历经千年风浪，深谙稳扎稳打之道。他不急不躁，每一步都深思熟虑，防守无懈可击。",
+  "personality": "沉稳老练，防守为主，语速慢悠悠，喜欢讲棋理和人生哲学",
+  "play_style": "防守型，稳固阵地，等待对手犯错，擅长残局",
+  "rating": 750,
+  "unlock_condition": "win_mianhuatang",
+  "engine_params": {
+    "depth_min": 5,
+    "depth_max": 7,
+    "error_rate": 0.25,
+    "prefer_defensive": true,
+    "prefer_solid_structure": true,
+    "endgame_strength": 0.85
+  },
+  "expressions": {
+    "idle": "/assets/characters/guigui/idle.png",
+    "happy": "/assets/characters/guigui/happy.png",
+    "sad": "/assets/characters/guigui/sad.png",
+    "surprised": "/assets/characters/guigui/surprised.png",
+    "thinking": "/assets/characters/guigui/thinking.png",
+    "celebrate": "/assets/characters/guigui/celebrate.png",
+    "wise": "/assets/characters/guigui/wise.png"
+  }
+}

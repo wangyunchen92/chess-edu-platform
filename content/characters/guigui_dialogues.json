@@ -1,0 +1,89 @@
+{
+  "character_id": "guigui",
+  "dialogues": {
+    "greeting": [
+      { "text": "老夫在此……慢慢来，棋局才刚开始，急不得的。", "expression": "wise" },
+      { "text": "呵呵，年轻人，来了啊。坐下坐下，咱们慢慢弈。", "expression": "idle" },
+      { "text": "老夫等候多时了……其实老夫一直都在，不着急的。", "expression": "wise" },
+      { "text": "嗯……棋局如人生，慢慢走，细细品，来吧。", "expression": "thinking" },
+      { "text": "好，你来了。老夫最喜欢下棋了，慢工出细活嘛。", "expression": "happy" }
+    ],
+    "good_move": [
+      { "text": "嗯……好棋，老夫看出来了，年轻人有想法。", "expression": "wise" },
+      { "text": "呵，这步走得妙啊，老夫需要想一想了。", "expression": "thinking" },
+      { "text": "好……好……这步棋，老夫当年也下过类似的。", "expression": "happy" },
+      { "text": "嗯嗯，不错，有章法，老夫欣赏这样的走法。", "expression": "wise" },
+      { "text": "这步棋……老夫琢磨一下……嗯，确实妙。", "expression": "thinking" }
+    ],
+    "blunder": [
+      { "text": "哎……老夫一时大意，走错了。慢慢来，不能急。", "expression": "sad" },
+      { "text": "唉，这步棋不对，老夫老了，时常犯糊涂……", "expression": "sad" },
+      { "text": "嗯……失误了，老夫要静下心来，重新想想。", "expression": "thinking" },
+      { "text": "哎，走错了。老夫常说，棋要慢下，可惜自己也有疏忽。", "expression": "sad" },
+      { "text": "唉……这步棋老夫悔之晚矣，但棋局还长着呢。", "expression": "wise" }
+    ],
+    "check_given": [
+      { "text": "将军……老夫就知道这步会来，等你想好了再应。", "expression": "wise" },
+      { "text": "嗯，将……不慌，老夫等你慢慢化解。", "expression": "idle" },
+      { "text": "将军，呵呵，这步老夫准备很久了。", "expression": "happy" },
+      { "text": "将……年轻人，仔细看，出路在哪里。", "expression": "wise" },
+      { "text": "将军了，嗯……你好好想想，老夫不急。", "expression": "thinking" }
+    ],
+    "check_received": [
+      { "text": "将军……嗯，老夫想一想，不急不急，总有出路的。", "expression": "thinking" },
+      { "text": "被将了，好，让老夫仔细看看……", "expression": "thinking" },
+      { "text": "嗯，将军了，年轻人走得不错，老夫接招。", "expression": "wise" },
+      { "text": "将……老夫不慌，慢慢来，急什么呢。", "expression": "idle" },
+      { "text": "被将了，哎，老夫需要仔细端详这盘棋了。", "expression": "thinking" }
+    ],
+    "capture_given": [
+      { "text": "嗯，老夫收下这颗棋子……稳扎稳打，细水长流。", "expression": "idle" },
+      { "text": "吃掉……不贪多，够用就好，老夫习惯了。", "expression": "wise" },
+      { "text": "这颗棋子老夫拿了，年轻人，防守也要跟上。", "expression": "thinking" },
+      { "text": "嗯，取之有道，老夫该吃的才吃。", "expression": "wise" },
+      { "text": "吃子……呵呵，老夫不贪，但该拿的不客气。", "expression": "happy" }
+    ],
+    "capture_received": [
+      { "text": "哎，失一子……无妨，老夫早有准备。", "expression": "idle" },
+      { "text": "嗯，被吃了，老夫的防线要调整一下。", "expression": "thinking" },
+      { "text": "失子了……没关系，残局老夫最有经验。", "expression": "wise" },
+      { "text": "唉，少了一颗，但老夫的阵地还稳着呢。", "expression": "idle" },
+      { "text": "嗯……被吃了，老夫要更仔细了，不能再疏忽。", "expression": "thinking" }
+    ],
+    "advantage": [
+      { "text": "嗯，形势对老夫有利……但不能松懈，稳住。", "expression": "wise" },
+      { "text": "领先了，好，但棋局未终，老夫继续认真下。", "expression": "thinking" },
+      { "text": "呵呵，优势在老夫……慢慢来，一步步走稳。", "expression": "happy" },
+      { "text": "嗯，形势不错，老夫继续稳扎稳打。", "expression": "idle" },
+      { "text": "形势向好……但年轻人还有后招，老夫不敢大意。", "expression": "wise" }
+    ],
+    "disadvantage": [
+      { "text": "嗯……落后了，不急，老夫经历过更难的局面。", "expression": "wise" },
+      { "text": "形势不好，但老夫见过太多逆转，慢慢来。", "expression": "thinking" },
+      { "text": "落后了……老夫守住阵地，等待时机。", "expression": "idle" },
+      { "text": "哎，差了些，但棋局未终，老夫不放弃。", "expression": "sad" },
+      { "text": "嗯，劣势……老夫一步一步来，急不得。", "expression": "thinking" }
+    ],
+    "win": [
+      { "text": "嗯……赢了，呵呵，老夫的防守终究起作用了。", "expression": "happy" },
+      { "text": "胜了，好，年轻人下得不错，老夫棋差一招。", "expression": "celebrate" },
+      { "text": "嗯，赢了，慢工出细活，老夫说的。", "expression": "wise" },
+      { "text": "呵呵，老夫赢了，但你下得很好，继续努力哦。", "expression": "happy" },
+      { "text": "胜局……嗯，老夫惭愧，只是稳了一点而已。", "expression": "wise" }
+    ],
+    "lose": [
+      { "text": "输了，年轻人好棋……老夫服气，棋品棋德，佩服。", "expression": "sad" },
+      { "text": "嗯，败了，老夫没有守住……你走得好，老夫认输。", "expression": "sad" },
+      { "text": "输了……哎，老夫技不如人，无话可说。", "expression": "sad" },
+      { "text": "老夫输了，不过这盘棋让老夫想到很多，谢谢你。", "expression": "wise" },
+      { "text": "败了……呵，老夫老了，脑子不灵光了，但下棋的心还在。", "expression": "sad" }
+    ],
+    "draw": [
+      { "text": "平局……嗯，旗鼓相当，算是各有所得。", "expression": "wise" },
+      { "text": "平了，呵呵，老夫与你势均力敌，有意思。", "expression": "happy" },
+      { "text": "嗯，平局，棋如人生，有时没有输赢，也是一种结果。", "expression": "wise" },
+      { "text": "平了……老夫原本想赢，但年轻人守得住，不错不错。", "expression": "thinking" },
+      { "text": "平局，好，老夫下棋不求大胜，稳稳地最好。", "expression": "idle" }
+    ]
+  }
+}

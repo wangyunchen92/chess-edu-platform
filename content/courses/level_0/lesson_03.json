@@ -1,0 +1,73 @@
+{
+  "id": "l0_03",
+  "course_id": "level_0",
+  "order": 3,
+  "title": "认识棋子",
+  "description": "学习6种棋子的名称、外观和价值",
+  "estimated_minutes": 15,
+  "steps": [
+    {
+      "type": "text",
+      "content": "国际象棋有6种棋子，每种都有自己的特点。我们先来认识它们：\n\n♔ 王（King）— 最重要的棋子，被将死就输了\n♕ 后（Queen）— 最强大的棋子，能力值9分\n♖ 车（Rook）— 像城堡一样，能力值5分\n♗ 象（Bishop）— 像主教的帽子，能力值3分\n♘ 马（Knight）— 马头形状，能力值3分\n♙ 兵（Pawn）— 最小的士兵，能力值1分"
+    },
+    {
+      "type": "board_demo",
+      "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+      "description": "在初始局面中，第一行（第8行对黑方）摆放着车、马、象、后、王、象、马、车；第二行（第7行对黑方）全部是兵。",
+      "highlights": ["a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1"]
+    },
+    {
+      "type": "image_text",
+      "content": "记住每个棋子的分值很有用：后=9分，车=5分，象=3分，马=3分，兵=1分。王是无价的——因为失去王就输了。如果你用一个马（3分）换到对方的车（5分），你就赚了2分，这叫\"得子\"。",
+      "image_hint": "棋子分值对照表"
+    },
+    {
+      "type": "interactive",
+      "instruction": "点击棋盘上所有的白色车（Rook）。车看起来像一座小城堡。",
+      "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+      "correct_squares": ["a1", "h1"],
+      "hint": "白色的车在第一行的两个角上：a1和h1"
+    },
+    {
+      "type": "interactive",
+      "instruction": "点击棋盘上所有的白色象（Bishop）。象的头顶有一个尖尖的帽子。",
+      "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+      "correct_squares": ["c1", "f1"],
+      "hint": "白色的象在c1和f1，分别在马的旁边"
+    },
+    {
+      "type": "quiz",
+      "question": "哪个棋子的分值最高？",
+      "options": ["王", "后", "车", "马"],
+      "correct": 1,
+      "explanation": "后的分值是9分，是所有棋子中分值最高的。王虽然最重要，但我们说它是'无价'的，不用分值衡量。"
+    },
+    {
+      "type": "quiz",
+      "question": "在初始局面中，马在什么位置？",
+      "options": ["角上", "王的旁边", "车的旁边", "棋盘中间"],
+      "correct": 2,
+      "explanation": "马在b1和g1（白方），紧挨着角上的车。"
+    }
+  ],
+  "exercises": [
+    {
+      "type": "choice",
+      "question": "一个车值几分？",
+      "options": ["1分", "3分", "5分", "9分"],
+      "correct": 2
+    },
+    {
+      "type": "choice",
+      "question": "象和马谁的分值更高？",
+      "options": ["象更高", "马更高", "一样高，都是3分", "要看情况"],
+      "correct": 2
+    },
+    {
+      "type": "choice",
+      "question": "每方一共有几个兵？",
+      "options": ["4个", "6个", "8个", "10个"],
+      "correct": 2
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "l1_13",
+  "course_id": "level_1",
+  "unit": "unit_4",
+  "order": 13,
+  "title": "串击——从前到后",
+  "description": "学习串击战术，攻击大子迫使其让路后吃掉小子",
+  "estimated_minutes": 20,
+  "steps": [
+    {
+      "type": "text",
+      "content": "串击（Skewer）和牵制相反：你攻击的是价值更高的棋子，迫使它移开后，吃掉身后价值较低的棋子。串击通常由象、车或后来实施。"
+    },
+    {
+      "type": "board_demo",
+      "fen": "4r3/8/8/8/8/8/4K3/4R3 b - - 0 1",
+      "description": "黑车e8沿e列攻击白王e2（将军），白王被迫移开后，黑车就能吃掉e1的白车。这就是串击！",
+      "highlights": ["e8", "e2", "e1"]
+    }
+  ],
+  "exercises": [
+    {
+      "type": "choice",
+      "question": "串击和牵制的区别是什么？",
+      "options": ["串击先攻击大子，牵制先攻击小子", "串击用马，牵制用象", "没有区别"],
+      "correct": 0
+    }
+  ]
+}

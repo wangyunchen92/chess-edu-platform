@@ -1,0 +1,48 @@
+{
+  "id": "level_1",
+  "title": "初级提高",
+  "description": "学会子力价值、将军与应将、简单杀法和基础战术",
+  "level": 1,
+  "prerequisite": "level_0",
+  "total_lessons": 15,
+  "estimated_hours": 6,
+  "units": [
+    {
+      "id": "unit_1",
+      "title": "棋子的威力",
+      "lessons": [1, 2, 3]
+    },
+    {
+      "id": "unit_2",
+      "title": "将军与应将",
+      "lessons": [4, 5, 6]
+    },
+    {
+      "id": "unit_3",
+      "title": "简单的杀法",
+      "lessons": [7, 8, 9, 10]
+    },
+    {
+      "id": "unit_4",
+      "title": "基础战术",
+      "lessons": [11, 12, 13, 14, 15]
+    }
+  ],
+  "lessons": [
+    { "id": "l1_01", "title": "棋子的分数——谁更值钱？", "order": 1, "unit": "unit_1" },
+    { "id": "l1_02", "title": "子力交换的秘密", "order": 2, "unit": "unit_1" },
+    { "id": "l1_03", "title": "棋子的活跃度", "order": 3, "unit": "unit_1" },
+    { "id": "l1_04", "title": "什么是将军？", "order": 4, "unit": "unit_2" },
+    { "id": "l1_05", "title": "应将的三种方法", "order": 5, "unit": "unit_2" },
+    { "id": "l1_06", "title": "将军练习", "order": 6, "unit": "unit_2" },
+    { "id": "l1_07", "title": "底线杀", "order": 7, "unit": "unit_3" },
+    { "id": "l1_08", "title": "闷杀", "order": 8, "unit": "unit_3" },
+    { "id": "l1_09", "title": "双车杀王", "order": 9, "unit": "unit_3" },
+    { "id": "l1_10", "title": "后车配合杀王", "order": 10, "unit": "unit_3" },
+    { "id": "l1_11", "title": "捉双——双重攻击", "order": 11, "unit": "unit_4" },
+    { "id": "l1_12", "title": "串击与闪击", "order": 12, "unit": "unit_4" },
+    { "id": "l1_13", "title": "牵制与消除保护", "order": 13, "unit": "unit_4" },
+    { "id": "l1_14", "title": "引离与引入", "order": 14, "unit": "unit_4" },
+    { "id": "l1_15", "title": "基础战术综合练习", "order": 15, "unit": "unit_4" }
+  ]
+}

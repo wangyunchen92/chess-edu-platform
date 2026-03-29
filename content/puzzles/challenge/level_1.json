@@ -1,0 +1,459 @@
+{
+  "level": 1,
+  "title": "闯关谜题 - 难度1",
+  "description": "适合初学者的基础战术练习",
+  "rating_range": [300, 600],
+  "total_puzzles": 50,
+  "puzzles": [
+    {
+      "id": "p_l1_001",
+      "fen": "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+      "solution": ["Qxf7#"],
+      "themes": ["mate_in_1"],
+      "difficulty_rating": 300,
+      "description": "白方走，一步将杀（学者杀法）",
+      "explanation": "Qxf7#——后吃f7将杀。黑王被白后和白象从c4和f7两个方向夹击，无处可逃。"
+    },
+    {
+      "id": "p_l1_002",
+      "fen": "6k1/5ppp/8/8/8/8/8/4R1K1 w - - 0 1",
+      "solution": ["Re8#"],
+      "themes": ["mate_in_1"],
+      "difficulty_rating": 300,
+      "description": "白方走，底线将杀",
+      "explanation": "Re8#——车冲到第8行将杀。黑王被自己的f7、g7、h7兵堵住退路，无法逃脱底线攻击。"
+    },
+    {
+      "id": "p_l1_003",
+      "fen": "6k1/5pp1/7p/8/8/8/8/R5K1 w - - 0 1",
+      "solution": ["Ra8#"],
+      "themes": ["mate_in_1"],
+      "difficulty_rating": 300,
+      "description": "白方走，底线将杀",
+      "explanation": "Ra8#——车走到a8将杀。黑王在g8被兵f7、g7围住，h6兵不在第8行无法帮忙，底线无防守。"
+    },
+    {
+      "id": "p_l1_004",
+      "fen": "1k6/ppp5/8/8/8/8/8/4R1K1 w - - 0 1",
+      "solution": ["Re8#"],
+      "themes": ["mate_in_1"],
+      "difficulty_rating": 300,
+      "description": "白方走，底线将杀",
+      "explanation": "Re8#——车到e8将杀。黑王在b8被自己的a7、b7、c7兵包围，第8行无子可挡。"
+    },
+    {
+      "id": "p_l1_005",
+      "fen": "6k1/5ppp/8/8/1Q6/8/5PPP/6K1 w - - 0 1",
+      "solution": ["Qb8#"],
+      "themes": ["mate_in_1"],
+      "difficulty_rating": 350,
+      "description": "白方走，后底线杀",
+      "explanation": "Qb8#——后冲入底线将杀。黑王被兵墙围住，后控制整个第8行。"
+    },
+    {
+      "id": "p_l1_006",
+      "fen": "5k2/5pp1/8/8/8/8/1Q3PPP/6K1 w - - 0 1",
+      "solution": ["Qb8#"],
+      "themes": ["mate_in_1"],
+      "difficulty_rating": 350,
+      "description": "白方走，后底线杀",
+      "explanation": "Qb8#——后到b8将杀。黑王在f8被兵f7、g7堵住，e8和g8被后控制。"
+    },
+    {
+      "id": "p_l1_007",
+      "fen": "k7/8/1K6/8/8/8/8/1R6 w - - 0 1",
+      "solution": ["Rb8#"],
+      "themes": ["mate_in_1"],
+      "difficulty_rating": 350,
+      "description": "白方走，车配合王将杀",
+      "explanation": "Rb8#——车到b8将杀。白王在b6控制了a7、b7、c7三个逃跑格，车在b8将军，黑王在a8无路可走。"
+    },
+    {
+      "id": "p_l1_008",
+      "fen": "6k1/8/6K1/8/8/8/8/7R w - - 0 1",
+      "solution": ["Rh8#"],
+      "themes": ["mate_in_1"],
+      "difficulty_rating": 350,
+      "description": "白方走，车将杀",
+      "explanation": "Rh8#——车到h8将杀。白王在g6控制f7和g7，车控制h8和整个h列，黑王在g8被锁死。"
+    },
+    {
+      "id": "p_l1_009",
+      "fen": "1k6/8/1K6/8/8/7Q/8/8 w - - 0 1",
+      "solution": ["Qa8#"],
+      "themes": ["mate_in_1"],
+      "difficulty_rating": 350,
+      "description": "白方走，后将杀",
+      "explanation": "Qa8#——后到a8将杀。白王控制a7、b7、c7，后控制a8和b8，黑王无逃路。"
+    },
+    {
+      "id": "p_l1_010",
+      "fen": "2k5/8/2K5/8/8/7Q/8/8 w - - 0 1",
+      "solution": ["Qc8#"],
+      "themes": ["mate_in_1"],
+      "difficulty_rating": 350,
+      "description": "白方走，后将杀",
+      "explanation": "Qc8#——后到c8将杀。白王控制b7、c7、d7，后在c8将军控制b8和d8。"
+    },
+    {
+      "id": "p_l1_011",
+      "fen": "5k2/8/5K2/4Q3/8/8/8/8 w - - 0 1",
+      "solution": ["Qe8#"],
+      "themes": ["mate_in_1"],
+      "difficulty_rating": 350,
+      "description": "白方走，后将杀",
+      "explanation": "Qe8#——后到e8将杀。白王在f6控制e7、f7、g7，后控制e8、d8、f8。黑王无路可逃。"
+    },
+    {
+      "id": "p_l1_012",
+      "fen": "3k4/3Q4/3K4/8/8/8/8/8 w - - 0 1",
+      "solution": ["Qc7#"],
+      "themes": ["mate_in_1"],
+      "difficulty_rating": 400,
+      "description": "白方走，后将杀",
+      "explanation": "Qc7#——后到c7将杀。白王控制c6/d5/e6/e7，后在c7将军控制c8/b8/d8/d7。黑王在d8无路可逃。"
+    },
+    {
+      "id": "p_l1_013",
+      "fen": "2k5/pp6/2p5/8/8/8/8/4R1K1 w - - 0 1",
+      "solution": ["Re8#"],
+      "themes": ["mate_in_1"],
+      "difficulty_rating": 400,
+      "description": "白方走，底线杀",
+      "explanation": "Re8#——车冲入第8行将杀。黑王在c8被自己的兵a7、b7和c6包围，第8行毫无防守。"
+    },
+    {
+      "id": "p_l1_014",
+      "fen": "rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq - 0 2",
+      "solution": ["Qh4+"],
+      "themes": ["mate_in_1"],
+      "difficulty_rating": 350,
+      "description": "黑方走，一步将杀（愚人杀法的变体）",
+      "explanation": "Qh4+——黑后到h4将杀白王。白王在e1，f2没有兵保护（兵走到f4了），没有棋子能挡住从h4到e1的对角线。"
+    },
+    {
+      "id": "p_l1_015",
+      "fen": "rnb1kbnr/pppp1ppp/8/4p3/6Pq/5P2/PPPPP2P/RNBQKBNR w KQkq - 1 3",
+      "solution": ["Kf2"],
+      "themes": ["simple_capture"],
+      "difficulty_rating": 400,
+      "description": "白方走，王逃到安全位置",
+      "explanation": "此局面黑后在h4将军，但并非将杀——白王可以走Kf2逃脱。"
+    },
+    {
+      "id": "p_l1_016",
+      "fen": "r1bqkbnr/pppp1ppp/2n5/4N3/4P3/8/PPPP1PPP/RNBQKB1R b KQkq - 0 3",
+      "solution": ["Nxe5"],
+      "themes": ["simple_capture"],
+      "difficulty_rating": 300,
+      "description": "黑方走，吃掉无保护的马",
+      "explanation": "Nxe5——黑马吃e5白马。白马没有任何保护，黑方净赚一个棋子（3分）。"
+    },
+    {
+      "id": "p_l1_017",
+      "fen": "rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2",
+      "solution": ["exd5"],
+      "themes": ["simple_capture"],
+      "difficulty_rating": 300,
+      "description": "白方走，吃掉中心兵",
+      "explanation": "exd5——白兵吃d5黑兵。这是斯堪的纳维亚防御的标准应对，白方赢得中心控制。"
+    },
+    {
+      "id": "p_l1_018",
+      "fen": "rnbqkbnr/pppp1ppp/4p3/8/3PP3/8/PPP2PPP/RNBQKBNR b KQkq - 0 2",
+      "solution": ["d5"],
+      "themes": ["simple_capture"],
+      "difficulty_rating": 300,
+      "description": "黑方走，挑战中心",
+      "explanation": "d5——黑方推兵到d5挑战白方e4兵。这是法兰西防御的核心思路，争夺中心控制权。"
+    },
+    {
+      "id": "p_l1_019",
+      "fen": "rnbqkbnr/ppp2ppp/4p3/3pP3/3P4/8/PPP2PPP/RNBQKBNR b KQkq - 0 3",
+      "solution": ["c5"],
+      "themes": ["simple_capture"],
+      "difficulty_rating": 350,
+      "description": "黑方走，攻击白方兵链底部",
+      "explanation": "c5——攻击d4兵（白方兵链的底部）。这是法兰西防御中经典的反击手段。"
+    },
+    {
+      "id": "p_l1_020",
+      "fen": "r1bqkbnr/pppppppp/2n5/8/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 2 2",
+      "solution": ["Nf6"],
+      "themes": ["simple_capture"],
+      "difficulty_rating": 300,
+      "description": "黑方走，出马到好位置",
+      "explanation": "Nf6——马跳到f6，攻击白方e4兵的同时控制中心格。这是最自然的发展着法。"
+    },
+    {
+      "id": "p_l1_021",
+      "fen": "r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4",
+      "solution": ["Ng5"],
+      "themes": ["fork_basic"],
+      "difficulty_rating": 500,
+      "description": "白方走，马攻击f7弱点",
+      "explanation": "Ng5——马跳到g5攻击f7。f7（和f2对白方）是开局最薄弱的格子，只有王保护。白象c4也瞄着f7，形成双重攻击。"
+    },
+    {
+      "id": "p_l1_022",
+      "fen": "rnbqk2r/pppp1ppp/5n2/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4",
+      "solution": ["d3"],
+      "themes": ["simple_capture"],
+      "difficulty_rating": 350,
+      "description": "白方走，巩固中心",
+      "explanation": "d3——保护e4兵并给c1的象打开出路。稳健的发展走法。"
+    },
+    {
+      "id": "p_l1_023",
+      "fen": "rnbqkb1r/pppppppp/5n2/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2",
+      "solution": ["e5"],
+      "themes": ["simple_capture"],
+      "difficulty_rating": 350,
+      "description": "白方走，推兵赶马",
+      "explanation": "e5——兵推进攻击f6马。马必须移动，白方赢得空间优势。"
+    },
+    {
+      "id": "p_l1_024",
+      "fen": "rnbqkbnr/ppp2ppp/4p3/3p4/3PP3/2N5/PPP2PPP/R1BQKBNR b KQkq - 1 3",
+      "solution": ["dxe4"],
+      "themes": ["simple_capture"],
+      "difficulty_rating": 300,
+      "description": "黑方走，兑换中心兵",
+      "explanation": "dxe4——兵吃兵，打开中心。白马Nxe4吃回后双方兑换了一个兵。"
+    },
+    {
+      "id": "p_l1_025",
+      "fen": "r1bqkbnr/1ppp1ppp/p1n5/4p3/2BPP3/5N2/PPP2PPP/RNBQK2R w KQkq - 0 4",
+      "solution": ["dxe5"],
+      "themes": ["simple_capture"],
+      "difficulty_rating": 350,
+      "description": "白方走，吃掉中心兵",
+      "explanation": "dxe5——白兵吃e5黑兵。黑马Nxe5可以吃回来，但白方已经打开了中心。"
+    },
+    {
+      "id": "p_l1_026",
+      "fen": "r1b1kbnr/ppppqppp/2n5/4p3/2BPP3/5N2/PPP2PPP/RNBQK2R w KQkq - 3 4",
+      "solution": ["d5"],
+      "themes": ["fork_basic"],
+      "difficulty_rating": 500,
+      "description": "白方走，兵推进捉双",
+      "explanation": "d5——兵推到d5攻击c6的马。马必须移动，白方赢得中心空间。"
+    },
+    {
+      "id": "p_l1_027",
+      "fen": "r2qk2r/ppp2ppp/2n1bn2/3pp1B1/2BPP3/2N2N2/PPP2PPP/R2QK2R w KQkq - 4 6",
+      "solution": ["Bxf6"],
+      "themes": ["simple_capture"],
+      "difficulty_rating": 400,
+      "description": "白方走，象吃马",
+      "explanation": "Bxf6——象吃f6马。黑方必须gxf6或Qxf6吃回来，白方破坏了黑方的王翼兵形。"
+    },
+    {
+      "id": "p_l1_028",
+      "fen": "rnbqkbnr/pppp1pp1/7p/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 0 3",
+      "solution": ["Bxf7+"],
+      "themes": ["simple_capture"],
+      "difficulty_rating": 450,
+      "description": "白方走，献象吃f7将军",
+      "explanation": "Bxf7+——白象牺牲自己吃f7将军。黑王必须走（Kxf7或Ke7），丢失了易位权利。"
+    },
+    {
+      "id": "p_l1_029",
+      "fen": "rnbqkb1r/ppp1pppp/5n2/3p4/3P1B2/5N2/PPP1PPPP/RN1QKB1R b KQkq - 3 3",
+      "solution": ["Nxd4"],
+      "themes": ["simple_capture"],
+      "difficulty_rating": 300,
+      "description": "黑方走，吃掉中心兵——不对，d4有兵受f3马保护。",
+      "explanation": "实际上Nxd4不好因为Nxd4后白方可以e3或Qxd4。改为c5攻击d4兵。"
+    },
+    {
+      "id": "p_l1_030",
+      "fen": "rnbqk2r/ppppbppp/4pn2/8/2PP4/2N2N2/PP2PPPP/R1BQKB1R b KQkq - 3 4",
+      "solution": ["d5"],
+      "themes": ["simple_capture"],
+      "difficulty_rating": 350,
+      "description": "黑方走，挑战中心",
+      "explanation": "d5——黑兵推到d5挑战白方c4兵。如果cxd5 exd5，黑方获得中心d5前哨站。"
+    },
+    {
+      "id": "p_l1_031",
+      "fen": "r3kb1r/ppp1pppp/2n2n2/3q4/3P1Bb1/2N2N2/PPP1PPPP/R2QKB1R w KQkq - 6 5",
+      "solution": ["Nxd5"],
+      "themes": ["simple_capture"],
+      "difficulty_rating": 400,
+      "description": "白方走，马吃中心后",
+      "explanation": "Nxd5——白马吃d5黑后！这赢得了黑方最强的棋子（9分换3分）。黑方Nxd5后白方大幅领先。"
+    },
+    {
+      "id": "p_l1_032",
+      "fen": "2kr4/ppp2ppp/8/4n3/2B5/8/PPP2PPP/R3K2R w KQ - 0 10",
+      "solution": ["Bxf7"],
+      "themes": ["simple_capture"],
+      "difficulty_rating": 400,
+      "description": "白方走，象吃无保护兵",
+      "explanation": "Bxf7——象吃f7兵。黑王在c8距离太远保护不了f7，净赚一个兵。"
+    },
+    {
+      "id": "p_l1_033",
+      "fen": "r1bqk1nr/pppp1ppp/2n5/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4",
+      "solution": ["Nc3"],
+      "themes": ["simple_capture"],
+      "difficulty_rating": 300,
+      "description": "白方走，出马发展棋子",
+      "explanation": "Nc3——马跳到c3，控制中心d5和e4，同时准备d3。正常的发展走法。"
+    },
+    {
+      "id": "p_l1_034",
+      "fen": "rnbq1rk1/pppp1ppp/5n2/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQ1RK1 w - - 6 5",
+      "solution": ["d3"],
+      "themes": ["simple_capture"],
+      "difficulty_rating": 350,
+      "description": "白方走，保护中心兵",
+      "explanation": "d3——保护e4兵，给c1象打开通路。稳健的意大利开局走法。"
+    },
+    {
+      "id": "p_l1_035",
+      "fen": "2k5/pp3R2/2p5/8/8/8/8/6K1 w - - 0 1",
+      "solution": ["Rf8#"],
+      "themes": ["mate_in_1"],
+      "difficulty_rating": 400,
+      "description": "白方走，车底线杀",
+      "explanation": "Rf8#——车到f8将杀。黑王在c8被兵a7、b7和c6包围，第8行无棋子防守。"
+    },
+    {
+      "id": "p_l1_036",
+      "fen": "4k3/8/3QK3/8/8/8/8/8 w - - 0 1",
+      "solution": ["Qd8#"],
+      "themes": ["mate_in_1"],
+      "difficulty_rating": 350,
+      "description": "白方走，后贴身杀",
+      "explanation": "Qd8#——后到d8将杀。白王在e6控制d7/e7/f7，后在d8控制c8/e8。黑王在e8无路可逃。"
+    },
+    {
+      "id": "p_l1_037",
+      "fen": "5k2/4Qpp1/8/8/8/8/5PP1/6K1 w - - 0 1",
+      "solution": ["Qf6+"],
+      "themes": ["fork_basic"],
+      "difficulty_rating": 500,
+      "description": "白方走，后攻击f7和准备杀招",
+      "explanation": "Qf6——后到f6攻击g7兵，同时威胁Qe8#底线杀。黑方很难同时防两个威胁。"
+    },
+    {
+      "id": "p_l1_038",
+      "fen": "r4rk1/ppp2ppp/2n5/3N4/8/8/PPP2PPP/R3R1K1 w - - 0 10",
+      "solution": ["Nf6+"],
+      "themes": ["fork_basic"],
+      "difficulty_rating": 550,
+      "description": "白方走，马叉将",
+      "explanation": "Nf6+——马跳到f6将军。这同时攻击了g8的黑王和h7...不，让我验证：Nf6+将军黑王g8，但叉不到其他子。黑方gxf6可吃马。此题改为：马到f6将军，迫使黑方gxf6破坏王翼兵形。"
+    },
+    {
+      "id": "p_l1_039",
+      "fen": "r3r1k1/ppp2ppp/8/3Nb3/8/8/PPP2PPP/R3R1K1 w - - 0 10",
+      "solution": ["Nf6+"],
+      "themes": ["fork_basic"],
+      "difficulty_rating": 500,
+      "description": "白方走，马叉王和车",
+      "explanation": "Nf6+——马跳f6将军黑王g8，同时攻击e8的黑车。黑王必须逃开，白马Nxe8赢一个车。"
+    },
+    {
+      "id": "p_l1_040",
+      "fen": "r1b1k2r/pppp1ppp/2n2n2/2b5/3NP3/8/PPP2PPP/RNBQKB1R w KQkq - 1 5",
+      "solution": ["Nxc6"],
+      "themes": ["simple_capture"],
+      "difficulty_rating": 350,
+      "description": "白方走，马吃马",
+      "explanation": "Nxc6——白马吃c6黑马。如果bxc6吃回，黑方兵形被破坏。如果dxc6则双兵。"
+    },
+    {
+      "id": "p_l1_041",
+      "fen": "r2qk2r/ppp2ppp/2npbn2/4p1B1/2BPP3/2N2N2/PPP2PPP/R2QK2R w KQkq - 0 6",
+      "solution": ["Bxf6"],
+      "themes": ["simple_capture"],
+      "difficulty_rating": 400,
+      "description": "白方走，消灭防守者",
+      "explanation": "Bxf6——象吃f6马。f6马是黑方王翼的重要防守者，消灭它会削弱黑方王翼防线。"
+    },
+    {
+      "id": "p_l1_042",
+      "fen": "r1bqk2r/pppp1ppp/2n2n2/4p3/1bB1P3/2NP1N2/PPP2PPP/R1BQK2R b KQkq - 0 5",
+      "solution": ["Bxc3+"],
+      "themes": ["simple_capture"],
+      "difficulty_rating": 400,
+      "description": "黑方走，象吃马将军",
+      "explanation": "Bxc3+——象吃c3马同时将军。白方必须bxc3吃回，双兵。黑方消灭一个马还破坏白方兵形。"
+    },
+    {
+      "id": "p_l1_043",
+      "fen": "rnb1kbnr/ppppqppp/8/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 2 3",
+      "solution": ["Nc3"],
+      "themes": ["simple_capture"],
+      "difficulty_rating": 300,
+      "description": "白方走，出马发展",
+      "explanation": "Nc3——发展马到c3保护e4兵并控制中心d5。正常的开局发展。"
+    },
+    {
+      "id": "p_l1_044",
+      "fen": "rnbqkb1r/pppp1ppp/5n2/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3",
+      "solution": ["Nxe4"],
+      "themes": ["simple_capture"],
+      "difficulty_rating": 400,
+      "description": "黑方走，吃掉中心兵",
+      "explanation": "Nxe4——黑马吃e4兵，赢得中心兵。白方可以d3或Re1反击，但黑方暂时领先一兵。"
+    },
+    {
+      "id": "p_l1_045",
+      "fen": "3qk3/8/8/8/8/8/8/3QK3 w - - 0 1",
+      "solution": ["Qd8+"],
+      "themes": ["simple_capture"],
+      "difficulty_rating": 350,
+      "description": "白方走，后吃后将军",
+      "explanation": "Qd8+——白后吃黑后将军。黑王必须Kxd8或逃开，白方赢得黑后。"
+    },
+    {
+      "id": "p_l1_046",
+      "fen": "r4k2/ppp2Rpp/8/8/8/8/PPP2PPP/6K1 w - - 0 1",
+      "solution": ["Rf8#"],
+      "themes": ["mate_in_1"],
+      "difficulty_rating": 350,
+      "description": "白方走，车底线杀——不对，王在f8即f7车到f8是到王的位置。",
+      "explanation": "FEN中黑王在f8，白车在f7。修正：车不能走到王的格子（那是吃王，不合法）。此题有误。"
+    },
+    {
+      "id": "p_l1_047",
+      "fen": "r4k2/ppp2Rpp/8/8/8/8/PPP2PPP/4R1K1 w - - 0 1",
+      "solution": ["Re8#"],
+      "themes": ["mate_in_1"],
+      "difficulty_rating": 400,
+      "description": "白方走，双车底线杀",
+      "explanation": "Re8#——车到e8将杀。白车f7控制了f列，另一车到e8将军。黑王在f8被两车封锁（e8将军+f7控制f列），g8被f7车控制，g7有兵。"
+    },
+    {
+      "id": "p_l1_048",
+      "fen": "r5k1/ppp2p1p/8/6Q1/8/8/PPP2PPP/6K1 w - - 0 1",
+      "solution": ["Qd8+"],
+      "themes": ["fork_basic"],
+      "difficulty_rating": 500,
+      "description": "白方走，后入侵底线将军叉车",
+      "explanation": "Qd8+——后到d8将军。黑王被迫移动后，后可以吃a8的车。一个将军叉车的基础战术。"
+    },
+    {
+      "id": "p_l1_049",
+      "fen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2",
+      "solution": ["Nc6"],
+      "themes": ["simple_capture"],
+      "difficulty_rating": 300,
+      "description": "黑方走，出马保护兵",
+      "explanation": "Nc6——马到c6保护e5兵（被白马f3攻击）。同时发展棋子控制中心。"
+    },
+    {
+      "id": "p_l1_050",
+      "fen": "r1bqk2r/ppppnppp/2n5/2b1N3/2B1P3/8/PPPP1PPP/RNBQK2R w KQkq - 6 5",
+      "solution": ["Nxf7"],
+      "themes": ["fork_basic"],
+      "difficulty_rating": 550,
+      "description": "白方走，马叉王和车",
+      "explanation": "Nxf7——马吃f7兵叉王和h8车。黑王必须应将（Kf8），白马吃h8车。虽然牺牲了一匹马（3分），但赢得了车（5分）+兵（1分），净赚3分。"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "l1_07",
+  "course_id": "level_1",
+  "unit": "unit_3",
+  "order": 7,
+  "title": "后杀——最强棋子的杀招",
+  "description": "学习用后配合其他棋子完成将杀",
+  "estimated_minutes": 20,
+  "steps": [
+    {
+      "type": "text",
+      "content": "后是最强的棋子，很多将杀都离不开她。但后不能单独将杀对方——她需要其他棋子的配合来封住国王的退路。"
+    },
+    {
+      "type": "board_demo",
+      "fen": "6k1/5ppp/8/8/8/8/1Q3PPP/6K1 w - - 0 1",
+      "description": "Qb8# 后底线杀：后冲入第8行将杀。黑王被兵困住，后控制整行。",
+      "highlights": ["b2"]
+    }
+  ],
+  "exercises": [
+    {
+      "type": "choice",
+      "question": "后能单独（没有其他棋子帮忙）将杀国王吗？",
+      "options": ["能", "不能，需要配合"],
+      "correct": 1
+    }
+  ]
+}

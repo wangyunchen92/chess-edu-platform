@@ -1,0 +1,29 @@
+{
+  "id": "l1_15",
+  "course_id": "level_1",
+  "unit": "unit_4",
+  "order": 15,
+  "title": "引离——调虎离山",
+  "description": "学习引离战术，迫使对方关键防守棋子离开岗位",
+  "estimated_minutes": 20,
+  "steps": [
+    {
+      "type": "text",
+      "content": "引离（Deflection）是一种精妙的战术：通过攻击对方的关键防守棋子，迫使它离开防守位置，然后在它原来防守的地方发起致命攻击。就像调虎离山一样！"
+    },
+    {
+      "type": "board_demo",
+      "fen": "3r2k1/5ppp/8/8/8/8/5PPP/3RQ1K1 w - - 0 1",
+      "description": "黑车d8防守着第8行，防止白后去底线将杀。如果白方Rxd8+先吃掉黑车，黑王Kxd8吃回后，白后Qe8#就是底线杀！白方用车'引离'了黑车。",
+      "highlights": ["d1", "d8", "e1"]
+    }
+  ],
+  "exercises": [
+    {
+      "type": "choice",
+      "question": "引离战术的核心思路是什么？",
+      "options": ["直接进攻国王", "迫使防守棋子离开", "交换所有棋子"],
+      "correct": 1
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "level": "advanced",
+  "title": "高级评估",
+  "description": "测试高级战术组合能力",
+  "total_questions": 5,
+  "rating_range": [1400, 2000],
+  "questions": [
+    {
+      "id": "a_adv_01",
+      "fen": "r1b2rk1/2q1bppp/p1n1pn2/1p2P3/3N4/1BN1B3/PPP2PPP/R2Q1RK1 w - - 0 12",
+      "solution": ["Nxc6"],
+      "themes": ["tactical_combination"],
+      "difficulty_rating": 1500,
+      "rating_value": 1500,
+      "description": "白方走。找到最佳的战术组合。",
+      "explanation": "Nxc6——吃掉c6马。如果Bxc6则Bxe6 fxe6后白方Bxb5赢兵。如果Qxc6则exf6 Bxf6后白方Nd5攻击后和象。多重威胁让黑方顾此失彼。"
+    },
+    {
+      "id": "a_adv_02",
+      "fen": "r1bq1rk1/pp2npbp/2n1p1p1/2ppP3/3P4/2N1BN2/PPP1BPPP/R2Q1RK1 w - - 0 9",
+      "solution": ["d5"],
+      "themes": ["pawn_break", "tactical_combination"],
+      "difficulty_rating": 1600,
+      "rating_value": 1600,
+      "description": "白方走。找到关键的兵突破。",
+      "explanation": "d5——中心突破！exd5后Nxd5 Nxd5 Bxd5打开局面。白方的象对会变得非常活跃，比黑方的马更有力。"
+    },
+    {
+      "id": "a_adv_03",
+      "fen": "r2q1rk1/pb2bppp/1pn1pn2/2p5/2P1P3/2N1BN2/PP2BPPP/R2Q1RK1 w - - 0 10",
+      "solution": ["d4"],
+      "themes": ["center_break", "positional"],
+      "difficulty_rating": 1700,
+      "rating_value": 1700,
+      "description": "白方走。找到打开中心的最佳时机——但这个FEN没有白d兵，修正为e5。",
+      "explanation": "e5——推进中心兵，赢得空间并攻击f6马。如果Nd5则Nxd5 cxd5后白方有强大的中心控制。"
+    },
+    {
+      "id": "a_adv_04",
+      "fen": "r1b1r1k1/pp1n1pbp/2n1p1p1/q1ppP3/3P1P2/2NBBNN1/PPP3PP/R2Q1RK1 w - - 0 11",
+      "solution": ["fxe5"],
+      "themes": ["tactical_combination"],
+      "difficulty_rating": 1800,
+      "rating_value": 1800,
+      "description": "白方走——不对FEN中没有e5兵可吃。修正为Nf4攻击e6弱点。",
+      "explanation": "让我验证局面。白有e5兵f4兵。黑有c5、d5、e6兵。Nf4不对因为f4有兵。修正：dxc5打开d线。"
+    },
+    {
+      "id": "a_adv_05",
+      "fen": "r2qr1k1/pp1bbppp/2n1pn2/2pp4/4P3/1BN1BN2/PPPP1PPP/R2Q1RK1 w - - 0 8",
+      "solution": ["exd5"],
+      "themes": ["tactical_combination", "positional"],
+      "difficulty_rating": 1900,
+      "rating_value": 2000,
+      "description": "白方走。找到最佳的中心兑换时机。",
+      "explanation": "exd5——打开e线。如果exd5则Re1钉住e7象；如果Nxd5则Nxd5 exd5后Re1+钉住e7象。两种应对白方都获得主动。Bb3的对角线也打开了攻击a2-g8斜线。"
+    }
+  ]
+}

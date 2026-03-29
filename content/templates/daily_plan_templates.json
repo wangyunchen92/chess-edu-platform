@@ -1,0 +1,111 @@
+{
+  "beginner": {
+    "title": "新手每日计划",
+    "description": "适合刚学会基本规则的初学者",
+    "items": [
+      {
+        "type": "puzzles",
+        "title": "战术热身",
+        "description": "完成5道谜题",
+        "target": 5,
+        "icon": "🧩",
+        "link": "/puzzles/daily"
+      },
+      {
+        "type": "learn",
+        "title": "继续学习",
+        "description": "完成1节课程",
+        "target": 1,
+        "icon": "📖",
+        "link": "/learn"
+      },
+      {
+        "type": "play",
+        "title": "实战对弈",
+        "description": "和AI下1盘棋",
+        "target": 1,
+        "icon": "⚔️",
+        "link": "/play"
+      }
+    ],
+    "estimated_minutes": 25
+  },
+  "intermediate": {
+    "title": "进阶每日计划",
+    "description": "适合掌握基础战术的棋手",
+    "items": [
+      {
+        "type": "puzzles",
+        "title": "战术训练",
+        "description": "完成10道谜题",
+        "target": 10,
+        "icon": "🧩",
+        "link": "/puzzles/daily"
+      },
+      {
+        "type": "learn",
+        "title": "课程学习",
+        "description": "完成1节新课程",
+        "target": 1,
+        "icon": "📖",
+        "link": "/learn"
+      },
+      {
+        "type": "review",
+        "title": "复盘分析",
+        "description": "回顾1盘对局",
+        "target": 1,
+        "icon": "🔍",
+        "link": "/review"
+      },
+      {
+        "type": "play",
+        "title": "实战对弈",
+        "description": "和AI下2盘棋",
+        "target": 2,
+        "icon": "⚔️",
+        "link": "/play"
+      }
+    ],
+    "estimated_minutes": 45
+  },
+  "advanced": {
+    "title": "高手每日计划",
+    "description": "适合有一定水平、想进一步提高的棋手",
+    "items": [
+      {
+        "type": "puzzles",
+        "title": "战术冲刺",
+        "description": "完成15道谜题",
+        "target": 15,
+        "icon": "🧩",
+        "link": "/puzzles/daily"
+      },
+      {
+        "type": "learn",
+        "title": "高级课程",
+        "description": "完成1节课程并做笔记",
+        "target": 1,
+        "icon": "📖",
+        "link": "/learn"
+      },
+      {
+        "type": "review",
+        "title": "深度复盘",
+        "description": "回顾2盘对局，分析关键局面",
+        "target": 2,
+        "icon": "🔍",
+        "link": "/review"
+      },
+      {
+        "type": "play",
+        "title": "挑战对弈",
+        "description": "和AI下3盘棋（提高难度）",
+        "target": 3,
+        "icon": "⚔️",
+        "link": "/play"
+      }
+    ],
+    "estimated_minutes": 60
+  }
+}

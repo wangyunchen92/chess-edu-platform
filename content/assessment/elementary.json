@@ -1,0 +1,59 @@
+{
+  "level": "elementary",
+  "title": "初级评估",
+  "description": "测试基本规则和简单战术",
+  "total_questions": 5,
+  "rating_range": [400, 800],
+  "questions": [
+    {
+      "id": "a_ele_01",
+      "fen": "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+      "solution": ["Qxf7#"],
+      "themes": ["mate_in_1"],
+      "difficulty_rating": 400,
+      "rating_value": 500,
+      "description": "白方走，一步将杀。白后和白象都瞄准了f7。",
+      "explanation": "Qxf7#——学者杀法。后吃f7将杀，黑王被白后和c4象联合攻击，e7有兵挡住、d8有后挡住，无路可逃。"
+    },
+    {
+      "id": "a_ele_02",
+      "fen": "r3r1k1/ppp2ppp/8/3Nb3/8/8/PPP2PPP/R3R1K1 w - - 0 10",
+      "solution": ["Nf6+"],
+      "themes": ["fork_basic"],
+      "difficulty_rating": 550,
+      "rating_value": 600,
+      "description": "白方走。白马在d5可以跳到一个好位置，同时攻击两个目标。",
+      "explanation": "Nf6+——马跳f6将军黑王，同时攻击e8的黑车。黑王逃开后，Nxe8赢得一个车（5分）。这就是\"捉双\"（fork）。"
+    },
+    {
+      "id": "a_ele_03",
+      "fen": "r5k1/ppp2p1p/8/6Q1/8/8/PPP2PPP/6K1 w - - 0 1",
+      "solution": ["Qd8+"],
+      "themes": ["fork_basic"],
+      "difficulty_rating": 500,
+      "rating_value": 600,
+      "description": "白方走。白后可以将军同时攻击另一个目标。",
+      "explanation": "Qd8+——后到d8将军，同时攻击a8的黑车。黑王逃开后，白后吃掉a8车，赢得5分。"
+    },
+    {
+      "id": "a_ele_04",
+      "fen": "r1bqk2r/pppp1ppp/2n2n2/2b1p3/2B1P3/2NP1N2/PPP2PPP/R1BQK2R w KQkq - 0 5",
+      "solution": ["Bg5"],
+      "themes": ["fork_basic"],
+      "difficulty_rating": 600,
+      "rating_value": 700,
+      "description": "白方走。白象可以走到一个位置\"钉住\"黑方的一个棋子。",
+      "explanation": "Bg5——象到g5钉住f6马。马后面是黑后（d8），如果马移开后就被吃。这个\"钉子\"(pin)让f6马动弹不得。"
+    },
+    {
+      "id": "a_ele_05",
+      "fen": "r1bqk2r/ppppnppp/2n5/2b1N3/2B1P3/8/PPPP1PPP/RNBQK2R w KQkq - 6 5",
+      "solution": ["Nxf7"],
+      "themes": ["fork_basic"],
+      "difficulty_rating": 600,
+      "rating_value": 800,
+      "description": "白方走。白马可以吃一个关键的兵，同时攻击两个目标。",
+      "explanation": "Nxf7——马吃f7叉王和h8车。黑王必须应将（如Kf8），然后Nxh8赢车。虽然牺牲了马（3分），但赢得车+兵（6分），净赚3分。"
+    }
+  ]
+}

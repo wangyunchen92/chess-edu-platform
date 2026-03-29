@@ -1,0 +1,9 @@
+{
+  "id": "level_0",
+  "title": "零基础启蒙",
+  "description": "从零开始认识国际象棋",
+  "level": 0,
+  "prerequisite": null,
+  "total_lessons": 10,
+  "estimated_hours": 3
+}

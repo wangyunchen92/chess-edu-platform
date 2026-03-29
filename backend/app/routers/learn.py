@@ -1,0 +1,176 @@
+"""Learn module router (B2-3 & B2-4 & B2-5)."""
+
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
+
+from app.database import get_db
+from app.dependencies import get_current_user
+from app.schemas.common import APIResponse
+from app.schemas.learn import (
+    AITeachRequest,
+    AITeachResponse,
+    CourseDetail,
+    CourseListItem,
+    ExerciseAttemptRequest,
+    ExerciseAttemptResponse,
+    ExerciseItem,
+    LessonContent,
+    UpdateProgressRequest,
+    UpdateProgressResponse,
+)
+from app.services import course_service
+from app.services.gamification_service import award_xp
+from app.services.membership_service import consume_quota
+
+router = APIRouter()
+
+
+@router.get("/courses", response_model=APIResponse[list[CourseListItem]])
+def list_courses(
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> APIResponse[list[CourseListItem]]:
+    """Get course list with user progress."""
+    user_id = current_user["user_id"]
+    courses = course_service.list_courses(db, user_id)
+    return APIResponse.success(data=courses)
+
+
+@router.get("/courses/{course_id}", response_model=APIResponse[CourseDetail])
+def get_course_detail(
+    course_id: str,
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> APIResponse[CourseDetail]:
+    """Get course detail with lesson list and progress."""
+    user_id = current_user["user_id"]
+    detail = course_service.get_course_detail(db, course_id, user_id)
+    if detail is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Course not found",
+        )
+    return APIResponse.success(data=detail)
+
+
+@router.get("/lessons/{lesson_id}", response_model=APIResponse[LessonContent])
+def get_lesson_content(
+    lesson_id: str,
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> APIResponse[LessonContent]:
+    """Get lesson full content."""
+    user_id = current_user["user_id"]
+    content = course_service.get_lesson_content(db, lesson_id, user_id)
+    if content is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Lesson not found",
+        )
+    return APIResponse.success(data=content)
+
+
+@router.post("/lessons/{lesson_id}/progress", response_model=APIResponse[UpdateProgressResponse])
+def update_lesson_progress(
+    lesson_id: str,
+    request: UpdateProgressRequest,
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> APIResponse[UpdateProgressResponse]:
+    """Update lesson progress."""
+    user_id = current_user["user_id"]
+    try:
+        result = course_service.update_lesson_progress(
+            db=db,
+            lesson_id=lesson_id,
+            user_id=user_id,
+            progress_pct=request.progress_pct,
+            last_position=request.last_position,
+        )
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(e),
+        )
+
+    # Award XP if lesson was completed
+    if result["xp_earned"] > 0:
+        award_xp(db, user_id, result["xp_earned"], reason="lesson_complete")
+
+    return APIResponse.success(data=result)
+
+
+@router.get("/lessons/{lesson_id}/exercises", response_model=APIResponse[list[ExerciseItem]])
+def get_lesson_exercises(
+    lesson_id: str,
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> APIResponse[list[ExerciseItem]]:
+    """Get exercises for a lesson."""
+    user_id = current_user["user_id"]
+    exercises = course_service.get_lesson_exercises(db, lesson_id, user_id)
+    return APIResponse.success(data=exercises)
+
+
+@router.post("/exercises/{exercise_id}/attempt", response_model=APIResponse[ExerciseAttemptResponse])
+def submit_exercise_attempt(
+    exercise_id: str,
+    request: ExerciseAttemptRequest,
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> APIResponse[ExerciseAttemptResponse]:
+    """Submit an exercise answer."""
+    user_id = current_user["user_id"]
+    try:
+        result = course_service.submit_exercise_attempt(
+            db=db,
+            exercise_id=exercise_id,
+            user_id=user_id,
+            user_answer=request.user_answer,
+            time_spent_ms=request.time_spent_ms,
+        )
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(e),
+        )
+
+    # Award XP
+    if result["xp_earned"] > 0:
+        award_xp(db, user_id, result["xp_earned"], reason="exercise_correct")
+
+    return APIResponse.success(data=result)
+
+
+@router.post("/lessons/{lesson_id}/ai-teach", response_model=APIResponse[AITeachResponse])
+def ai_teach_interaction(
+    lesson_id: str,
+    request: AITeachRequest,
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> APIResponse[AITeachResponse]:
+    """AI interactive teaching conversation."""
+    user_id = current_user["user_id"]
+
+    # Check AI Q&A quota
+    if not consume_quota(db, user_id, "ai_qa_daily"):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Daily AI Q&A limit reached",
+        )
+
+    try:
+        result = course_service.ai_teach_interaction(
+            db=db,
+            lesson_id=lesson_id,
+            user_id=user_id,
+            message=request.message,
+            context=request.context,
+        )
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(e),
+        )
+
+    return APIResponse.success(data=result)

@@ -1,0 +1,27 @@
+{
+  "id": "douding",
+  "name": "豆丁",
+  "tier": "beginner",
+  "avatar": "/assets/characters/douding/avatar.png",
+  "description": "圆滚滚的小豆丁，总是笑眯眯的，是每位棋艺新手的最佳启蒙伙伴。虽然棋力稚嫩，却充满热情和鼓励。",
+  "personality": "温柔可爱，鼓励型，对失误毫不在意，总是给对手加油打气",
+  "play_style": "随机型，偶尔犯错，不走复杂变化",
+  "rating": 500,
+  "unlock_condition": "default",
+  "engine_params": {
+    "depth_min": 3,
+    "depth_max": 5,
+    "error_rate": 0.4,
+    "prefer_simple_moves": true,
+    "avoid_long_sequences": true
+  },
+  "expressions": {
+    "idle": "/assets/characters/douding/idle.png",
+    "happy": "/assets/characters/douding/happy.png",
+    "sad": "/assets/characters/douding/sad.png",
+    "surprised": "/assets/characters/douding/surprised.png",
+    "thinking": "/assets/characters/douding/thinking.png",
+    "celebrate": "/assets/characters/douding/celebrate.png",
+    "encourage": "/assets/characters/douding/encourage.png"
+  }
+}

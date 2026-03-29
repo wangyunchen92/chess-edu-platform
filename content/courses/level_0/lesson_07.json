@@ -1,0 +1,70 @@
+{
+  "id": "l0_07",
+  "course_id": "level_0",
+  "order": 7,
+  "title": "王的走法和王车易位",
+  "description": "学习王的移动规则和王车易位特殊走法",
+  "estimated_minutes": 18,
+  "steps": [
+    {
+      "type": "text",
+      "content": "王（King）是最重要的棋子——如果你的王被将死，你就输了！但王本身并不强大，它每次只能走一格，可以向8个方向走：上、下、左、右和4个对角线方向。王不能走到会被对方棋子攻击的格子上。"
+    },
+    {
+      "type": "board_demo",
+      "fen": "8/8/8/8/3K4/8/8/8 w - - 0 1",
+      "description": "王在d4，它可以走到周围的8个格子。虽然步伐小，但在残局中王是非常活跃的棋子。",
+      "highlights": ["c3", "d3", "e3", "c4", "e4", "c5", "d5", "e5"]
+    },
+    {
+      "type": "text",
+      "content": "王车易位是国际象棋中唯一一步走两个棋子的特殊走法！王向车的方向走2格，然后车跳过王到另一边。这有两种：\n\n短易位（王翼易位）：王从e1走到g1，h1的车跳到f1。记作O-O。\n长易位（后翼易位）：王从e1走到c1，a1的车跳到d1。记作O-O-O。\n\n易位有4个条件：王和车都没动过、王和车之间没有棋子、王没有被将军、王经过的格子不能被攻击。"
+    },
+    {
+      "type": "board_demo",
+      "fen": "r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1",
+      "description": "白方和黑方都可以进行王车易位。白王在e1，可以短易位到g1（h1车到f1），也可以长易位到c1（a1车到d1）。",
+      "highlights": ["e1", "g1", "h1", "c1", "a1"]
+    },
+    {
+      "type": "board_demo",
+      "fen": "r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R4RK1 w kq - 1 1",
+      "description": "白方刚完成了短易位！王从e1走到了g1，车从h1跳到了f1。易位可以让王躲到安全的角落里，同时把车调到中间发挥作用。",
+      "highlights": ["g1", "f1"]
+    },
+    {
+      "type": "interactive",
+      "instruction": "白王在e1，现在可以短易位。请点击王易位后到达的格子。",
+      "fen": "r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1",
+      "correct_squares": ["g1"],
+      "hint": "短易位时，王从e1走两步到g1"
+    },
+    {
+      "type": "quiz",
+      "question": "以下哪种情况不能进行王车易位？",
+      "options": ["王和车之间有棋子", "王正在被将军", "王经过的格子被攻击", "以上都不能"],
+      "correct": 3,
+      "explanation": "以上3种情况都不能进行王车易位。此外，王或车已经移动过也不能易位。"
+    }
+  ],
+  "exercises": [
+    {
+      "type": "choice",
+      "question": "王每次最多走几格？",
+      "options": ["1格", "2格", "3格", "不限"],
+      "correct": 0
+    },
+    {
+      "type": "choice",
+      "question": "短易位用什么符号记录？",
+      "options": ["O-O", "O-O-O", "K-R", "0-0-0"],
+      "correct": 0
+    },
+    {
+      "type": "choice",
+      "question": "王车易位的主要目的是什么？",
+      "options": ["吃掉对方的棋子", "把王藏到安全的位置", "让兵升变", "让马跳得更远"],
+      "correct": 1
+    }
+  ]
+}

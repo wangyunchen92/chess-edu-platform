@@ -1,0 +1,29 @@
+{
+  "id": "l1_12",
+  "course_id": "level_1",
+  "unit": "unit_4",
+  "order": 12,
+  "title": "牵制——动弹不得",
+  "description": "学习牵制战术，让对方的棋子不敢移动",
+  "estimated_minutes": 20,
+  "steps": [
+    {
+      "type": "text",
+      "content": "牵制（Pin）是一种强大的战术：你攻击对方的一个棋子，而它不能或不敢移开，因为移开后会暴露身后更重要的棋子。如果身后是国王，那叫'绝对牵制'——被牵制的棋子根本不能合法移动！"
+    },
+    {
+      "type": "board_demo",
+      "fen": "r1bqk2r/ppppnppp/8/4p3/1b2P3/2N2N2/PPPP1PPP/R1BQKB1R w KQkq - 0 4",
+      "description": "黑象b4牵制了白马c3！白马不能移动，因为移开后白王e1就被象将军了。这是'绝对牵制'。",
+      "highlights": ["b4", "c3", "e1"]
+    }
+  ],
+  "exercises": [
+    {
+      "type": "choice",
+      "question": "'绝对牵制'是指被牵制棋子身后是什么？",
+      "options": ["后", "车", "国王", "象"],
+      "correct": 2
+    }
+  ]
+}

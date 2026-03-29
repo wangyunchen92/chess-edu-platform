@@ -1,0 +1,89 @@
+{
+  "character_id": "douding",
+  "dialogues": {
+    "greeting": [
+      { "text": "嗨嗨嗨！豆丁来啦～我们来下棋吧，超级好玩的！", "expression": "happy" },
+      { "text": "呀，你好呀！我是豆丁，棋棋新手，我们一起加油哦！", "expression": "happy" },
+      { "text": "嘿嘿，今天也要好好下棋！豆丁准备好了！", "expression": "celebrate" },
+      { "text": "哇，你来了！豆丁好开心呀，咱们开始吧～", "expression": "happy" },
+      { "text": "你好你好！豆丁最喜欢下棋了，我们努力努力！", "expression": "encourage" }
+    ],
+    "good_move": [
+      { "text": "哇塞！这步棋好厉害！豆丁要好好学习！", "expression": "surprised" },
+      { "text": "啊呀，你走得真棒呢！好强好强！", "expression": "happy" },
+      { "text": "这步……好妙哦！豆丁没想到这里！", "expression": "surprised" },
+      { "text": "哇哦！好棒的一步！豆丁给你鼓掌！", "expression": "celebrate" },
+      { "text": "嗯嗯嗯，走得真好呀，豆丁要记住这个！", "expression": "thinking" }
+    ],
+    "blunder": [
+      { "text": "哎呀呀，豆丁走错了……没关系没关系，继续加油！", "expression": "sad" },
+      { "text": "呜……这步不对，豆丁再想想～不哭不哭！", "expression": "sad" },
+      { "text": "啊！豆丁失误了！嘻嘻，没关系，下次改！", "expression": "happy" },
+      { "text": "哦不，豆丁手滑了，请不要嫌弃豆丁嘛！", "expression": "sad" },
+      { "text": "哎，失误了，但是豆丁不放弃！继续加油！", "expression": "encourage" }
+    ],
+    "check_given": [
+      { "text": "将军！嘿嘿，豆丁也会将军哦！", "expression": "celebrate" },
+      { "text": "将！哇，豆丁做到了，好开心呀！", "expression": "happy" },
+      { "text": "啊，将军了！是不是很厉害？嘻嘻～", "expression": "celebrate" },
+      { "text": "将军！虽然豆丁没想到，但就是这样了！", "expression": "surprised" },
+      { "text": "将！将！将！豆丁好激动！", "expression": "celebrate" }
+    ],
+    "check_received": [
+      { "text": "啊，被将军了，豆丁赶紧想办法！", "expression": "surprised" },
+      { "text": "哎呀！被将了，让豆丁想想怎么挡……", "expression": "thinking" },
+      { "text": "将军？豆丁不怕不怕！让豆丁想想！", "expression": "thinking" },
+      { "text": "哦哦，被将了，豆丁认真思考一下！", "expression": "thinking" },
+      { "text": "呜，被将军了……不慌不慌，豆丁找到出路！", "expression": "sad" }
+    ],
+    "capture_given": [
+      { "text": "嘿嘿，吃掉你的棋子！豆丁进攻啦！", "expression": "happy" },
+      { "text": "吃掉！虽然豆丁也不确定这样好不好……", "expression": "thinking" },
+      { "text": "拿下！豆丁的棋子越来越多了！", "expression": "celebrate" },
+      { "text": "吃掉你！嘻嘻，豆丁的秘密武器！", "expression": "happy" },
+      { "text": "哈，这颗棋子归豆丁了！加油加油！", "expression": "celebrate" }
+    ],
+    "capture_received": [
+      { "text": "哦不，我的棋子被吃掉了……但没关系！", "expression": "sad" },
+      { "text": "啊，失去一颗了，豆丁要更小心！", "expression": "sad" },
+      { "text": "哎呀被吃了……豆丁要认真下了！", "expression": "thinking" },
+      { "text": "嗯嗯，被吃了，豆丁要想好下一步！", "expression": "thinking" },
+      { "text": "没关系！少一颗棋子豆丁也能战斗！", "expression": "encourage" }
+    ],
+    "advantage": [
+      { "text": "感觉形势不错！豆丁要继续努力！", "expression": "happy" },
+      { "text": "嗯嗯，豆丁好像多了几颗棋子，加油！", "expression": "celebrate" },
+      { "text": "耶！豆丁有优势了，但不能大意哦！", "expression": "happy" },
+      { "text": "哇，豆丁领先了！认真继续！", "expression": "celebrate" },
+      { "text": "感觉可以！豆丁继续认真下！", "expression": "encourage" }
+    ],
+    "disadvantage": [
+      { "text": "哎，落后了……豆丁要努力追上来！", "expression": "sad" },
+      { "text": "形势不太好，但豆丁不放弃！加油！", "expression": "encourage" },
+      { "text": "豆丁落后了，没关系，慢慢追！", "expression": "sad" },
+      { "text": "差了一点，豆丁要认真想下一步！", "expression": "thinking" },
+      { "text": "不行不行，豆丁要振作！一步一步来！", "expression": "encourage" }
+    ],
+    "win": [
+      { "text": "耶耶耶！豆丁赢了！好开心好开心！", "expression": "celebrate" },
+      { "text": "哇！赢了！豆丁要跳舞了！嘻嘻嘻！", "expression": "celebrate" },
+      { "text": "赢了赢了！虽然你也很棒，我们都厉害！", "expression": "happy" },
+      { "text": "豆丁第一名！谢谢你陪豆丁下棋！", "expression": "celebrate" },
+      { "text": "嘻嘻，赢了！下次再来找豆丁玩哦！", "expression": "happy" }
+    ],
+    "lose": [
+      { "text": "呜……豆丁输了，但你走得真的好棒！", "expression": "sad" },
+      { "text": "豆丁输了，没关系，下次豆丁再努力！", "expression": "sad" },
+      { "text": "输了……嗯嗯，豆丁要好好学习！你教教豆丁好不好？", "expression": "sad" },
+      { "text": "哎，输给你了，你真的很厉害！豆丁甘拜下风！", "expression": "happy" },
+      { "text": "豆丁认输！但豆丁会越来越厉害的！", "expression": "encourage" }
+    ],
+    "draw": [
+      { "text": "平局！哇，我们实力相当耶！", "expression": "happy" },
+      { "text": "平了！嘻嘻，豆丁和你势均力敌！", "expression": "happy" },
+      { "text": "平局，好神奇！大家都没有赢哦～", "expression": "surprised" },
+      { "text": "嗯！平局！我们是最好的棋友！", "expression": "celebrate" },
+      { "text": "平了平了！豆丁既没输也没赢，好奇怪的感觉！", "expression": "surprised" }
+    ]
+  }
+}

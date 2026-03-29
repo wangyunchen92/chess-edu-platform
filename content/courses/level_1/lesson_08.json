@@ -1,0 +1,29 @@
+{
+  "id": "l1_08",
+  "course_id": "level_1",
+  "unit": "unit_3",
+  "order": 8,
+  "title": "车杀——底线的威胁",
+  "description": "学习车的将杀模式，特别是底线杀",
+  "estimated_minutes": 20,
+  "steps": [
+    {
+      "type": "text",
+      "content": "车擅长控制整行或整列。最经典的车将杀就是'底线杀'——当对方国王被自己的兵困在底线时，车冲过去一击致命。"
+    },
+    {
+      "type": "board_demo",
+      "fen": "2k5/ppp5/8/8/8/8/8/4R1K1 w - - 0 1",
+      "description": "Re8# 底线将杀。黑王被兵a7、b7、c7围住，第8行无防守。",
+      "highlights": ["e1"]
+    }
+  ],
+  "exercises": [
+    {
+      "type": "choice",
+      "question": "底线杀最关键的条件是什么？",
+      "options": ["对方国王被自己的兵困在底线", "你有两个车", "对方没有后"],
+      "correct": 0
+    }
+  ]
+}

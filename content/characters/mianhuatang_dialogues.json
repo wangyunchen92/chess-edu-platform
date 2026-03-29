@@ -1,0 +1,89 @@
+{
+  "character_id": "mianhuatang",
+  "dialogues": {
+    "greeting": [
+      { "text": "哼，你来了！棉花糖可不会让你轻松赢的，准备好了吗？", "expression": "attack" },
+      { "text": "嘻嘻，总算来了！我等好久了，赶快开始！", "expression": "happy" },
+      { "text": "对决开始！我棉花糖今天状态超好，你要小心哦！", "expression": "attack" },
+      { "text": "来来来，不要墨迹！棉花糖最喜欢下棋了，快开始！", "expression": "happy" },
+      { "text": "哼哼，我今天要赢得漂漂亮亮的！你有心理准备吗？", "expression": "attack" }
+    ],
+    "good_move": [
+      { "text": "哇，这步……棉花糖承认走得不错，不过别得意！", "expression": "surprised" },
+      { "text": "嗯！这步棋很妙嘛，棉花糖有点刮目相看了！", "expression": "surprised" },
+      { "text": "好吧好吧，这步棉花糖没想到，你挺厉害的！", "expression": "sad" },
+      { "text": "哎哟，高手！不过棉花糖有后招，等着瞧！", "expression": "attack" },
+      { "text": "嗯……这步确实好，棉花糖服了，但只服这一步！", "expression": "thinking" }
+    ],
+    "blunder": [
+      { "text": "啊不！棉花糖失误了！不算不算，重来！……好吧，不能重来。", "expression": "sad" },
+      { "text": "哎！这步真的不行，棉花糖太心急了！", "expression": "sad" },
+      { "text": "不行不行，棉花糖分心了！这步不该这么走的！", "expression": "sad" },
+      { "text": "哼，就当热身失误吧！棉花糖正式发力是现在！", "expression": "attack" },
+      { "text": "唉，走臭了……棉花糖得冷静一下，深呼吸！", "expression": "thinking" }
+    ],
+    "check_given": [
+      { "text": "将军！哈！这就是棉花糖的厉害之处！", "expression": "celebrate" },
+      { "text": "将！嘻嘻，赶紧想办法，不然下一步更惨！", "expression": "attack" },
+      { "text": "将军了！棉花糖早就盯着这里了！", "expression": "celebrate" },
+      { "text": "将！怎么样？棉花糖的进攻厉不厉害？", "expression": "happy" },
+      { "text": "将军！这就是棉花糖战术！速战速决！", "expression": "celebrate" }
+    ],
+    "check_received": [
+      { "text": "将？！棉花糖早有防备！看我怎么化解！", "expression": "attack" },
+      { "text": "哼，将军了又怎样，棉花糖有办法！", "expression": "thinking" },
+      { "text": "被将了……棉花糖不慌不慌，想想想！", "expression": "thinking" },
+      { "text": "哎，被将了！棉花糖得认真一点了！", "expression": "surprised" },
+      { "text": "将军？好，棉花糖接受挑战！看我反将一军！", "expression": "attack" }
+    ],
+    "capture_given": [
+      { "text": "哈！棉花糖的棋子越来越多了！吃！", "expression": "celebrate" },
+      { "text": "嘻嘻，这颗棉花糖收下了！攻势继续！", "expression": "attack" },
+      { "text": "吃掉！这就是进攻的感觉，太爽了！", "expression": "happy" },
+      { "text": "拿下！棉花糖的胃口很大的，继续吃！", "expression": "celebrate" },
+      { "text": "哈哈，棉花糖最喜欢吃子了！下一个！", "expression": "attack" }
+    ],
+    "capture_received": [
+      { "text": "哎，被吃了！棉花糖的棋子！你等着！", "expression": "sad" },
+      { "text": "哼，一颗算什么！棉花糖马上夺回来！", "expression": "attack" },
+      { "text": "被吃了……棉花糖生气了！要认真了！", "expression": "sad" },
+      { "text": "不行，失去棋子的感觉很难受，要小心！", "expression": "thinking" },
+      { "text": "哼！棉花糖要找回来的！以一当十！", "expression": "attack" }
+    ],
+    "advantage": [
+      { "text": "嘻嘻！棉花糖领先了！胜利就在眼前！", "expression": "celebrate" },
+      { "text": "哈！优势在我，棉花糖要一鼓作气！", "expression": "attack" },
+      { "text": "嗯嗯，形势不错！棉花糖继续进攻！", "expression": "happy" },
+      { "text": "领先了！不过棉花糖不会轻敌的，继续！", "expression": "thinking" },
+      { "text": "哈哈，优势在我！冲啊！", "expression": "celebrate" }
+    ],
+    "disadvantage": [
+      { "text": "哎，落后了……棉花糖绝对不认输！反攻！", "expression": "attack" },
+      { "text": "哼，暂时落后而已！棉花糖有翻盘的本事！", "expression": "attack" },
+      { "text": "落后了……棉花糖要冷静，然后爆发！", "expression": "thinking" },
+      { "text": "不妙不妙，但棉花糖从不轻言放弃！", "expression": "sad" },
+      { "text": "差距还可以追！棉花糖加油加油加油！", "expression": "attack" }
+    ],
+    "win": [
+      { "text": "耶！棉花糖赢了！我就说嘛，我最厉害！", "expression": "celebrate" },
+      { "text": "哈哈哈！赢了！棉花糖的进攻无敌！", "expression": "celebrate" },
+      { "text": "胜利！棉花糖今天发挥超好，你也下得很棒！", "expression": "happy" },
+      { "text": "嘻嘻，赢了！下次再来，棉花糖随时奉陪！", "expression": "celebrate" },
+      { "text": "冠军就是棉花糖！虽然你也很强，但不够强！", "expression": "celebrate" }
+    ],
+    "lose": [
+      { "text": "哎……输了，棉花糖心情不好，但你确实厉害！", "expression": "sad" },
+      { "text": "不服！……好吧，棉花糖服了这次，但下次一定赢！", "expression": "sad" },
+      { "text": "输了……哼，棉花糖要回去苦练了，下次见！", "expression": "sad" },
+      { "text": "唉，败了，棉花糖承认你这局比我强，下次不一定！", "expression": "thinking" },
+      { "text": "棉花糖输了……但绝对只是这一次！说好的下次必赢！", "expression": "attack" }
+    ],
+    "draw": [
+      { "text": "平局？！棉花糖明明可以赢的！下次一定分出胜负！", "expression": "sad" },
+      { "text": "哼，平局算什么！棉花糖下次要完胜！", "expression": "attack" },
+      { "text": "嗯……平了，就当棉花糖手下留情吧，嘻嘻！", "expression": "happy" },
+      { "text": "平局！你很厉害，棉花糖勉强认可你！", "expression": "surprised" },
+      { "text": "嗯，平了。棉花糖下次要赢得更帅气！", "expression": "thinking" }
+    ]
+  }
+}

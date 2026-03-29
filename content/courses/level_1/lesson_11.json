@@ -1,0 +1,29 @@
+{
+  "id": "l1_11",
+  "course_id": "level_1",
+  "unit": "unit_4",
+  "order": 11,
+  "title": "捉双——一箭双雕",
+  "description": "学习捉双战术，用一个棋子同时攻击两个目标",
+  "estimated_minutes": 20,
+  "steps": [
+    {
+      "type": "text",
+      "content": "捉双（Fork）是最基本也最常见的战术。一个棋子同时攻击对方的两个（或更多）棋子，对方只能救一个，你就能吃掉另一个！马是捉双之王，因为它的L形跳跃能攻击到意想不到的格子。"
+    },
+    {
+      "type": "board_demo",
+      "fen": "r3k2r/ppp2ppp/8/3Nb3/8/8/PPP2PPP/R3R1K1 w - - 0 10",
+      "description": "Nf6+ 马叉王和车！马跳到f6将军黑王，同时攻击e8的车。黑王必须逃，白马就能吃掉车。",
+      "highlights": ["d5", "f6"]
+    }
+  ],
+  "exercises": [
+    {
+      "type": "choice",
+      "question": "哪个棋子最擅长捉双？",
+      "options": ["后", "车", "马", "象"],
+      "correct": 2
+    }
+  ]
+}
