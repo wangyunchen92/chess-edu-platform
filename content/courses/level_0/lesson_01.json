@@ -5,49 +5,182 @@
   "title": "国际象棋的故事",
   "description": "了解国际象棋的起源和魅力",
   "estimated_minutes": 15,
+  "theme": {
+    "bgGradient": "from-blue-50 to-indigo-100",
+    "accentColor": "#6366f1"
+  },
   "steps": [
     {
-      "type": "text",
-      "content": "国际象棋起源于大约1500年前的印度，那时候它叫做\"恰图兰卡\"。后来传到了波斯，又传到了阿拉伯世界，最终传到了欧洲，变成了我们今天玩的国际象棋。它是全世界最流行的棋类游戏之一，全球有超过6亿人会下国际象棋！"
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "surprised",
+      "content": "豆丁老师！我在桌子上发现了一个黑白格子的棋盘，上面还摆着好多小人偶！这是什么呀？"
     },
     {
-      "type": "image_text",
-      "content": "在国际象棋的世界里，棋盘就像一个小型战场。两支军队——白方和黑方——在64个格子上展开对决。每支军队都有一个国王、一个王后、两个城堡（车）、两个主教（象）、两匹骑士（马）和八个小兵。你的目标就是想办法\"捉住\"对方的国王！",
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "哈哈，小琪你发现了一个大宝贝！这可不是普通玩具，这是国际象棋！"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "thinking",
+      "content": "国际象棋？听起来好厉害！它是谁发明的呀？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "好问题！大约1500年前，在遥远的印度，有人发明了它。那时候它还有个好玩的名字，叫\"恰图兰卡\"。"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "surprised",
+      "content": "恰图兰卡？这名字好奇怪，像绕口令！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "哈哈是吧！后来它传到了欧洲，名字也变了，变成了现在的国际象棋。全世界有超过6亿人会下呢！"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "surprised",
+      "content": "6亿人！那比我们学校的人多好多好多倍！快给我讲讲，怎么下的？"
+    },
+    {
+      "type": "story",
+      "character": "douding",
+      "expression": "surprised",
+      "content": "哇，想象一下！国际象棋的世界就像一个小型战场！两支军队——白方和黑方——在64个格子上展开对决。每支军队都有一个国王、一个王后、两个城堡（车）、两个主教（象）、两匹骑士（马）和八个小兵。你的目标就是想办法\"捉住\"对方的国王！是不是听起来很刺激？",
       "image_hint": "两军对阵示意图"
     },
     {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "happy",
+      "content": "有国王有骑士！就像童话故事一样！我好想看看棋盘长什么样！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "来，让我给你看看棋盘上的初始摆法！"
+    },
+    {
       "type": "board_demo",
+      "character": "douding",
+      "expression": "thinking",
       "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-      "description": "这就是国际象棋的初始局面——每一盘棋都从这个摆法开始。下面是白方的16个棋子，上面是黑方的16个棋子。",
+      "description": "看！这就是国际象棋的初始局面——每一盘棋都从这个摆法开始哦。下面是白方的16个棋子，上面是黑方的16个棋子。我们一起数数看！",
       "highlights": []
     },
     {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "thinking",
+      "content": "好多棋子呀！哪个是国王？我想找到它！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "encourage",
+      "content": "国王头上戴着一个十字架皇冠，你来找找看！"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "celebrate",
+      "content": "我能自己试试吗？让我点点看！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "encourage",
+      "content": "当然可以！来，点击白色的王吧！"
+    },
+    {
       "type": "interactive",
-      "instruction": "点击白色的王，看看它在哪里？提示：王头上戴着一个十字架皇冠。",
+      "character": "douding",
+      "expression": "encourage",
+      "instruction": "来试试看！点击白色的王，看看它在哪里？提示：王头上戴着一个十字架皇冠哦。",
       "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
       "correct_squares": ["e1"],
       "hint": "王戴着十字架皇冠，在第一行靠中间的位置"
     },
     {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "happy",
+      "content": "找到了！那旁边那个戴尖角皇冠的呢？是王后吗？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "没错！王后戴着尖角皇冠，就在王的旁边。来找找她！"
+    },
+    {
       "type": "interactive",
-      "instruction": "现在点击白色的王后。王后头上戴着一顶尖角皇冠，就在王的旁边。",
+      "character": "douding",
+      "expression": "encourage",
+      "instruction": "太棒了！现在点击白色的王后吧。王后头上戴着一顶尖角皇冠，就在王的旁边哦！",
       "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
       "correct_squares": ["d1"],
       "hint": "王后在d1格，就在王的左边"
     },
     {
-      "type": "quiz",
-      "question": "国际象棋大约起源于多少年前？",
-      "options": ["500年前", "1000年前", "1500年前", "3000年前"],
-      "correct": 2,
-      "explanation": "国际象棋大约起源于1500年前的印度。"
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "thinking",
+      "content": "考考你，看你记住了没有！"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "happy",
+      "content": "来吧来吧，我准备好了！"
     },
     {
       "type": "quiz",
+      "character": "douding",
+      "expression": "thinking",
+      "question": "国际象棋大约起源于多少年前？",
+      "options": ["500年前", "1000年前", "1500年前", "3000年前"],
+      "correct": 2,
+      "explanation": "没错！国际象棋大约起源于1500年前的印度，历史超悠久的！"
+    },
+    {
+      "type": "quiz",
+      "character": "douding",
+      "expression": "thinking",
       "question": "国际象棋一共有几种不同的棋子？",
       "options": ["4种", "6种", "8种", "10种"],
       "correct": 1,
-      "explanation": "共6种：王（King）、后（Queen）、车（Rook）、象（Bishop）、马（Knight）、兵（Pawn）。"
+      "explanation": "答对啦！一共6种：王（King）、后（Queen）、车（Rook）、象（Bishop）、马（Knight）、兵（Pawn）。"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "celebrate",
+      "content": "耶！我都答对了！原来国际象棋这么有趣！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "你学得真快！下节课我们来仔细看看棋盘，每个格子都有自己的名字呢！"
+    },
+    {
+      "type": "celebration",
+      "character": "douding",
+      "expression": "celebrate",
+      "content": "太棒了！你完成了第一课——国际象棋的故事！现在你已经知道了国际象棋的起源和棋子的种类，真了不起！+30经验值！",
+      "xp_earned": 30
     }
   ],
   "exercises": [

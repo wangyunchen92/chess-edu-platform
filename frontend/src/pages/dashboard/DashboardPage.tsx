@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
 import { dashboardApi } from '@/api/dashboard'
@@ -9,6 +9,7 @@ import XPBar from '@/components/gamification/XPBar'
 import StreakBadge from '@/components/gamification/StreakBadge'
 import ProgressBar from '@/components/common/ProgressBar'
 import Loading from '@/components/common/Loading'
+import { translateRankTitle } from '@/utils/rank'
 
 interface DashboardData {
   trainProgress: { completed: number; total: number }
@@ -16,6 +17,7 @@ interface DashboardData {
   streak: number
   rating: number
   rankTitle: string
+  dailyPuzzlesRemaining: number
   recentGames: Array<{
     id: string
     opponent: string
@@ -42,6 +44,7 @@ const MOCK_DASHBOARD: DashboardData = {
   streak: 7,
   rating: 1200,
   rankTitle: '',
+  dailyPuzzlesRemaining: 3,
   recentGames: [
     { id: '1', opponent: '豆丁', result: 'win', ratingChange: 15 },
     { id: '2', opponent: '棉花糖', result: 'loss', ratingChange: -12 },
@@ -72,17 +75,26 @@ function parseDashboardResponse(resData: unknown): DashboardData | null {
     total: payload.train_progress.total_items ?? 3,
   } : null)
 
+  // XP progress: show progress within current level
+  // xp_to_next_level = remaining XP to reach next level
+  // We show: current = (level_xp_total - remaining), target = level_xp_total
+  const xpToNext = payload.xp_to_next_level ?? 200
+  const xpLevel = payload.level ?? 1
+  // Estimate total XP needed for this level: level * 200 (matching backend formula)
+  const levelTotalXp = xpLevel * 200
+  const xpCurrent = Math.max(0, levelTotalXp - xpToNext)
   const xp = payload.xp ?? {
-    current: payload.xp_today ?? payload.xp_total ?? 0,
-    target: payload.xp_to_next_level ?? 200,
-    level: payload.level ?? 1,
+    current: xpCurrent,
+    target: levelTotalXp,
+    level: xpLevel,
   }
 
   const ratingObj = (typeof payload.rating === 'object' && payload.rating) ? payload.rating : null
   const rating = typeof payload.rating === 'number'
     ? payload.rating
     : ratingObj?.game_rating ?? payload.game_rating ?? undefined
-  const rankTitle = ratingObj?.rank_title ?? payload.rank_title ?? ''
+  const rankTitleRaw = ratingObj?.rank_title ?? payload.rank_title ?? ''
+  const rankTitle = translateRankTitle(rankTitleRaw)
 
   const streak = payload.streak ?? payload.login_streak ?? payload.train_streak ?? 0
 
@@ -97,11 +109,23 @@ function parseDashboardResponse(resData: unknown): DashboardData | null {
         }))
       : []
 
+  // Compute weekStats from real data (backend doesn't return a separate weekStats)
+  const gamesCount = recentGames.length
+  const winsCount = recentGames.filter((g: any) => g.result === 'win').length
+  const computedWinRate = gamesCount > 0 ? `${Math.round((winsCount / gamesCount) * 100)}%` : '0%'
+  const dailyUsed = payload.daily_puzzles_remaining != null
+    ? (payload.quota?.limit ?? 3) - (payload.daily_puzzles_remaining ?? 3)
+    : 0
   const weekStats = payload.weekStats ?? payload.week_stats ?? {
-    games: 0, winRate: '0%', puzzles: 0, learnMinutes: 0,
+    games: gamesCount,
+    winRate: computedWinRate,
+    puzzles: dailyUsed,
+    learnMinutes: 0,
   }
 
   const recommendations = payload.recommendations ?? MOCK_DASHBOARD.recommendations
+
+  const dailyPuzzlesRemaining = payload.dailyPuzzlesRemaining ?? payload.daily_puzzles_remaining ?? 3
 
   if (trainProgress == null && rating == null) return null
 
@@ -111,6 +135,7 @@ function parseDashboardResponse(resData: unknown): DashboardData | null {
     streak,
     rating: rating ?? 1200,
     rankTitle,
+    dailyPuzzlesRemaining,
     recentGames,
     weekStats,
     recommendations,
@@ -128,7 +153,8 @@ const DashboardPage: React.FC = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
+  // Reload dashboard data every time the page becomes visible (returning from game/puzzle/etc)
+  const loadDashboard = useCallback(() => {
     setLoading(true)
     setError(null)
     dashboardApi.getDashboard()
@@ -137,7 +163,6 @@ const DashboardPage: React.FC = () => {
         if (parsed) {
           setData(parsed)
         } else {
-          // API returned unexpected format, use mock with user rating
           setData({ ...MOCK_DASHBOARD })
         }
       })
@@ -148,6 +173,16 @@ const DashboardPage: React.FC = () => {
       })
       .finally(() => setLoading(false))
   }, [])
+
+  // Load on mount
+  useEffect(() => { loadDashboard() }, [loadDashboard])
+
+  // Reload when page becomes visible again (user returns from other page)
+  useEffect(() => {
+    const handleFocus = () => loadDashboard()
+    window.addEventListener('focus', handleFocus)
+    return () => window.removeEventListener('focus', handleFocus)
+  }, [loadDashboard])
 
   const d = data
 
@@ -188,6 +223,65 @@ const DashboardPage: React.FC = () => {
         </div>
         <StreakBadge days={d.streak} />
       </div>
+
+      {/* ── Daily Todo Checklist ── */}
+      <Card padding="lg">
+        <h3 className="text-[var(--text-md)] font-semibold text-[var(--text)] mb-3">
+          {'\uD83D\uDCCB'} 今日待办
+        </h3>
+        <div className="space-y-2">
+          {[
+            {
+              done: d.trainProgress.completed >= d.trainProgress.total && d.trainProgress.total > 0,
+              label: d.trainProgress.completed >= d.trainProgress.total && d.trainProgress.total > 0
+                ? '每日训练已完成'
+                : `完成每日训练 (${d.trainProgress.completed}/${d.trainProgress.total})`,
+              link: '/train',
+              emoji: '\uD83C\uDFAF',
+            },
+            {
+              done: d.dailyPuzzlesRemaining === 0,
+              label: d.dailyPuzzlesRemaining === 0
+                ? '每日谜题已完成'
+                : `完成每日谜题 (剩余${d.dailyPuzzlesRemaining}题)`,
+              link: '/puzzles/daily',
+              emoji: '\uD83E\uDDE9',
+            },
+            {
+              done: false,
+              label: d.recentGames.length > 0
+                ? `今日已下${d.recentGames.length}盘棋，再来一局？`
+                : '和AI角色下一盘棋',
+              link: '/play',
+              emoji: '\u265E',
+            },
+            {
+              done: false,
+              label: '继续学习课程',
+              link: '/learn',
+              emoji: '\uD83D\uDCDA',
+            },
+          ].map((item) => (
+            <div
+              key={item.label}
+              onClick={() => navigate(item.link)}
+              className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-colors hover:bg-[var(--accent-light)]"
+            >
+              <span className="text-lg shrink-0">
+                {item.done ? '\u2705' : item.emoji}
+              </span>
+              <span
+                className={`text-[var(--text-sm)] flex-1 ${
+                  item.done ? 'text-[var(--text-muted)] line-through' : 'text-[var(--text)]'
+                }`}
+              >
+                {item.label}
+              </span>
+              <span className="text-[var(--text-muted)] text-sm">{'\u203A'}</span>
+            </div>
+          ))}
+        </div>
+      </Card>
 
       {/* ── Top Row ── */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">

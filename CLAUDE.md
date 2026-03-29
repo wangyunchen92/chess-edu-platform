@@ -281,11 +281,65 @@ cd backend && python3 -m uvicorn app.main:app --reload --port 8000
 cd frontend && npm run dev
 ```
 
+## 部署
+
+### 生产服务器
+
+与建筑ERP共用同一台阿里云服务器，按路径分发：
+
+- **IP**: 118.31.237.111
+- **SSH**: `ssh root@118.31.237.111`
+- **棋育路径**: `http://118.31.237.111/chess/`
+- **后端端口**: :8001（建筑ERP用:8000）
+- **服务目录**: `/opt/chess-edu/`
+- **systemd**: `chess-edu.service`
+
+```
+Nginx(:80)
+  ├── /          → 建筑ERP 前端 + /api/ → :8000
+  └── /chess/    → 棋育 前端   + /chess/api/ → :8001
+```
+
+### 部署步骤
+
+```bash
+# 1. 本地构建前端（设置 base 路径）
+cd frontend && VITE_BASE=/chess/ npm run build
+
+# 2. 上传到服务器
+scp -r frontend/dist/* root@118.31.237.111:/opt/chess-edu/frontend/
+scp -r backend/ root@118.31.237.111:/opt/chess-edu/backend/
+scp -r content/ root@118.31.237.111:/opt/chess-edu/content/
+
+# 3. 服务器上配置
+ssh root@118.31.237.111
+cd /opt/chess-edu/backend
+pip3 install -r requirements.txt
+python3 -m uvicorn app.main:app --host 127.0.0.1 --port 8001
+
+# 4. 配置 systemd 和 Nginx（见 deploy/ 目录）
+```
+
+## 项目进度
+
+| 阶段 | 内容 | 状态 |
+|---|---|---|
+| Sprint 1 | 全栈基础功能（12模块API + 22页面 + 25表） | ✅ 完成 |
+| Sprint 1 修复 | 前后端协议对齐 + 页面数据绑定修复 | ✅ 完成 |
+| 学习模块打磨 | 卡通课堂改造（双角色对话+聊天布局+音效+升变） | ✅ 完成 |
+| 数据联通 | 对弈结果提交+谜题状态跟踪+Dashboard刷新 | ✅ 完成 |
+| 部署上线 | 阿里云服务器部署 | 🔄 进行中 |
+
 ## 常见陷阱
 
-- Vite 代理目标必须是 `http://localhost:8000`，不是 8001
+- Vite 代理目标必须是 `http://localhost:8000`（本地开发），不是 8001
 - `UserResponse.rating` 与 User ORM `rating` relationship 冲突，已用 model_validator 处理
 - `GET /learn/courses` 不返回 lessons 数组，需调 `GET /learn/courses/{id}` 获取
 - 前端 fallback 到 mock 数据时不报错，排查时必须确认真实 API 被调用
 - Assessment 提交用 `selected_key` 不是 `answer`
 - Adventure 模块前端字段用 `icon`/`is_unlocked`/`is_completed`/`reward_xp`/`rating_range`
+- 对弈结束后必须调 `playApi.completeGame()` 才会记录到后端
+- 每日谜题 `attempted` 状态从原始 wrapper 读，不是解包后的 puzzle 对象
+- 兵升变需要 promotion 参数，Chessboard 组件弹选择框
+- Dashboard 需要 window.focus 监听，返回时自动刷新数据
+- rank_title 后端返回 code（如 `apprentice_1`），前端需用 `translateRankTitle` 翻译

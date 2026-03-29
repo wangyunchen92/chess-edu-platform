@@ -115,7 +115,7 @@ const PuzzlesHomePage: React.FC = () => {
         {[
           { label: '已解决', value: stats.totalSolved, emoji: '\u2705', color: 'var(--success)' },
           { label: '正确率', value: `${stats.accuracy}%`, emoji: '\uD83C\uDFAF', color: 'var(--accent)' },
-          { label: 'Puzzle Rating', value: stats.puzzleRating, emoji: '\uD83D\uDCC8', color: 'var(--warning)' },
+          { label: '谜题评分', value: stats.puzzleRating, emoji: '\uD83D\uDCC8', color: 'var(--warning)' },
         ].map((s) => (
           <Card key={s.label} padding="md" hoverable={false}>
             <div className="text-center">

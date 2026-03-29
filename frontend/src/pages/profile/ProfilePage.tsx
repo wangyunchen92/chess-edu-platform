@@ -76,7 +76,8 @@ const ProfilePage: React.FC = () => {
         return null
       }),
     ]).then(([statsRes, profileRes, xpRes, achRes]) => {
-      let hadAnyData = false
+      // Any non-null response means at least one API succeeded
+      let hadAnyData = !!(statsRes || profileRes || xpRes || achRes)
 
       setData((prev) => {
         const next = { ...prev }
@@ -85,7 +86,6 @@ const ProfilePage: React.FC = () => {
         if (statsRes?.data) {
           const s: any = (statsRes.data as any)?.data ?? statsRes.data
           if (s.game_stats) {
-            hadAnyData = true
             next.gameStats = {
               total: s.game_stats.total_games ?? 0,
               wins: s.game_stats.wins ?? 0,
@@ -95,7 +95,6 @@ const ProfilePage: React.FC = () => {
             }
           }
           if (s.puzzle_stats) {
-            hadAnyData = true
             next.puzzleStats = {
               rating: s.puzzle_stats.puzzle_rating ?? 300,
               solved: s.puzzle_stats.total_solved ?? 0,
@@ -103,7 +102,6 @@ const ProfilePage: React.FC = () => {
             }
           }
           if (s.learning_stats) {
-            hadAnyData = true
             next.learnProgress = {
               completed: s.learning_stats.completed_lessons ?? 0,
               total: s.learning_stats.total_lessons ?? 0,
@@ -123,7 +121,6 @@ const ProfilePage: React.FC = () => {
         // User profile: rating, streak
         if (profileRes?.data) {
           const p: any = (profileRes.data as any)?.data ?? profileRes.data
-          hadAnyData = true
           if (p.rating) {
             next.rating = p.rating.game_rating ?? next.rating
             // Also update puzzle stats rating
@@ -139,7 +136,6 @@ const ProfilePage: React.FC = () => {
         // XP: use xp_total with level calculation, not xp_today
         if (xpRes?.data) {
           const x: any = (xpRes.data as any)?.data ?? xpRes.data
-          hadAnyData = true
           const xpTotal = x.xp_total ?? 0
           const xpToNext = x.xp_to_next_level ?? 200
           const level = x.level ?? 1
@@ -160,7 +156,6 @@ const ProfilePage: React.FC = () => {
         // Achievements from gamification API (as fallback/supplement)
         if (achRes?.data && !statsRes?.data) {
           const a: any = (achRes.data as any)?.data ?? achRes.data
-          hadAnyData = true
           if (Array.isArray(a.achievements)) {
             next.achievements = a.achievements
               .filter((ac: any) => ac.achieved_at || ac.achieved)
@@ -206,8 +201,14 @@ const ProfilePage: React.FC = () => {
     <div className="space-y-6">
       {/* Error banner */}
       {error && (
-        <div className="px-4 py-3 rounded-[var(--radius-sm)] bg-[rgba(245,158,11,0.1)] text-[var(--warning)] text-[var(--text-sm)]">
-          {error}
+        <div className="px-4 py-3 rounded-[var(--radius-sm)] bg-[rgba(245,158,11,0.1)] text-[var(--warning)] text-[var(--text-sm)] flex items-center justify-between">
+          <span>{error}</span>
+          <button
+            onClick={() => window.location.reload()}
+            className="text-xs px-3 py-1 rounded-full bg-[var(--warning)] text-white hover:opacity-90"
+          >
+            重试
+          </button>
         </div>
       )}
 

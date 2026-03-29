@@ -7,6 +7,7 @@
 
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { Chess } from 'chess.js';
+import { playMoveSound, playCaptureSound, playCheckSound, playCastleSound } from '@/utils/sounds';
 import {
   CharacterEngine,
   CharacterConfig,
@@ -232,6 +233,17 @@ export function useChessGame() {
           isCheckmate: lastMove.san.includes('#'),
         };
         setMoveHistory((prev) => [...prev, moveInfo]);
+
+        // Play sound for AI move
+        if (lastMove.san.includes('O-O')) {
+          playCastleSound();
+        } else if (moveInfo.isCheck) {
+          playCheckSound();
+        } else if (lastMove.captured) {
+          playCaptureSound();
+        } else {
+          playMoveSound();
+        }
       }
 
       // 同步状态
@@ -344,6 +356,17 @@ export function useChessGame() {
           isCheckmate: lastMove.san.includes('#'),
         };
         setMoveHistory((prev) => [...prev, moveInfo]);
+
+        // Play sound for user move
+        if (lastMove.san.includes('O-O')) {
+          playCastleSound();
+        } else if (moveInfo.isCheck) {
+          playCheckSound();
+        } else if (lastMove.captured) {
+          playCaptureSound();
+        } else {
+          playMoveSound();
+        }
       }
 
       // 同步状态

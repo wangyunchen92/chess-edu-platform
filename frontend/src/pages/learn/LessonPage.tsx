@@ -1,53 +1,51 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { Chess } from 'chess.js'
 import { learnApi } from '@/api/learn'
 import { useCourseStore } from '@/stores/courseStore'
+import {
+  StarProgress,
+  CelebrationBlock,
+  RewardOverlay,
+  TeacherAvatar,
+} from '@/components/lesson'
+import ChatPanel from '@/components/lesson/ChatPanel'
+import type { DisplayedMessage } from '@/components/lesson/ChatPanel'
 import Chessboard from '@/components/chess/Chessboard'
-import Button from '@/components/common/Button'
-import Card from '@/components/common/Card'
-import ProgressBar from '@/components/common/ProgressBar'
-import { Chess } from 'chess.js'
+import { playVoice, stopVoice } from '@/components/lesson/VoicePlayer'
+import type { LessonBlock, LessonData } from '@/types/lesson'
+import { mapLegacyBlock, getLessonTheme } from '@/types/lesson'
+import { playMoveSound, playCaptureSound, playCheckSound, playErrorSound } from '@/utils/sounds'
 
 // ---------------------------------------------------------------------------
-// Types
+// Default FEN
 // ---------------------------------------------------------------------------
 
-interface ContentBlock {
-  type: 'text' | 'board_demo' | 'interactive' | 'quiz'
-  // text
-  content?: string
-  // board_demo
-  fen?: string
-  description?: string
-  highlights?: string[]
-  // interactive
-  instruction?: string
-  expectedMove?: string // UCI format
-  successMessage?: string
-  // quiz
-  question?: string
-  options?: string[]
-  correctIndex?: number
-}
+const DEFAULT_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
 
-interface LessonData {
-  id: string
-  title: string
-  courseId: string
-  blocks: ContentBlock[]
-  nextLessonId?: string
-  exerciseId?: string
-}
+// ---------------------------------------------------------------------------
+// Mock data (fallback when API unavailable)
+// ---------------------------------------------------------------------------
 
 const MOCK_LESSON: LessonData = {
   id: 'l1',
   title: '认识棋盘',
   courseId: 'c1',
+  lessonOrder: 0,
+  xpReward: 30,
   nextLessonId: 'l2',
   exerciseId: 'ex-l1',
   blocks: [
     {
-      type: 'text',
+      type: 'dialogue',
+      character: 'douding',
+      expression: 'happy',
+      content: '你好呀！我是豆丁老师，今天我们一起来认识国际象棋的棋盘吧！',
+    },
+    {
+      type: 'dialogue',
+      character: 'douding',
+      expression: 'idle',
       content: '国际象棋的棋盘由8x8=64个格子组成，交替排列黑色和白色。每一列用字母a-h表示（从左到右），每一行用数字1-8表示（从下到上）。',
     },
     {
@@ -57,8 +55,10 @@ const MOCK_LESSON: LessonData = {
       highlights: ['e1', 'e8'],
     },
     {
-      type: 'text',
-      content: '棋盘上最重要的棋子是国王（King），用 K 表示。如果你的国王被将死，你就输了！下面用高亮标记了双方国王的位置。',
+      type: 'dialogue',
+      character: 'douding',
+      expression: 'thinking',
+      content: '棋盘上最重要的棋子是国王（King），用 K 表示。如果你的国王被将死，你就输了！上面用高亮标记了双方国王的位置。',
     },
     {
       type: 'interactive',
@@ -74,10 +74,21 @@ const MOCK_LESSON: LessonData = {
       correctIndex: 2,
     },
     {
-      type: 'text',
+      type: 'dialogue',
+      character: 'douding',
+      expression: 'celebrate',
       content: '恭喜你完成了第一课！你已经认识了棋盘的基本结构。接下来我们将学习每个棋子的走法。',
     },
   ],
+}
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+let msgIdCounter = 0
+function toDisplayMessage(block: LessonBlock, blockIdx: number): DisplayedMessage {
+  return { id: ++msgIdCounter, block, blockIdx }
 }
 
 // ---------------------------------------------------------------------------
@@ -89,142 +100,302 @@ const LessonPage: React.FC = () => {
   const navigate = useNavigate()
   const courseStore = useCourseStore()
 
+  // Lesson data
   const [lesson, setLesson] = useState<LessonData | null>(null)
   const [loading, setLoading] = useState(true)
-  const [currentBlockIdx, setCurrentBlockIdx] = useState(0)
 
-  // Interactive block state
-  const [interactiveFen, setInteractiveFen] = useState('')
-  const [interactiveSuccess, setInteractiveSuccess] = useState(false)
+  // Chat state
+  const [currentStepIdx, setCurrentStepIdx] = useState(-1)
+  const [displayedMessages, setDisplayedMessages] = useState<DisplayedMessage[]>([])
 
-  // Quiz state
-  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null)
-  const [quizSubmitted, setQuizSubmitted] = useState(false)
+  // Board state
+  const [currentFen, setCurrentFen] = useState(DEFAULT_FEN)
+  const [currentHighlights, setCurrentHighlights] = useState<string[]>([])
+  const [boardInteractive, setBoardInteractive] = useState(false)
+
+  // Interaction state
+  const [activeInteraction, setActiveInteraction] = useState<LessonBlock | null>(null)
+  const [interactionComplete, setInteractionComplete] = useState(false)
+
+  // UI state
+  const [showCelebration, setShowCelebration] = useState(false)
+  const [showReward, setShowReward] = useState(false)
+
+  // ---------------------------------------------------------------------------
+  // Load lesson data
+  // ---------------------------------------------------------------------------
 
   useEffect(() => {
     if (!id) return
     setLoading(true)
+    setCurrentStepIdx(-1)
+    setDisplayedMessages([])
+    setCurrentFen(DEFAULT_FEN)
+    setCurrentHighlights([])
+    setBoardInteractive(false)
+    setActiveInteraction(null)
+    setInteractionComplete(false)
+    setShowCelebration(false)
+    setShowReward(false)
+    msgIdCounter = 0
+
     courseStore.setLesson(id)
-    learnApi.getLessonContent(id)
+
+    learnApi
+      .getLessonContent(id)
       .then((res) => {
-        // Unwrap {code, data: {...}} wrapper
         const raw: any = (res.data as any)?.data ?? res.data
         if (!raw || !raw.id) {
           setLesson(MOCK_LESSON)
           return
         }
-        // Map backend format to our LessonData interface
-        const blocks: ContentBlock[] = raw.blocks
-          ?? (raw.content_data?.steps ?? raw.steps ?? []).map((step: any) => {
-            const block: ContentBlock = { type: step.type }
-            // text block
-            if (step.content) block.content = step.content
-            // board_demo block
-            if (step.fen) block.fen = step.fen
-            if (step.description) block.description = step.description
-            if (step.highlights) block.highlights = step.highlights
-            // interactive block
-            if (step.instruction) block.instruction = step.instruction
-            if (step.expectedMove) {
-              block.expectedMove = step.expectedMove
-            } else if (step.correct_squares && Array.isArray(step.correct_squares) && step.correct_squares.length > 0) {
-              // Backend uses correct_squares; use the first square as a click target
-              // For interactive blocks that need a move, we store it differently
-              block.expectedMove = step.correct_squares.join(',')
-            }
-            if (step.hint) block.successMessage = step.hint
-            if (step.successMessage) block.successMessage = step.successMessage
-            // quiz block
-            if (step.question) block.question = step.question
-            if (step.options) block.options = step.options
-            if (step.correctIndex !== undefined) block.correctIndex = step.correctIndex
-            if (step.correct_answer !== undefined) block.correctIndex = step.correct_answer
-            return block
-          })
+        const rawSteps: any[] =
+          raw.blocks ?? raw.content_data?.steps ?? raw.steps ?? []
+        const blocks: LessonBlock[] = rawSteps.map((step: any) => mapLegacyBlock(step))
+
         setLesson({
           id: raw.id,
           title: raw.title ?? '',
           courseId: raw.courseId ?? raw.course_id ?? '',
+          lessonOrder: raw.lesson_order ?? 0,
+          xpReward: raw.xp_reward ?? 30,
           blocks,
           nextLessonId: raw.nextLessonId ?? raw.next_lesson_id ?? undefined,
           exerciseId: raw.exerciseId ?? raw.exercise_id ?? undefined,
         })
       })
-      .catch((err) => { console.error('[LessonPage] Failed to load lesson:', err); setLesson(MOCK_LESSON) })
+      .catch((err) => {
+        console.error('[LessonPage] Failed to load lesson:', err)
+        setLesson(MOCK_LESSON)
+      })
       .finally(() => setLoading(false))
   }, [id]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Reset block-level state when navigating blocks
+  // Auto-show first block when lesson loads
   useEffect(() => {
-    setInteractiveSuccess(false)
-    setSelectedAnswer(null)
-    setQuizSubmitted(false)
-    const block = lesson?.blocks[currentBlockIdx]
-    if (block?.type === 'interactive' && block.fen) {
-      setInteractiveFen(block.fen)
+    if (lesson && currentStepIdx === -1 && lesson.blocks.length > 0) {
+      showBlock(0)
     }
-  }, [currentBlockIdx, lesson])
+  }, [lesson]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const totalBlocks = lesson?.blocks.length ?? 0
-  const currentBlock = lesson?.blocks[currentBlockIdx] ?? null
-  const progress = totalBlocks > 0 ? Math.round(((currentBlockIdx + 1) / totalBlocks) * 100) : 0
-
-  const canGoNext = useMemo(() => {
-    if (!currentBlock) return false
-    if (currentBlock.type === 'interactive' && !interactiveSuccess) return false
-    if (currentBlock.type === 'quiz' && !quizSubmitted) return false
-    return true
-  }, [currentBlock, interactiveSuccess, quizSubmitted])
-
-  const goNext = useCallback(() => {
-    if (currentBlockIdx < totalBlocks - 1) {
-      setCurrentBlockIdx((i) => i + 1)
-      learnApi.updateProgress(id!, { progress_pct: Math.round(((currentBlockIdx + 1) / totalBlocks) * 100) }).catch((err) => console.error('[LessonPage] API error:', err))
-    }
-  }, [currentBlockIdx, totalBlocks, id])
-
-  const goPrev = useCallback(() => {
-    if (currentBlockIdx > 0) setCurrentBlockIdx((i) => i - 1)
-  }, [currentBlockIdx])
-
-  const handleInteractiveMove = useCallback(
-    (from: string, to: string) => {
-      if (!currentBlock || interactiveSuccess) return
-      const move = `${from}${to}`
-      if (move === currentBlock.expectedMove) {
-        try {
-          const chess = new Chess(interactiveFen)
-          chess.move({ from, to })
-          setInteractiveFen(chess.fen())
-        } catch { /* ignore */ }
-        setInteractiveSuccess(true)
-      }
-    },
-    [currentBlock, interactiveFen, interactiveSuccess],
+  const theme = useMemo(
+    () => getLessonTheme(lesson?.lessonOrder ?? 0),
+    [lesson?.lessonOrder],
   )
 
-  const getInteractiveValidMoves = useCallback(
+  const totalBlocks = lesson?.blocks.length ?? 0
+
+  // ---------------------------------------------------------------------------
+  // Core: show a block
+  // ---------------------------------------------------------------------------
+
+  const showBlock = useCallback(
+    (idx: number) => {
+      if (!lesson || idx < 0 || idx >= lesson.blocks.length) return
+      const block = lesson.blocks[idx]
+
+      // Add to chat messages
+      setDisplayedMessages((prev) => [...prev, toDisplayMessage(block, idx)])
+
+      // Update board for board_demo / interactive
+      if (block.type === 'board_demo') {
+        setCurrentFen(block.fen)
+        setCurrentHighlights(block.highlights ?? [])
+        setBoardInteractive(false)
+        setActiveInteraction(null)
+        setInteractionComplete(false)
+      } else if (block.type === 'interactive') {
+        setCurrentFen(block.fen)
+        setCurrentHighlights([])
+        setBoardInteractive(true)
+        setActiveInteraction(block)
+        setInteractionComplete(false)
+      } else if (block.type === 'quiz') {
+        setBoardInteractive(false)
+        setActiveInteraction(block)
+        setInteractionComplete(false)
+      } else {
+        setBoardInteractive(false)
+        setActiveInteraction(null)
+        setInteractionComplete(false)
+      }
+
+      setCurrentStepIdx(idx)
+    },
+    [lesson],
+  )
+
+  // ---------------------------------------------------------------------------
+  // Navigation
+  // ---------------------------------------------------------------------------
+
+  const canGoNext = useMemo(() => {
+    if (!lesson) return false
+    // If there is an active interactive/quiz that is not complete, block
+    if (activeInteraction && !interactionComplete) return false
+    // If we are at the last block already
+    if (currentStepIdx >= totalBlocks - 1) return false
+    return true
+  }, [lesson, activeInteraction, interactionComplete, currentStepIdx, totalBlocks])
+
+  const isLastBlock = currentStepIdx >= totalBlocks - 1
+
+  const handleNext = useCallback(() => {
+    if (!canGoNext) return
+    const nextIdx = currentStepIdx + 1
+    showBlock(nextIdx)
+
+    // Update progress
+    if (id) {
+      learnApi
+        .updateProgress(id, {
+          progress_pct: Math.round(((nextIdx + 1) / totalBlocks) * 100),
+        })
+        .catch((err) => console.error('[LessonPage] API error:', err))
+    }
+  }, [canGoNext, currentStepIdx, showBlock, id, totalBlocks])
+
+  const handlePrev = useCallback(() => {
+    // In chat mode, "prev" is less meaningful; we just scroll up.
+    // But we keep a reduced version: go back one step in index for board sync.
+    if (currentStepIdx <= 0 || !lesson) return
+
+    const prevIdx = currentStepIdx - 1
+    const block = lesson.blocks[prevIdx]
+
+    // Sync board to previous block's state
+    if (block.type === 'board_demo') {
+      setCurrentFen(block.fen)
+      setCurrentHighlights(block.highlights ?? [])
+      setBoardInteractive(false)
+    } else if (block.type === 'interactive') {
+      setCurrentFen(block.fen)
+      setCurrentHighlights([])
+      setBoardInteractive(false) // Don't re-activate past interactions
+    }
+
+    // We don't remove messages -- chat history stays
+    setCurrentStepIdx(prevIdx)
+    setActiveInteraction(null)
+    setInteractionComplete(false)
+  }, [currentStepIdx, lesson])
+
+  // ---------------------------------------------------------------------------
+  // Interactive block: handle move on board
+  // ---------------------------------------------------------------------------
+
+  const handleBoardMove = useCallback(
+    (from: string, to: string, promotion?: string) => {
+      if (!activeInteraction || activeInteraction.type !== 'interactive') return
+      if (interactionComplete) return
+
+      const move = `${from}${to}`
+      const expectedBase = activeInteraction.expectedMove.slice(0, 4)
+      if (move === expectedBase) {
+        // Apply the move to the board
+        try {
+          const chess = new Chess(currentFen)
+          const result = chess.move({ from, to, promotion: promotion as any })
+          setCurrentFen(chess.fen())
+          // Play appropriate sound
+          if (chess.inCheck()) {
+            playCheckSound()
+          } else if (result?.captured) {
+            playCaptureSound()
+          } else {
+            playMoveSound()
+          }
+        } catch {
+          /* ignore */
+        }
+        setInteractionComplete(true)
+        setBoardInteractive(false)
+        setShowReward(true)
+      } else {
+        playErrorSound()
+      }
+    },
+    [activeInteraction, interactionComplete, currentFen],
+  )
+
+  const handleSquareClick = useCallback(
+    (square: string) => {
+      if (!activeInteraction || activeInteraction.type !== 'interactive') return
+      if (interactionComplete) return
+
+      // Click mode: expectedMove is comma-separated squares
+      const correctSquares = activeInteraction.expectedMove
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean)
+      const isClickMode = correctSquares.every((s) => s.length <= 2)
+
+      if (isClickMode && correctSquares.includes(square)) {
+        playMoveSound()
+        setInteractionComplete(true)
+        setBoardInteractive(false)
+        setShowReward(true)
+      } else {
+        playErrorSound()
+      }
+    },
+    [activeInteraction, interactionComplete],
+  )
+
+  const getValidMoves = useCallback(
     (square: string): string[] => {
+      if (!boardInteractive) return []
       try {
-        const chess = new Chess(interactiveFen)
-        return chess.moves({ square: square as any, verbose: true }).map((m) => m.to)
+        const chess = new Chess(currentFen)
+        const moves = chess.moves({ square: square as any, verbose: true })
+        return [...new Set(moves.map((m) => m.to))]
       } catch {
         return []
       }
     },
-    [interactiveFen],
+    [currentFen, boardInteractive],
   )
 
-  const handleQuizSubmit = useCallback(() => {
-    if (selectedAnswer === null) return
-    setQuizSubmitted(true)
-  }, [selectedAnswer])
+  // ---------------------------------------------------------------------------
+  // Quiz complete handler
+  // ---------------------------------------------------------------------------
+
+  const handleQuizComplete = useCallback(() => {
+    setInteractionComplete(true)
+  }, [])
+
+  const handleQuizReward = useCallback(() => {
+    setShowReward(true)
+  }, [])
+
+  // ---------------------------------------------------------------------------
+  // Voice
+  // ---------------------------------------------------------------------------
+
+  const handlePlayVoice = useCallback((text: string, character: string) => {
+    playVoice(text, character)
+  }, [])
+
+  // Cleanup voice on unmount
+  useEffect(() => {
+    return () => stopVoice()
+  }, [])
+
+  // ---------------------------------------------------------------------------
+  // Finish lesson
+  // ---------------------------------------------------------------------------
 
   const handleFinishLesson = useCallback(() => {
+    setShowCelebration(true)
     if (id) {
       courseStore.completeLesson(id)
-      learnApi.updateProgress(id, { progress_pct: 100 }).catch((err) => console.error('[LessonPage] API error:', err))
+      learnApi
+        .updateProgress(id, { progress_pct: 100 })
+        .catch((err) => console.error('[LessonPage] API error:', err))
     }
+  }, [id, courseStore])
+
+  const handleCelebrationNext = useCallback(() => {
     if (lesson?.exerciseId) {
       navigate(`/learn/exercise/${lesson.exerciseId}`)
     } else if (lesson?.nextLessonId) {
@@ -232,181 +403,199 @@ const LessonPage: React.FC = () => {
     } else {
       navigate('/learn')
     }
-  }, [id, lesson, navigate, courseStore, totalBlocks])
+  }, [lesson, navigate])
+
+  const handleBackToCourse = useCallback(() => {
+    navigate('/learn')
+  }, [navigate])
+
+  const handleRewardDismiss = useCallback(() => {
+    setShowReward(false)
+  }, [])
+
+  // ---------------------------------------------------------------------------
+  // Render: Loading
+  // ---------------------------------------------------------------------------
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="text-4xl animate-bounce">{'\uD83D\uDCDA'}</div>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <TeacherAvatar expression="happy" accentColor="#6366f1" size={72} />
+          <p className="text-lg text-gray-500 font-medium animate-pulse">
+            豆丁老师正在准备课程...
+          </p>
+        </div>
       </div>
     )
   }
 
   if (!lesson) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <p className="text-[var(--text-sub)]">未找到课程</p>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+        <div className="text-center space-y-3">
+          <TeacherAvatar expression="surprised" accentColor="#6366f1" size={64} />
+          <p className="text-gray-500 text-lg">未找到课程</p>
+          <button
+            onClick={() => navigate('/learn')}
+            className="px-6 py-2 rounded-full bg-indigo-500 text-white font-medium hover:bg-indigo-600 transition-colors"
+          >
+            返回课程列表
+          </button>
+        </div>
       </div>
     )
   }
 
-  return (
-    <div className="max-w-3xl mx-auto space-y-5">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-[var(--text-2xl)] font-bold text-[var(--text)]">
-            {lesson.title}
-          </h1>
-          <p className="text-[var(--text-xs)] text-[var(--text-muted)] mt-1">
-            {currentBlockIdx + 1} / {totalBlocks}
-          </p>
+  // ---------------------------------------------------------------------------
+  // Render: Celebration
+  // ---------------------------------------------------------------------------
+
+  if (showCelebration) {
+    const nextLabel = lesson.exerciseId
+      ? '进入练习'
+      : lesson.nextLessonId
+        ? '下一课'
+        : '返回课程'
+
+    return (
+      <div
+        className={`min-h-screen bg-gradient-to-br ${theme.bg} flex items-center justify-center p-4`}
+      >
+        <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-lg max-w-lg w-full p-8">
+          <CelebrationBlock
+            xpEarned={lesson.xpReward}
+            message="太棒了！课程完成！"
+            accentColor={theme.accent}
+            onNext={handleCelebrationNext}
+            onBackToCourse={
+              lesson.nextLessonId || lesson.exerciseId ? handleBackToCourse : undefined
+            }
+            nextLabel={nextLabel}
+          />
         </div>
-        <Button variant="secondary" size="sm" onClick={() => navigate('/learn')}>
-          返回课程
-        </Button>
+      </div>
+    )
+  }
+
+  // ---------------------------------------------------------------------------
+  // Render: Main — Left/Right split layout
+  // ---------------------------------------------------------------------------
+
+  return (
+    <div className={`h-screen overflow-hidden bg-gradient-to-br ${theme.bg} flex flex-col`}>
+      {/* Reward overlay */}
+      <RewardOverlay visible={showReward} onDismiss={handleRewardDismiss} message="太棒了！" />
+
+      {/* Header */}
+      <div className="shrink-0 flex items-center gap-3 px-4 py-2 bg-white/70 backdrop-blur-sm border-b border-white/40 z-10">
+        <button
+          onClick={() => navigate('/learn')}
+          className="w-8 h-8 rounded-full flex items-center justify-center bg-white hover:bg-gray-100 transition-colors text-gray-500 hover:text-gray-700 text-sm font-bold shrink-0 shadow-sm"
+          aria-label="返回"
+        >
+          &#10005;
+        </button>
+        <h1
+          className="text-sm font-bold truncate flex-1"
+          style={{ color: theme.accent }}
+        >
+          {lesson.title}
+        </h1>
+        <div className="shrink-0">
+          <StarProgress total={totalBlocks} current={currentStepIdx + 1} />
+        </div>
       </div>
 
-      {/* Progress */}
-      <ProgressBar value={progress} max={100} height={4} />
-
-      {/* Content block */}
-      <Card padding="lg" hoverable={false}>
-        {/* Text block */}
-        {currentBlock?.type === 'text' && (
-          <div className="prose prose-sm max-w-none">
-            <p className="text-[var(--text-md)] text-[var(--text)] leading-relaxed whitespace-pre-line">
-              {currentBlock.content}
-            </p>
+      {/* Main content: left board + right chat */}
+      {/* Desktop: side by side. Mobile: stacked */}
+      <div className="flex-1 flex flex-col sm:flex-row min-h-0">
+        {/* Left: Chessboard */}
+        <div className="sm:w-[45%] shrink-0 flex items-center justify-center p-2 sm:p-4 h-[32vh] sm:h-auto" style={{ background: 'rgba(0,0,0,0.02)' }}>
+          <div style={{ transform: 'scale(0.82)', transformOrigin: 'center center' }}>
+            <Chessboard
+              fen={currentFen}
+              orientation="white"
+              interactive={boardInteractive}
+              highlights={currentHighlights}
+              onMove={handleBoardMove}
+              onSquareClick={handleSquareClick}
+              getValidMoves={getValidMoves}
+            />
           </div>
-        )}
+        </div>
 
-        {/* Board demo */}
-        {currentBlock?.type === 'board_demo' && (
-          <div className="space-y-4">
-            <div className="flex justify-center">
-              <Chessboard
-                fen={currentBlock.fen!}
-                orientation="white"
-                interactive={false}
-                highlights={currentBlock.highlights}
-              />
-            </div>
-            {currentBlock.description && (
-              <p className="text-[var(--text-sm)] text-[var(--text-sub)] text-center leading-relaxed">
-                {currentBlock.description}
-              </p>
-            )}
-          </div>
-        )}
+        {/* Right: Chat */}
+        <div className="sm:w-[55%] flex-1 sm:flex-initial flex flex-col min-h-0 bg-gray-50/60 border-l border-white/40">
+          <ChatPanel
+            messages={displayedMessages}
+            activeInteraction={activeInteraction}
+            interactionComplete={interactionComplete}
+            accentColor={theme.accent}
+            onPlayVoice={handlePlayVoice}
+            onQuizComplete={handleQuizComplete}
+            onQuizReward={handleQuizReward}
+          />
+        </div>
+      </div>
 
-        {/* Interactive */}
-        {currentBlock?.type === 'interactive' && (
-          <div className="space-y-4">
-            <div
-              className="p-3 rounded-[var(--radius-sm)] text-center"
-              style={{
-                background: interactiveSuccess ? 'rgba(16,185,129,0.08)' : 'var(--accent-light)',
-                border: `1px solid ${interactiveSuccess ? 'rgba(16,185,129,0.2)' : 'rgba(99,102,241,0.15)'}`,
-              }}
-            >
-              <p className="text-[var(--text-sm)] font-medium" style={{ color: interactiveSuccess ? 'var(--success)' : 'var(--accent)' }}>
-                {interactiveSuccess ? currentBlock.successMessage : currentBlock.instruction}
-              </p>
-            </div>
-            <div className="flex justify-center">
-              <Chessboard
-                fen={interactiveFen}
-                onMove={handleInteractiveMove}
-                getValidMoves={getInteractiveValidMoves}
-                orientation="white"
-                interactive={!interactiveSuccess}
-              />
-            </div>
-            {interactiveSuccess && (
-              <div className="text-center text-2xl">{'\uD83C\uDF89'}</div>
-            )}
-          </div>
-        )}
+      {/* Footer: navigation buttons */}
+      <div className="shrink-0 flex items-center justify-between px-4 py-3 bg-white/60 backdrop-blur-sm border-t border-white/40">
+        <button
+          onClick={handlePrev}
+          disabled={currentStepIdx <= 0}
+          className={[
+            'flex items-center gap-1.5 px-5 py-2.5 rounded-full font-bold text-sm transition-all duration-200',
+            currentStepIdx <= 0
+              ? 'bg-white/40 text-gray-400 cursor-not-allowed'
+              : 'bg-white/80 text-gray-600 hover:bg-white hover:scale-105 active:scale-95 shadow-sm',
+          ].join(' ')}
+        >
+          &#9664; 上一步
+        </button>
 
-        {/* Quiz */}
-        {currentBlock?.type === 'quiz' && (
-          <div className="space-y-4">
-            <h3 className="text-[var(--text-md)] font-semibold text-[var(--text)]">
-              {'\u2753'} {currentBlock.question}
-            </h3>
-            <div className="space-y-2">
-              {currentBlock.options?.map((option, i) => {
-                const isCorrect = i === currentBlock.correctIndex
-                const isSelected = selectedAnswer === i
-                let bg = 'var(--bg)'
-                let border = 'var(--border)'
-                let textColor = 'var(--text)'
-
-                if (quizSubmitted) {
-                  if (isCorrect) {
-                    bg = 'rgba(16,185,129,0.1)'
-                    border = 'var(--success)'
-                    textColor = 'var(--success)'
-                  } else if (isSelected && !isCorrect) {
-                    bg = 'rgba(239,68,68,0.1)'
-                    border = 'var(--danger)'
-                    textColor = 'var(--danger)'
-                  }
-                } else if (isSelected) {
-                  bg = 'var(--accent-light)'
-                  border = 'var(--accent)'
-                  textColor = 'var(--accent)'
-                }
-
-                return (
-                  <button
-                    key={i}
-                    onClick={() => !quizSubmitted && setSelectedAnswer(i)}
-                    className="w-full text-left px-4 py-3 rounded-[var(--radius-sm)] transition-colors flex items-center gap-3"
-                    style={{ background: bg, border: `1px solid ${border}`, color: textColor }}
-                    disabled={quizSubmitted}
-                  >
-                    <span className="w-6 h-6 rounded-full border flex items-center justify-center text-[var(--text-xs)] font-bold shrink-0"
-                      style={{ borderColor: border }}>
-                      {String.fromCharCode(65 + i)}
-                    </span>
-                    <span className="text-[var(--text-sm)]">{option}</span>
-                  </button>
-                )
-              })}
-            </div>
-            {!quizSubmitted && (
-              <Button variant="primary" size="sm" onClick={handleQuizSubmit} disabled={selectedAnswer === null}>
-                提交答案
-              </Button>
-            )}
-            {quizSubmitted && (
-              <div className="text-center">
-                {selectedAnswer === currentBlock.correctIndex ? (
-                  <p className="text-[var(--success)] font-semibold">{'\u2705'} 回答正确！</p>
-                ) : (
-                  <p className="text-[var(--danger)]">{'\u274C'} 正确答案是 {String.fromCharCode(65 + (currentBlock.correctIndex ?? 0))}</p>
-                )}
-              </div>
-            )}
-          </div>
-        )}
-      </Card>
-
-      {/* Navigation */}
-      <div className="flex items-center justify-between">
-        <Button variant="secondary" size="sm" onClick={goPrev} disabled={currentBlockIdx === 0}>
-          {'\u25C0'} 上一步
-        </Button>
-        {currentBlockIdx < totalBlocks - 1 ? (
-          <Button variant="primary" size="sm" onClick={goNext} disabled={!canGoNext}>
-            下一步 {'\u25B6'}
-          </Button>
+        {!isLastBlock ? (
+          <button
+            onClick={handleNext}
+            disabled={!canGoNext}
+            className={[
+              'flex items-center gap-1.5 px-6 py-2.5 rounded-full font-bold text-sm text-white transition-all duration-200 shadow-lg',
+              canGoNext
+                ? 'hover:scale-105 active:scale-95 hover:shadow-xl'
+                : 'opacity-50 cursor-not-allowed',
+            ].join(' ')}
+            style={{ backgroundColor: theme.accent }}
+          >
+            下一步 &#9654;
+          </button>
         ) : (
-          <Button variant="primary" size="sm" onClick={handleFinishLesson} disabled={!canGoNext}>
-            {lesson.exerciseId ? '进入练习' : lesson.nextLessonId ? '下一课' : '完成课程'} {'\u2705'}
-          </Button>
+          <button
+            onClick={handleFinishLesson}
+            disabled={activeInteraction !== null && !interactionComplete}
+            className={[
+              'flex items-center gap-1.5 px-6 py-2.5 rounded-full font-bold text-sm text-white transition-all duration-200 shadow-lg',
+              !(activeInteraction !== null && !interactionComplete)
+                ? 'hover:scale-105 active:scale-95 hover:shadow-xl'
+                : 'opacity-50 cursor-not-allowed',
+            ].join(' ')}
+            style={{
+              background:
+                !(activeInteraction !== null && !interactionComplete)
+                  ? `linear-gradient(135deg, ${theme.accent}, #8b5cf6)`
+                  : undefined,
+              backgroundColor:
+                activeInteraction !== null && !interactionComplete
+                  ? theme.accent
+                  : undefined,
+            }}
+          >
+            {lesson.exerciseId
+              ? '进入练习'
+              : lesson.nextLessonId
+                ? '下一课'
+                : '完成课程'}{' '}
+            &#9989;
+          </button>
         )}
       </div>
     </div>

@@ -5,47 +5,174 @@
   "title": "你的第一盘棋",
   "description": "综合复习所有规则，准备下你的第一盘棋",
   "estimated_minutes": 20,
+  "theme": {
+    "bgGradient": "from-fuchsia-50 to-pink-100",
+    "accentColor": "#ec4899"
+  },
   "steps": [
     {
-      "type": "text",
-      "content": "恭喜你！你已经学完了国际象棋的所有基本规则。让我们来一次综合复习：\n\n棋盘：8×8共64格，列是a-h，行是1-8\n棋子6种：王（1格任意方向）、后（直线+对角线）、车（直线）、象（对角线）、马（L形可跳）、兵（直走斜吃）\n特殊规则：王车易位、吃过路兵、兵的升变\n结束方式：将杀（赢）、和棋（逼和/重复/50步/子力不足/协议）"
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "celebrate",
+      "content": "小琪，恭喜你！你已经学完了国际象棋的所有基本规则，太了不起了！"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "celebrate",
+      "content": "真的吗！我都学完了？感觉学了好多东西呀！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "是呀！来一起回顾一下你学了什么。棋盘8x8共64格，列是a-h，行是1-8。棋子6种你还记得吗？"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "thinking",
+      "content": "我想想……王走一格、后走直线和对角线、车走直线、象走对角线、马走L形能跳、兵直走斜吃！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "celebrate",
+      "content": "全对！你还记得特殊规则吗？"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "happy",
+      "content": "王车易位、吃过路兵、兵升变！还有将杀赢棋、逼和平局！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "太棒了，记得真清楚！现在来看看初始局面，准备下你的第一盘棋！"
     },
     {
       "type": "board_demo",
+      "character": "douding",
+      "expression": "happy",
       "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-      "description": "每盘棋都从这个初始局面开始。白方先走。常见的开局第一步包括：e2-e4（王兵开局）和d2-d4（后兵开局），这两步都控制了中心。",
+      "description": "每盘棋都从这个初始局面开始，白方先走。常见的开局第一步有：e2-e4（王兵开局）和d2-d4（后兵开局），这两步都控制了中心！想试试吗？",
       "highlights": ["e2", "d2"]
     },
     {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "thinking",
+      "content": "e4和d4……为什么第一步要走中间的兵呢？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "因为控制中心是下棋的第一个原则！兵占了中心，还能给后面的象和后让路。来看白方走了e4之后——"
+    },
+    {
       "type": "board_demo",
+      "character": "douding",
+      "expression": "happy",
       "fen": "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1",
-      "description": "白方走了e2-e4，这是最常见的开局走法。兵占据了中心，同时为白方的象和后打开了出路。现在轮到黑方走了。",
+      "description": "白方走了e2-e4，这是最常见的开局走法！兵占据了中心，同时为白方的象和后打开了出路。看，棋局已经开始变得有趣了！",
       "highlights": ["e4"]
     },
     {
-      "type": "text",
-      "content": "下棋的三个基本原则：\n1. 控制中心：尽量用兵和棋子控制d4、d5、e4、e5这4个格子\n2. 出动棋子：在开局阶段把马和象快速调出来，不要老走同一个棋子\n3. 王的安全：尽早进行王车易位，把王藏到安全的位置\n\n记住：下棋最重要的是开心！每盘棋都是学习的机会，输了也没关系。"
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "surprised",
+      "content": "一步棋就有这么多讲究！还有什么开局的秘诀吗？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "thinking",
+      "content": "有三个超级重要的原则！第一，控制中心。第二，快速出动马和象，不要老走同一个棋子。第三，尽早王车易位，把王藏好！"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "happy",
+      "content": "控制中心、出动棋子、保护王！我记住了！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "还有最重要的一点——下棋最重要的是开心！每盘棋都是学习的机会，输了也没关系！"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "celebrate",
+      "content": "嗯嗯！我已经迫不及待想下棋了！让我先试试走第一步！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "encourage",
+      "content": "来吧！试试走e4，迈出你的第一步！"
     },
     {
       "type": "interactive",
-      "instruction": "现在是开局。作为白方，请选择一个好的第一步——点击e4格子，把兵走到中心。",
+      "character": "douding",
+      "expression": "encourage",
+      "instruction": "现在是开局。作为白方，请选择一个好的第一步——点击e4格子，把兵走到中心吧！",
       "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
       "correct_squares": ["e4"],
       "hint": "e4是最流行的开局走法，它控制中心并为象和后打开出路"
     },
     {
-      "type": "quiz",
-      "question": "下棋时，以下哪个是好的开局原则？",
-      "options": ["尽快出后去攻击", "尽早进行王车易位保护王", "把所有兵都推到第4行", "先把两个车调到中间"],
-      "correct": 1,
-      "explanation": "尽早进行王车易位是重要的开局原则，可以保护王的安全。出后太早容易被对方棋子攻击。"
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "thinking",
+      "content": "最后考考你，来个毕业小测试！"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "happy",
+      "content": "来吧！我要拿满分！"
     },
     {
       "type": "quiz",
+      "character": "douding",
+      "expression": "thinking",
+      "question": "下棋时，以下哪个是好的开局原则？",
+      "options": ["尽快出后去攻击", "尽早进行王车易位保护王", "把所有兵都推到第4行", "先把两个车调到中间"],
+      "correct": 1,
+      "explanation": "没错！尽早进行王车易位是重要的开局原则，可以保护王的安全。出后太早容易被对方棋子攻击哦！"
+    },
+    {
+      "type": "quiz",
+      "character": "douding",
+      "expression": "thinking",
       "question": "在初始局面中，白方一共有多少种合法的第一步走法？",
       "options": ["10种", "16种", "20种", "30种"],
       "correct": 2,
-      "explanation": "白方有20种合法的第一步：8个兵各可以走1格或2格（16种），加上2匹马各2种走法（4种），共20种。其他棋子在初始位置都被挡住了。"
+      "explanation": "白方有20种合法的第一步！8个兵各可以走1格或2格（16种），加上2匹马各2种走法（4种），共20种。你能想到都有哪些吗？"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "celebrate",
+      "content": "耶！我从什么都不懂到学会了所有规则！豆丁老师，谢谢你！我要去下我的第一盘棋了！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "celebrate",
+      "content": "老师为你骄傲！记住，每一盘棋都是一次冒险，享受下棋的过程吧！"
+    },
+    {
+      "type": "celebration",
+      "character": "douding",
+      "expression": "celebrate",
+      "content": "恭喜你完成了Level 0的全部课程！你已经从零基础变成了了解所有基本规则的棋手！接下来，就去下你的第一盘棋吧！记住，每一盘棋都是一次冒险！+50经验值！",
+      "xp_earned": 50
     }
   ],
   "exercises": [

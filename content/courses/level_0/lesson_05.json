@@ -5,68 +5,315 @@
   "title": "车和象的走法",
   "description": "学习车的直线走法和象的对角线走法",
   "estimated_minutes": 15,
+  "theme": {
+    "bgGradient": "from-cyan-50 to-teal-100",
+    "accentColor": "#14b8a6"
+  },
   "steps": [
     {
-      "type": "text",
-      "content": "今天我们学习两个长距离棋子：车（Rook）和象（Bishop）。\n\n车：沿直线走，可以横走或竖走，走多远都行，但不能跳过其他棋子。车值5分。\n\n象：沿对角线走，可以走任意远，同样不能跳过其他棋子。象值3分。每个象只能在一种颜色的格子上活动——白格象永远在白格上，黑格象永远在黑格上。"
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "happy",
+      "content": "豆丁老师，上次学了兵的走法，今天学什么呢？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "今天学两个厉害的大棋子——车和象！它们都能走好远好远哦。"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "surprised",
+      "content": "走好远？比兵厉害多了吧？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "那当然！车沿直线走，横着竖着都行，想走多远走多远。象沿对角线走，也是想走多远走多远！不过它们都不能跳过别的棋子。"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "thinking",
+      "content": "那车和象谁更厉害呀？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "thinking",
+      "content": "车值5分，象值3分，所以车更厉害一些。来看看车有多威风吧！"
     },
     {
       "type": "board_demo",
+      "character": "douding",
+      "expression": "surprised",
       "fen": "8/8/8/8/3R4/8/8/8 w - - 0 1",
-      "description": "车在d4。它可以沿着d列上下走（d1-d8），也可以沿着第4行左右走（a4-h4）。车从d4可以到达14个不同的格子！",
-      "highlights": ["d1", "d2", "d3", "d5", "d6", "d7", "d8", "a4", "b4", "c4", "e4", "f4", "g4", "h4"]
+      "description": "哇！看看车在d4有多厉害！它可以沿着d列上下走（d1-d8），也可以沿着第4行左右走（a4-h4）。车从d4可以到达14个不同的格子呢！",
+      "highlights": [
+        "d1",
+        "d2",
+        "d3",
+        "d5",
+        "d6",
+        "d7",
+        "d8",
+        "a4",
+        "b4",
+        "c4",
+        "e4",
+        "f4",
+        "g4",
+        "h4"
+      ]
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "surprised",
+      "content": "14个格子！车真是横冲直撞啊！那象呢？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "象走的是对角线，而且有个很有趣的特点——你仔细看！"
     },
     {
       "type": "board_demo",
+      "character": "douding",
+      "expression": "thinking",
       "fen": "8/8/8/8/3B4/8/8/8 w - - 0 1",
-      "description": "象在d4。它可以沿着4条对角线走。注意d4是白格，所以这个象永远只在白格上移动。",
-      "highlights": ["a1", "b2", "c3", "e5", "f6", "g7", "h8", "a7", "b6", "c5", "e3", "f2", "g1"]
+      "description": "象在d4，它可以沿着4条对角线走。注意哦，d4是白格，所以这个象永远只在白格上移动。它就像只走白色瓷砖的小猫咪一样！",
+      "highlights": [
+        "a1",
+        "b2",
+        "c3",
+        "e5",
+        "f6",
+        "g7",
+        "h8",
+        "a7",
+        "b6",
+        "c5",
+        "e3",
+        "f2",
+        "g1"
+      ]
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "surprised",
+      "content": "永远只在白格上？那它永远去不了黑格吗？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "没错！白格象永远走白格，黑格象永远走黑格。所以每方有两个象，一个管白格一个管黑格，配合起来才能控制所有格子！"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "thinking",
+      "content": "那如果前面有别的棋子挡着怎么办？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "thinking",
+      "content": "好问题！车和象都不能跳过棋子。遇到自己的棋子就得停下，遇到对方的棋子可以吃掉它。来看个例子——"
     },
     {
       "type": "board_demo",
+      "character": "douding",
+      "expression": "thinking",
       "fen": "8/8/8/2p5/3R4/8/8/8 w - - 0 1",
-      "description": "车在d4，c5有黑兵。车不能跳过c5（那是横向没影响），但如果车走d列竖向就不受影响。车可以吃掉挡路的敌方棋子。",
-      "highlights": ["d4"]
+      "description": "车在d4，c5有黑兵。车不能跳过其他棋子，但可以吃掉挡路的敌方棋子哦！遇到自己的棋子就得停下来。",
+      "highlights": [
+        "d4"
+      ]
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "celebrate",
+      "content": "我想自己动手走棋试试！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "encourage",
+      "content": "好！先让白车冲到棋盘顶端！"
     },
     {
       "type": "interactive",
-      "instruction": "白车在a1。请点击它现在可以走到的所有格子（棋盘上没有其他棋子）。",
-      "fen": "8/8/8/8/8/8/8/R7 w - - 0 1",
-      "correct_squares": ["a2", "a3", "a4", "a5", "a6", "a7", "a8", "b1", "c1", "d1", "e1", "f1", "g1", "h1"],
-      "hint": "车可以沿a列向上走（a2到a8），也可以沿第1行向右走（b1到h1）"
+      "character": "douding",
+      "expression": "encourage",
+      "instruction": "让白车冲到棋盘顶端！从a1走到a8！",
+      "fen": "7k/8/8/8/8/8/8/R3K3 w - - 0 1",
+      "expectedMove": "a1a8",
+      "hint": "点击a1的白车，再点击a8"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "celebrate",
+      "content": "嗖——！车冲到顶了！好快呀！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "漂亮！车就是这么霸气。现在让车吃掉对面的黑车！"
     },
     {
       "type": "interactive",
-      "instruction": "白象在c1。请点击它可以走到的所有格子。",
-      "fen": "8/8/8/8/8/8/8/2B5 w - - 0 1",
-      "correct_squares": ["b2", "a3", "d2", "e3", "f4", "g5", "h6"],
-      "hint": "象只能走对角线。从c1出发，可以往左上（b2, a3）和右上（d2, e3, f4, g5, h6）"
+      "character": "douding",
+      "expression": "encourage",
+      "instruction": "白车可以沿着第1行冲过去吃掉黑车！走！",
+      "fen": "6k1/8/8/8/8/8/3K4/R6r w - - 0 1",
+      "expectedMove": "a1h1",
+      "hint": "点击a1的白车，再点击h1的黑车位置"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "celebrate",
+      "content": "吃掉了！车真是横冲直撞！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "现在来试试象！让白象沿着对角线走吧！"
+    },
+    {
+      "type": "interactive",
+      "character": "douding",
+      "expression": "encourage",
+      "instruction": "让白象沿对角线走到h6！",
+      "fen": "7k/8/8/8/8/8/8/2B1K3 w - - 0 1",
+      "expectedMove": "c1h6",
+      "hint": "点击c1的白象，再点击h6"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "happy",
+      "content": "象走对角线好优雅呀！像在跳舞一样！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "thinking",
+      "content": "象不光会走，还会吃子呢！看到那个黑兵了吗？吃掉它！"
+    },
+    {
+      "type": "interactive",
+      "character": "douding",
+      "expression": "encourage",
+      "instruction": "白象可以斜着吃掉黑兵！从c1吃到e3！",
+      "fen": "7k/8/8/8/8/4p3/8/2B1K3 w - - 0 1",
+      "expectedMove": "c1e3",
+      "hint": "点击c1的白象，再点击e3的黑兵位置"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "celebrate",
+      "content": "象也能吃子！对角线杀手！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "最后一个！让白车横扫过去！"
+    },
+    {
+      "type": "interactive",
+      "character": "douding",
+      "expression": "encourage",
+      "instruction": "白车横冲到h4！",
+      "fen": "7k/8/8/8/R7/8/8/4K3 w - - 0 1",
+      "expectedMove": "a4h4",
+      "hint": "点击a4的白车，再点击h4"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "thinking",
+      "content": "考考你，看你记住象的特点没有！"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "happy",
+      "content": "来吧，我准备好了！"
     },
     {
       "type": "quiz",
+      "character": "douding",
+      "expression": "thinking",
       "question": "象有什么特殊的限制？",
-      "options": ["不能走超过3格", "只能在一种颜色的格子上移动", "不能吃子", "只能前进不能后退"],
+      "options": [
+        "不能走超过3格",
+        "只能在一种颜色的格子上移动",
+        "不能吃子",
+        "只能前进不能后退"
+      ],
       "correct": 1,
-      "explanation": "象只沿对角线走，所以白格上的象永远只在白格上，黑格上的象永远只在黑格上。"
+      "explanation": "没错！象只沿对角线走，所以白格上的象永远只在白格上，黑格上的象永远只在黑格上。这就是象的\"颜色法则\"！"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "celebrate",
+      "content": "耶！车走直线，象走斜线，我都记住了！"
+    },
+    {
+      "type": "celebration",
+      "character": "douding",
+      "expression": "celebrate",
+      "content": "太棒了！你已经学会了车和象的走法！车走直线像大炮，象走斜线像忍者，它们都是很重要的棋子哦！+30经验值！",
+      "xp_earned": 30
     }
   ],
   "exercises": [
     {
       "type": "choice",
       "question": "车值多少分？",
-      "options": ["1分", "3分", "5分", "9分"],
+      "options": [
+        "1分",
+        "3分",
+        "5分",
+        "9分"
+      ],
       "correct": 2
     },
     {
       "type": "choice",
       "question": "车和象能跳过其他棋子吗？",
-      "options": ["都能跳过", "都不能跳过", "只有车能跳过", "只有象能跳过"],
+      "options": [
+        "都能跳过",
+        "都不能跳过",
+        "只有车能跳过",
+        "只有象能跳过"
+      ],
       "correct": 1
     },
     {
       "type": "choice",
       "question": "一个白格象可以走到黑格上吗？",
-      "options": ["可以", "不可以", "吃子时可以", "只在特殊情况下可以"],
+      "options": [
+        "可以",
+        "不可以",
+        "吃子时可以",
+        "只在特殊情况下可以"
+      ],
       "correct": 1
     }
   ]

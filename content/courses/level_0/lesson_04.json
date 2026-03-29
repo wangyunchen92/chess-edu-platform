@@ -5,67 +5,320 @@
   "title": "兵的走法",
   "description": "学习兵的前进、吃子、初始两步、吃过路兵和升变",
   "estimated_minutes": 18,
+  "theme": {
+    "bgGradient": "from-pink-50 to-rose-100",
+    "accentColor": "#f43f5e"
+  },
   "steps": [
     {
-      "type": "text",
-      "content": "兵是国际象棋中数量最多的棋子，每方各有8个。别看它小，兵的规则其实最复杂！兵有4个特殊规则：\n1. 直走斜吃：兵向前直走一格，但吃子时是斜着吃前方一格\n2. 初始两步：兵在起始位置时，可以选择走一格或两格\n3. 吃过路兵：一种特殊的吃子方式\n4. 升变：兵走到对面底线可以变成后、车、象或马"
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "thinking",
+      "content": "豆丁老师，棋盘上那些最矮的小个子棋子是什么呀？看起来好弱的样子。"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "那是兵！别小看它们哦，兵可是有大秘密的！每方各有8个兵，数量最多。"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "surprised",
+      "content": "大秘密？什么秘密呀？快告诉我！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "兵有4个特殊本领！直走斜吃、初始两步、吃过路兵，还有最厉害的——走到对面底线可以变身！"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "surprised",
+      "content": "变身？！变成什么？变成奥特曼吗？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "哈哈，比奥特曼还厉害呢！兵可以变成王后！先来看看兵是怎么走路的吧。"
     },
     {
       "type": "board_demo",
+      "character": "douding",
+      "expression": "thinking",
       "fen": "8/8/8/8/8/4P3/8/8 w - - 0 1",
-      "description": "白兵在e3。兵只能向前走，不能后退。这个兵可以走到e4。",
-      "highlights": ["e3", "e4"]
+      "description": "看这个白兵在e3。兵只能向前走，不能后退哦——它是个勇敢的小士兵！这个兵可以走到e4。",
+      "highlights": [
+        "e3",
+        "e4"
+      ]
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "thinking",
+      "content": "只能往前走不能后退？那岂不是很勇敢！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "没错！而且兵在起始位置可以一下子走两格呢。来看看这个——"
     },
     {
       "type": "board_demo",
+      "character": "douding",
+      "expression": "thinking",
       "fen": "8/8/8/8/8/3p1p2/4P3/8 w - - 0 1",
-      "description": "白兵在e2（起始位置），可以走到e3或e4（初始两步）。如果d3或f3有黑子，白兵可以斜着吃掉它。",
-      "highlights": ["e2", "e3", "e4", "d3", "f3"]
+      "description": "白兵在e2，这是它的起始位置。它可以走到e3或e4（初始两步）。你知道吗？如果d3或f3有敌人，白兵还可以斜着把它吃掉呢！",
+      "highlights": [
+        "e2",
+        "e3",
+        "e4",
+        "d3",
+        "f3"
+      ]
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "surprised",
+      "content": "等等！兵直着走，却斜着吃？这也太奇怪了吧！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "对！记住口诀——\"直走斜吃\"！这就是兵最特别的地方。现在来看最激动人心的部分——升变！"
     },
     {
       "type": "board_demo",
+      "character": "douding",
+      "expression": "surprised",
       "fen": "8/4P3/8/8/8/8/8/8 w - - 0 1",
-      "description": "白兵到达第7行了！再走一步到第8行，就可以升变为后、车、象或马。大多数时候我们选择变成后，因为后最强大。",
-      "highlights": ["e7", "e8"]
+      "description": "哇！白兵到达第7行了！再走一步到第8行，就可以升变啦！可以变成后、车、象或马。大多数时候我们选择变成后，因为后最强大！一个小兵变成了王后，是不是超酷？",
+      "highlights": [
+        "e7",
+        "e8"
+      ]
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "celebrate",
+      "content": "小兵变王后！太酷了！就像灰姑娘变公主一样！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "thinking",
+      "content": "还有一个特殊技能——吃过路兵，这个比较难，仔细看哦。"
     },
     {
       "type": "board_demo",
+      "character": "douding",
+      "expression": "surprised",
       "fen": "8/8/8/4Pp2/8/8/8/8 w - f6 0 1",
-      "description": "吃过路兵：黑兵刚从f7走了两步到f5，经过了f6。白兵在e5可以\"假装\"黑兵停在了f6来吃掉它——这就是吃过路兵（en passant）。白兵吃到f6，f5的黑兵被移走。",
-      "highlights": ["e5", "f5", "f6"]
+      "description": "这个有点特别——吃过路兵！黑兵刚从f7走了两步到f5，经过了f6。白兵在e5可以\"假装\"黑兵停在了f6来吃掉它——这就是吃过路兵（en passant）。白兵吃到f6，f5的黑兵就被拿走了！",
+      "highlights": [
+        "e5",
+        "f5",
+        "f6"
+      ]
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "thinking",
+      "content": "哇，这招好厉害！就是说对方兵想偷偷溜过去，我可以半路拦截它？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "理解得太对了！不过只能在对方刚走完两步的时候立刻吃，过了就没机会了。好了，来自己试试吧！"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "celebrate",
+      "content": "我能自己动手走棋吗？好期待呀！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "encourage",
+      "content": "当然！先从最简单的开始——让白兵往前走一格！"
     },
     {
       "type": "interactive",
-      "instruction": "白兵在d2，它的起始位置。请点击它可以走到的所有格子。",
-      "fen": "8/8/8/8/8/8/3P4/8 w - - 0 1",
-      "correct_squares": ["d3", "d4"],
-      "hint": "在起始位置，兵可以走一格（d3）或两格（d4）"
+      "character": "douding",
+      "expression": "encourage",
+      "instruction": "把白兵往前走一格！从d3走到d4。",
+      "fen": "8/8/8/8/8/3P4/8/4K2k w - - 0 1",
+      "expectedMove": "d3d4",
+      "hint": "点击d3的白兵，再点击d4"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "celebrate",
+      "content": "耶！我做到了！兵往前走了一步！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "很好！现在试试兵在起始位置走两格！"
+    },
+    {
+      "type": "interactive",
+      "character": "douding",
+      "expression": "encourage",
+      "instruction": "白兵在起始位置，可以一下子走两格！试试走到d4！",
+      "fen": "8/8/8/8/8/8/3P4/4K2k w - - 0 1",
+      "expectedMove": "d2d4",
+      "hint": "点击d2的白兵，再点击d4"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "happy",
+      "content": "一下子走了两格，好过瘾！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "thinking",
+      "content": "接下来是兵的特殊技能——斜吃！棋盘上有一个黑兵，把它吃掉！"
+    },
+    {
+      "type": "interactive",
+      "character": "douding",
+      "expression": "encourage",
+      "instruction": "白兵可以斜着吃掉黑兵！把白兵吃到c3！",
+      "fen": "8/8/8/8/8/2p5/3P4/4K2k w - - 0 1",
+      "expectedMove": "d2c3",
+      "hint": "点击d2的白兵，再点击c3的黑兵位置"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "surprised",
+      "content": "直走斜吃！真的是这样呀！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "没错！你记住了口诀！来个更难的——白兵马上就要到底线变身了！"
+    },
+    {
+      "type": "interactive",
+      "character": "douding",
+      "expression": "encourage",
+      "instruction": "白兵马上就要到底线了！走到d8变成王后！",
+      "fen": "8/3P4/8/8/8/8/8/4K2k w - - 0 1",
+      "expectedMove": "d7d8",
+      "hint": "点击d7的白兵，再点击d8——兵到底线会自动升变为王后"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "celebrate",
+      "content": "小兵变王后！灰姑娘变身成功！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "最后一个挑战！白兵左右各有一个敌人，选一个吃掉吧！"
+    },
+    {
+      "type": "interactive",
+      "character": "douding",
+      "expression": "encourage",
+      "instruction": "白兵左右各有一个敌人，选一个吃掉吧！",
+      "fen": "8/8/8/8/2p1p3/3P4/8/4K2k w - - 0 1",
+      "expectedMove": "d3c4",
+      "hint": "白兵可以斜着吃左边c4或右边e4的黑兵——点击d3的白兵，再选一个吃掉"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "thinking",
+      "content": "考考你，看你记住了兵的走法没有！"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "happy",
+      "content": "来吧，我准备好了！"
     },
     {
       "type": "quiz",
+      "character": "douding",
+      "expression": "thinking",
       "question": "兵是怎么吃子的？",
-      "options": ["直着吃前方", "斜着吃前方", "可以往后吃", "和走法一样"],
+      "options": [
+        "直着吃前方",
+        "斜着吃前方",
+        "可以往后吃",
+        "和走法一样"
+      ],
       "correct": 1,
-      "explanation": "兵直走斜吃——向前直走，但吃子时是吃斜前方的棋子。"
+      "explanation": "兵直走斜吃——向前直走，但吃子时是吃斜前方的棋子。记住这个口诀：直走斜吃！"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "celebrate",
+      "content": "耶！兵虽然小，但本领好多！直走斜吃、还能变身，太厉害了！"
+    },
+    {
+      "type": "celebration",
+      "character": "douding",
+      "expression": "celebrate",
+      "content": "太棒了！兵的规则可是最复杂的，你都学会了！直走斜吃、初始两步、吃过路兵、升变，四大本领全掌握！+30经验值！",
+      "xp_earned": 30
     }
   ],
   "exercises": [
     {
       "type": "choice",
       "question": "兵到达对面底线后可以变成什么？",
-      "options": ["只能变成后", "可以变成后、车、象或马", "可以变成任何棋子", "不能变"],
+      "options": [
+        "只能变成后",
+        "可以变成后、车、象或马",
+        "可以变成任何棋子",
+        "不能变"
+      ],
       "correct": 1
     },
     {
       "type": "choice",
       "question": "兵可以后退吗？",
-      "options": ["可以", "不可以", "吃子时可以后退", "到达第5行后可以"],
+      "options": [
+        "可以",
+        "不可以",
+        "吃子时可以后退",
+        "到达第5行后可以"
+      ],
       "correct": 1
     },
     {
       "type": "choice",
       "question": "什么是\"吃过路兵\"？",
-      "options": ["兵可以吃路过的任何棋子", "兵走两步时可以吃掉路上的棋子", "对方兵刚走两步经过你兵旁边时，你可以吃掉它", "只有在开局时才能吃"],
+      "options": [
+        "兵可以吃路过的任何棋子",
+        "兵走两步时可以吃掉路上的棋子",
+        "对方兵刚走两步经过你兵旁边时，你可以吃掉它",
+        "只有在开局时才能吃"
+      ],
       "correct": 2
     }
   ]

@@ -6,7 +6,9 @@ import React, { useState, useMemo, useCallback, useEffect } from 'react'
 
 interface ChessboardProps {
   fen: string
-  onMove?: (from: string, to: string) => void
+  onMove?: (from: string, to: string, promotion?: string) => void
+  /** Called when any square is clicked (before move logic). */
+  onSquareClick?: (square: string) => void
   lastMove?: { from: string; to: string }
   /** External valid-moves override (if not provided, uses getValidMoves) */
   validMoves?: string[]
@@ -65,6 +67,7 @@ function parseFen(fen: string): Record<string, string> {
 const Chessboard: React.FC<ChessboardProps> = ({
   fen,
   onMove,
+  onSquareClick,
   lastMove,
   validMoves: externalValidMoves,
   getValidMoves,
@@ -74,6 +77,7 @@ const Chessboard: React.FC<ChessboardProps> = ({
 }) => {
   const [selectedSquare, setSelectedSquare] = useState<string | null>(null)
   const [computedValidMoves, setComputedValidMoves] = useState<string[]>([])
+  const [promotionState, setPromotionState] = useState<{ from: string; to: string } | null>(null)
 
   const board = useMemo(() => parseFen(fen), [fen])
 
@@ -100,6 +104,9 @@ const Chessboard: React.FC<ChessboardProps> = ({
     (square: string) => {
       if (!interactive) return
 
+      // Fire square click callback (for click-to-select interactions)
+      onSquareClick?.(square)
+
       if (selectedSquare) {
         if (selectedSquare === square) {
           // Deselect
@@ -109,7 +116,18 @@ const Chessboard: React.FC<ChessboardProps> = ({
         }
 
         if (validMoveSet.has(square)) {
-          // Make move
+          // Check if this is a pawn promotion
+          const piece = board[selectedSquare]
+          const isPromotion =
+            (piece === 'P' && square[1] === '8') ||
+            (piece === 'p' && square[1] === '1')
+          if (isPromotion) {
+            // Show promotion picker
+            setPromotionState({ from: selectedSquare, to: square })
+            setSelectedSquare(null)
+            setComputedValidMoves([])
+            return
+          }
           onMove?.(selectedSquare, square)
           setSelectedSquare(null)
           setComputedValidMoves([])
@@ -140,11 +158,11 @@ const Chessboard: React.FC<ChessboardProps> = ({
         }
       }
     },
-    [interactive, onMove, selectedSquare, validMoveSet, board, getValidMoves],
+    [interactive, onMove, onSquareClick, selectedSquare, validMoveSet, board, getValidMoves],
   )
 
   return (
-    <div className="inline-flex flex-col select-none">
+    <div className="inline-flex flex-col select-none relative">
       {/* Board */}
       <div
         className="grid relative"
@@ -241,6 +259,36 @@ const Chessboard: React.FC<ChessboardProps> = ({
           </div>
         ))}
       </div>
+
+      {/* Promotion picker overlay */}
+      {promotionState && (
+        <div className="absolute inset-0 flex items-center justify-center z-20" style={{ background: 'rgba(0,0,0,0.4)', borderRadius: 8 }}>
+          <div className="bg-white rounded-xl shadow-xl p-3 flex gap-2">
+            {(['q', 'r', 'b', 'n'] as const).map((p) => {
+              const color = fen.split(' ')[1] === 'b' ? 'b' : 'w'
+              const pieceKey = color === 'w' ? p.toUpperCase() : p
+              return (
+                <button
+                  key={p}
+                  className="w-14 h-14 rounded-lg hover:bg-blue-50 active:bg-blue-100 transition-colors flex items-center justify-center"
+                  onClick={() => {
+                    onMove?.(promotionState.from, promotionState.to, p)
+                    setPromotionState(null)
+                  }}
+                >
+                  <img
+                    src={PIECE_SVG[pieceKey]}
+                    alt={p}
+                    draggable={false}
+                    className="w-10 h-10"
+                    style={{ filter: 'drop-shadow(1px 2px 2px rgba(0,0,0,0.3))' }}
+                  />
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

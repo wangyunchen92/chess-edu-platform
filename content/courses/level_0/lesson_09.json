@@ -5,49 +5,170 @@
   "title": "和棋的规则",
   "description": "学习逼和、三次重复局面、50步规则等和棋情况",
   "estimated_minutes": 15,
+  "theme": {
+    "bgGradient": "from-amber-50 to-orange-100",
+    "accentColor": "#f97316"
+  },
   "steps": [
     {
-      "type": "text",
-      "content": "国际象棋不是每盘都分出胜负，有时候结果是和棋（Draw）。和棋意味着双方平手，各得半分。有以下几种和棋情况：\n\n1. 逼和（Stalemate）：轮到你走，王没被将军，但你没有合法的棋可走\n2. 三次重复局面：同一局面出现了3次\n3. 50步规则：连续50个回合没有吃子也没有走兵\n4. 子力不足：双方都没有足够的棋子来将杀\n5. 双方同意和棋"
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "thinking",
+      "content": "豆丁老师，下棋是不是每盘都一定能分出谁赢谁输呀？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "thinking",
+      "content": "不一定哦！有时候比赛结果是和棋，就是双方平手，谁也没赢。"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "surprised",
+      "content": "平手？什么情况下会平手呀？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "和棋有好几种情况呢！最常见的叫\"逼和\"——轮到你走，王没被将军，但你一步都走不了！"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "thinking",
+      "content": "没被将军但走不了？那不是很尴尬吗？来让我看看！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "来看这个经典的逼和局面——"
     },
     {
       "type": "board_demo",
+      "character": "douding",
+      "expression": "surprised",
       "fen": "k7/8/1K6/8/8/8/8/8 b - - 0 1",
-      "description": "逼和的例子：轮到黑方走，黑王在a8。它没有被将军，但是a7、b8、b7都被白王控制，黑方无棋可走——这就是逼和！结果是和棋。",
+      "description": "哇，看这个逼和的例子！轮到黑方走，黑王在a8。它没有被将军，但是a7、b8、b7都被白王控制了，黑方无棋可走——这就是逼和！虽然白方有优势，但结果只能是和棋。",
       "highlights": ["a8", "a7", "b7", "b8"]
     },
     {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "surprised",
+      "content": "白方明明快赢了，结果变成平手？那白方不是很亏！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "thinking",
+      "content": "没错！所以就算你占了大优势，也要小心别把对方逼成和棋。再看一个更夸张的——"
+    },
+    {
       "type": "board_demo",
+      "character": "douding",
+      "expression": "thinking",
       "fen": "7k/8/5K1Q/8/8/8/8/8 b - - 0 1",
-      "description": "注意！这个局面白方刚走了Qh6，黑王在h8。看起来黑方被困住了，但h8没有被将军，g8和g7都被后和王控制。这是逼和——和棋！白方虽然有巨大优势，但因为逼和而只能平局。",
+      "description": "注意看这个局面！白方有后有王，看起来稳赢对吧？但是！黑王在h8没有被将军，g8和g7都被后和王控制了，黑方无棋可走——又是逼和！白方虽然有巨大优势，却只能平局。所以下棋时要小心，别把对方逼成和棋哦！",
       "highlights": ["h8", "g8", "g7"]
     },
     {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "thinking",
+      "content": "那如果我快要输了，逼和不是反而对我有利？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "聪明！如果你处于劣势，逼和可是你的好朋友！尽量制造无棋可走的局面。除了逼和，还有子力不足也会和棋——"
+    },
+    {
       "type": "board_demo",
+      "character": "douding",
+      "expression": "happy",
       "fen": "4k3/8/8/8/8/8/8/4K3 w - - 0 1",
-      "description": "子力不足：双方各只剩一个王。没有任何一方能将杀对方，所以自动和棋。其他子力不足的情况包括：王对王+象、王对王+马。",
+      "description": "子力不足：双方各只剩一个王。没有任何一方能将杀对方，所以自动和棋啦！其他子力不足的情况包括：王对王+象、王对王+马。",
       "highlights": ["e1", "e8"]
     },
     {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "surprised",
+      "content": "两个王对着看，谁也吃不了谁，哈哈！还有其他和棋的情况吗？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "thinking",
+      "content": "还有三次重复局面——同一个局面出现3次就和棋。以及50步规则——连续50个回合没吃子也没走兵，也是和棋。当然，双方也可以商量同意和棋。"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "happy",
+      "content": "好多种和棋呀！让我来确认一下这个局面是不是逼和！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "encourage",
+      "content": "好的，仔细看这个局面！"
+    },
+    {
       "type": "interactive",
-      "instruction": "白王在b6，白后在a7，黑王在a8。轮到黑方走。这是什么情况？请点击黑王所在的格子来确认你看到了这个逼和局面。",
+      "character": "douding",
+      "expression": "encourage",
+      "instruction": "白王在b6，白后在a7，黑王在a8。轮到黑方走。这是逼和吗？请点击黑王所在的格子来确认你看到了这个局面。",
       "fen": "k7/Q7/1K6/8/8/8/8/8 b - - 0 1",
       "correct_squares": ["a8"],
       "hint": "黑王在a8，没被将军，但无处可走——这是逼和"
     },
     {
-      "type": "quiz",
-      "question": "什么是逼和（Stalemate）？",
-      "options": ["王被将杀了", "王被将军但无法应将", "没被将军但没有合法走法", "双方各剩一个王"],
-      "correct": 2,
-      "explanation": "逼和是指轮到你走棋时，你的王没被将军，但你没有任何合法的走法。结果是和棋。"
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "thinking",
+      "content": "考考你，看你记住了没有！"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "happy",
+      "content": "来吧，我准备好了！"
     },
     {
       "type": "quiz",
+      "character": "douding",
+      "expression": "thinking",
+      "question": "什么是逼和（Stalemate）？",
+      "options": ["王被将杀了", "王被将军但无法应将", "没被将军但没有合法走法", "双方各剩一个王"],
+      "correct": 2,
+      "explanation": "没错！逼和是指轮到你走棋时，你的王没被将军，但你没有任何合法的走法。结果是和棋哦！"
+    },
+    {
+      "type": "quiz",
+      "character": "douding",
+      "expression": "thinking",
       "question": "逼和的结果是什么？",
       "options": ["被逼和的一方输", "被逼和的一方赢", "和棋", "重新开始"],
       "correct": 2,
-      "explanation": "逼和的结果是和棋——平局，不论双方子力差距多大。"
+      "explanation": "逼和的结果是和棋——平局，不论双方子力差距多大！所以如果你处于劣势，逼和可是你的好朋友哦！"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "celebrate",
+      "content": "耶！我懂了！将杀是赢，逼和是平手。下棋的时候两种都要注意！"
+    },
+    {
+      "type": "celebration",
+      "character": "douding",
+      "expression": "celebrate",
+      "content": "太棒了！你学会了所有和棋的规则！逼和、三次重复、50步规则、子力不足......这些知识在实战中都很有用！+30经验值！",
+      "xp_earned": 30
     }
   ],
   "exercises": [

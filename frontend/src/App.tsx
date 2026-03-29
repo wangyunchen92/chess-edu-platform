@@ -108,6 +108,11 @@ function App() {
           <Route path="/assessment" element={<AssessmentPage />} />
         </Route>
 
+        {/* Lesson page — full-screen immersive, no app layout */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/learn/lesson/:id" element={<SuspenseWrapper><LessonPage /></SuspenseWrapper>} />
+        </Route>
+
         {/* Protected routes with layout */}
         <Route element={<ProtectedRoute />}>
           <Route element={<AppLayout />}>
@@ -128,7 +133,6 @@ function App() {
 
             {/* Learn */}
             <Route path="/learn" element={<SuspenseWrapper><CourseListPage /></SuspenseWrapper>} />
-            <Route path="/learn/lesson/:id" element={<SuspenseWrapper><LessonPage /></SuspenseWrapper>} />
             <Route path="/learn/ai-teach/:id" element={<SuspenseWrapper><InteractiveTeachPage /></SuspenseWrapper>} />
             <Route path="/learn/exercise/:id" element={<SuspenseWrapper><ExercisePage /></SuspenseWrapper>} />
 

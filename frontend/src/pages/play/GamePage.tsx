@@ -11,6 +11,8 @@ import CharacterAvatar from '@/components/character/CharacterAvatar'
 import Button from '@/components/common/Button'
 import Modal from '@/components/common/Modal'
 import { Chess } from 'chess.js'
+import { playApi } from '@/api/play'
+import { gamificationApi } from '@/api/gamification'
 
 // ---------------------------------------------------------------------------
 // Character presets (matches CharacterHallPage ids)
@@ -109,22 +111,54 @@ const GamePage: React.FC = () => {
   const [hintSquares, setHintSquares] = useState<string[]>([])
   const [chatInput, setChatInput] = useState('')
   const [chatMessages, setChatMessages] = useState<Array<{role: 'user'|'ai'; text: string}>>([])
+  const [serverGameId, setServerGameId] = useState<string | null>(null)
+  const [resultSubmitted, setResultSubmitted] = useState(false)
 
-  // Start game on mount
+  // Start game on mount — also create server-side game record
   useEffect(() => {
     if (!started) {
       startGame(charPreset, 'white', timeControl)
       setStarted(true)
-    }
-  }, [started, startGame, charPreset, timeControl])
 
-  // Show result modal when game ends
+      // Create game record on server
+      playApi.createGame({ character_id: characterId, time_control: timeControl })
+        .then((res) => {
+          const data = (res.data as any)?.data ?? res.data
+          const gid = data?.game_id ?? data?.id
+          if (gid) setServerGameId(gid)
+        })
+        .catch((err) => console.error('[GamePage] Failed to create game:', err))
+    }
+  }, [started, startGame, charPreset, timeControl, characterId])
+
+  // Show result modal and submit to server when game ends
   useEffect(() => {
     if (gameResult) {
       const timeout = setTimeout(() => setShowResult(true), 500)
+
+      // Submit game result to server
+      if (serverGameId && !resultSubmitted) {
+        setResultSubmitted(true)
+        const resultStr = gameResult.winner === 'white' ? 'win'
+          : gameResult.winner === 'black' ? 'loss'
+          : 'draw'
+        playApi.completeGame(serverGameId, {
+          result: resultStr,
+          pgn: gameState.pgn ?? '',
+          moves_count: moveHistory.length,
+          user_color: 'white',
+          final_fen: gameState.fen,
+        })
+          .then(() => {
+            // Trigger achievement check after game completion
+            gamificationApi.checkAchievements().catch(() => {})
+          })
+          .catch((err) => console.error('[GamePage] Failed to submit result:', err))
+      }
+
       return () => clearTimeout(timeout)
     }
-  }, [gameResult])
+  }, [gameResult, serverGameId, resultSubmitted, gameState.fen, gameState.pgn, moveHistory.length])
 
   // Compute valid moves for a given square using chess.js
   const getValidMovesForSquare = useCallback(
@@ -134,7 +168,7 @@ const GamePage: React.FC = () => {
         const currentTurn = chess.turn() === 'w' ? 'white' : 'black'
         if (currentTurn !== 'white') return [] // player is always white for now
         const moves = chess.moves({ square: square as any, verbose: true })
-        return moves.map((m) => m.to)
+        return [...new Set(moves.map((m) => m.to))]
       } catch {
         return []
       }
@@ -164,14 +198,9 @@ const GamePage: React.FC = () => {
   }, [gameState.fen, gameState.isCheck])
 
   const handleBoardMove = useCallback(
-    (from: string, to: string) => {
-      // TODO: Sound effects — play move/capture/check sounds here
-      // import moveSound from '@/assets/sounds/move.mp3'
-      // import captureSound from '@/assets/sounds/capture.mp3'
-      // import checkSound from '@/assets/sounds/check.mp3'
-      // const audio = new Audio(isCapture ? captureSound : moveSound)
-      // audio.volume = 0.5; audio.play().catch(() => {})
-      makeUserMove(from, to)
+    (from: string, to: string, promotion?: string) => {
+      // Sound effects are handled inside useChessGame hook
+      makeUserMove(from, to, promotion)
       setHintSquares([])
     },
     [makeUserMove],

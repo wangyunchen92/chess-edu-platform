@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { puzzlesApi } from '@/api/puzzles'
+import { gamificationApi } from '@/api/gamification'
 import { usePuzzleStore } from '@/stores/puzzleStore'
 import Chessboard from '@/components/chess/Chessboard'
 import Button from '@/components/common/Button'
@@ -78,6 +79,7 @@ const DailyPuzzlePage: React.FC = () => {
   const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null)
   const [puzzleStatus, setPuzzleStatus] = useState<('pending' | 'solved' | 'failed')[]>([])
   const [allDone, setAllDone] = useState(false)
+  const [submittedIds, setSubmittedIds] = useState<Set<string>>(new Set())
   const puzzleStore = usePuzzleStore()
 
   useEffect(() => {
@@ -87,12 +89,15 @@ const DailyPuzzlePage: React.FC = () => {
         // Handle nested {code, data: {...}} format
         let payload = res.data?.data ?? res.data
         // API may return { puzzles: [...] } or array directly
-        const puzzleList = Array.isArray(payload)
+        // Keep raw wrappers to read attempted/is_correct status
+        const rawWrappers: any[] = Array.isArray(payload)
           ? payload
           : Array.isArray(payload?.puzzles)
-            ? payload.puzzles.map((p: any) => p.puzzle ?? p)
-            : null
-        if (puzzleList && puzzleList.length > 0) {
+            ? payload.puzzles
+            : []
+        // Unwrap to get puzzle data
+        const puzzleList = rawWrappers.map((p: any) => p.puzzle ?? p)
+        if (puzzleList.length > 0) {
           // Normalize field names from API to match our DailyPuzzle interface
           const normalized = puzzleList.map((p: any) => {
             const fen = p.fen ?? ''
@@ -117,7 +122,22 @@ const DailyPuzzlePage: React.FC = () => {
             }
           })
           setPuzzles(normalized)
-          setPuzzleStatus(normalized.map(() => 'pending' as const))
+          // Check attempted status from raw API wrapper data (not unwrapped puzzles)
+          const statuses = rawWrappers.map((p: any) => {
+            if (p.attempted && p.is_correct) return 'solved' as const
+            if (p.attempted && p.is_correct === false) return 'failed' as const
+            return 'pending' as const
+          })
+          setPuzzleStatus(statuses)
+          // Jump to first unsolved puzzle
+          const firstPending = statuses.findIndex(s => s === 'pending')
+          if (firstPending >= 0) {
+            setCurrentIdx(firstPending)
+          } else {
+            // All done
+            setCurrentIdx(0)
+            setAllDone(true)
+          }
         } else {
           setPuzzles(MOCK_DAILY)
           setPuzzleStatus(MOCK_DAILY.map(() => 'pending' as const))
@@ -172,13 +192,18 @@ const DailyPuzzlePage: React.FC = () => {
           puzzleStore.setStatus('solved')
           puzzleStore.incrementStreak()
 
-          // Submit attempt
-          puzzlesApi.submitAttempt(currentPuzzle.id, {
-            user_moves: currentPuzzle.solution.slice(0, solutionStep + 1).join(','),
-            is_correct: true,
-            time_spent_ms: 0,
-            source: 'daily',
-          }).catch((err) => console.error('[DailyPuzzlePage] API error:', err))
+          // Submit attempt (only once per puzzle)
+          if (!submittedIds.has(currentPuzzle.id)) {
+            setSubmittedIds(prev => new Set(prev).add(currentPuzzle.id))
+            puzzlesApi.submitAttempt(currentPuzzle.id, {
+              user_moves: currentPuzzle.solution.slice(0, solutionStep + 1).join(','),
+              is_correct: true,
+              time_spent_ms: 0,
+              source: 'daily',
+            })
+              .then(() => { gamificationApi.checkAchievements().catch(() => {}) })
+              .catch((err) => console.error('[DailyPuzzlePage] API error:', err))
+          }
         } else {
           // More steps - play opponent response after delay
           setSolutionStep((s) => s + 1)

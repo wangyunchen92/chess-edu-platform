@@ -5,49 +5,158 @@
   "title": "将军、应将和将杀",
   "description": "学习将军的概念、三种应将方式和将杀判定",
   "estimated_minutes": 18,
+  "theme": {
+    "bgGradient": "from-lime-50 to-green-100",
+    "accentColor": "#22c55e"
+  },
   "steps": [
     {
-      "type": "text",
-      "content": "将军（Check）就是你的棋子正在攻击对方的王。当你将军时，对方必须立刻应对——不能走其他的棋。\n\n应将有三种方式：\n1. 逃跑：把王走到安全的格子\n2. 挡住：用自己的棋子挡在中间\n3. 吃掉：吃掉正在将军的那个棋子\n\n如果三种方式都不行，那就是将杀（Checkmate），对方赢了！"
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "thinking",
+      "content": "豆丁老师，你说失去王就输了。那怎样才算\"失去\"王呢？王会被吃掉吗？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "thinking",
+      "content": "好问题！王其实不会被吃掉。在国际象棋里，当你的棋子攻击到对方的王，这叫\"将军\"！对方必须立刻应对。"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "surprised",
+      "content": "必须立刻应对？不能走别的棋吗？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "不能！被将军时只能做三件事：逃跑、挡住、或吃掉攻击者。如果三种都做不到——那就是将杀，游戏结束！"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "thinking",
+      "content": "逃跑、挡住、吃掉……三种办法。能让我看看吗？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "来看一个真正的将杀是什么样子——这是著名的\"愚人杀法\"！"
     },
     {
       "type": "board_demo",
+      "character": "douding",
+      "expression": "surprised",
       "fen": "rnb1kbnr/pppp1ppp/8/4p3/6Pq/5P2/PPPPP2P/RNBQKBNR w KQkq - 1 3",
-      "description": "黑后在h4将军白王！这就是著名的\"愚人杀法\"——只用了2步。白王无法逃跑、无法挡住、也无法吃掉黑后，所以白方被将杀了。",
+      "description": "哇！这就是著名的\"愚人杀法\"——只用了2步就将杀了！黑后在h4将军白王，白王无法逃跑、无法挡住、也无法吃掉黑后。所以白方被将杀了！开局千万要小心哦！",
       "highlights": ["h4", "e1"]
     },
     {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "surprised",
+      "content": "2步就输了？也太快了吧！那被将军一定会输吗？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "不一定！被将军不等于输了，关键是冷静地找到应对方法。来看这个——"
+    },
+    {
       "type": "board_demo",
+      "character": "douding",
+      "expression": "thinking",
       "fen": "rnbqkbnr/ppppp2p/6p1/5p1Q/4P3/8/PPPP1PPP/RNB1KBNR w KQkq - 0 3",
-      "description": "白后在h5将军黑王。但黑方可以应将——用g6的兵挡是不行的（不在线路上），但可以走Kf7或Kd8逃跑。",
+      "description": "白后在h5将军黑王。但是！黑方可以应将——黑王可以走到f7或d8逃跑。被将军不一定就输了，关键是要冷静地找到应对方法！",
       "highlights": ["h5", "e8"]
     },
     {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "happy",
+      "content": "还好还好！可以逃跑就没事了。还有什么厉害的杀法吗？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "thinking",
+      "content": "有！来看看初学者最容易中招的\"学者杀法\"——"
+    },
+    {
       "type": "board_demo",
+      "character": "douding",
+      "expression": "surprised",
       "fen": "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
-      "description": "经典的\"学者杀法\"：白后在h5攻击f7，白象在c4也攻击f7。如果白后吃f7（Qxf7+），就是将杀！黑王无路可逃。",
+      "description": "经典的\"学者杀法\"！白后在h5攻击f7，白象在c4也攻击f7。如果白后吃f7——将杀！黑王无路可逃。这是初学者最容易中招的杀法，要特别留心f7这个位置哦！",
       "highlights": ["h5", "c4", "f7"]
     },
     {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "thinking",
+      "content": "f7好危险！那我以后要特别保护f7！让我试试找逃跑的格子！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "encourage",
+      "content": "好的！来帮黑王找找安全的逃跑路线！"
+    },
+    {
       "type": "interactive",
-      "instruction": "白车在a8将军黑王在e8。黑王可以逃到哪些格子？请点击所有安全的逃跑格。",
+      "character": "douding",
+      "expression": "encourage",
+      "instruction": "白车在a8将军黑王在e8。黑王可以逃到哪些格子？请点击所有安全的逃跑格吧！",
       "fen": "R3k3/4pp2/8/8/8/8/8/4K3 b - - 0 1",
       "correct_squares": ["d7", "f8", "d8"],
       "hint": "黑王不能走到被白车攻击的格子。第8行的格子a8-h8都在车的攻击范围内（除了被其他子挡住的），但d8被自己的兵保护可以走。王也可以走到d7或f8。"
     },
     {
-      "type": "quiz",
-      "question": "被将军时，以下哪个不是应将的方式？",
-      "options": ["王逃到安全格子", "用其他棋子挡住将军", "吃掉将军的棋子", "忽略将军走别的棋"],
-      "correct": 3,
-      "explanation": "被将军时必须应将！不能忽略将军走其他的棋，这是规则不允许的。"
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "thinking",
+      "content": "考考你，看你记住了没有！"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "happy",
+      "content": "来吧，我准备好了！"
     },
     {
       "type": "quiz",
+      "character": "douding",
+      "expression": "thinking",
+      "question": "被将军时，以下哪个不是应将的方式？",
+      "options": ["王逃到安全格子", "用其他棋子挡住将军", "吃掉将军的棋子", "忽略将军走别的棋"],
+      "correct": 3,
+      "explanation": "被将军时必须应将！不能忽略将军走其他的棋，这是规则不允许的哦。被将军了一定要马上处理！"
+    },
+    {
+      "type": "quiz",
+      "character": "douding",
+      "expression": "thinking",
       "question": "什么是将杀？",
       "options": ["王被吃掉", "王被将军且无法应将", "双方的王碰面", "王走到对方底线"],
       "correct": 1,
-      "explanation": "将杀是王被将军，而且逃不掉、挡不住、也吃不掉攻击者。这时游戏结束。"
+      "explanation": "将杀就是王被将军，而且逃不掉、挡不住、也吃不掉攻击者。这时游戏结束！记住：将杀是赢棋的唯一方式。"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "celebrate",
+      "content": "耶！我知道怎么赢棋了——将杀对方的王！逃跑、挡住、吃掉，三招应将我都记住了！"
+    },
+    {
+      "type": "celebration",
+      "character": "douding",
+      "expression": "celebrate",
+      "content": "太棒了！你学会了将军、应将和将杀！这些是国际象棋最核心的概念。现在你知道怎么赢棋了——将杀对方的王！+30经验值！",
+      "xp_earned": 30
     }
   ],
   "exercises": [

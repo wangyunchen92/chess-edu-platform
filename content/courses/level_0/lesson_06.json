@@ -5,68 +5,330 @@
   "title": "马和后的走法",
   "description": "学习马的L形跳跃和后的全方向走法",
   "estimated_minutes": 15,
+  "theme": {
+    "bgGradient": "from-purple-50 to-violet-100",
+    "accentColor": "#8b5cf6"
+  },
   "steps": [
     {
-      "type": "text",
-      "content": "今天学两个很有趣的棋子：马和后。\n\n马（Knight）是棋盘上唯一能\"跳过\"其他棋子的棋子！它走的是L形路线：先走2格直线，再转弯走1格，或者先走1格再转2格。马值3分。\n\n后（Queen）是最强大的棋子！她结合了车和象的走法——既能走直线，又能走对角线，可以走任意远。后值9分，相当于将近两个车。"
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "thinking",
+      "content": "豆丁老师，上次你说车和象都不能跳过别的棋子。那有没有棋子能跳过去的呀？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "问得好！今天要学的马，就是棋盘上唯一能\"跳过\"其他棋子的家伙！"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "surprised",
+      "content": "能跳过去？那马岂不是有超能力？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "哈哈，可以这么说！马走的是L形路线——先走2格直线，再转弯走1格。就像跳舞一样有趣！来看看——"
     },
     {
       "type": "board_demo",
-      "fen": "8/8/8/8/3N4/8/8/8 w - - 0 1",
-      "description": "马在d4，它可以跳到8个位置，形成一个不规则的圆圈。马走L形：先2后1，或先1后2。",
-      "highlights": ["c2", "e2", "b3", "f3", "b5", "f5", "c6", "e6"]
+      "character": "douding",
+      "expression": "surprised",
+      "fen": "7k/8/8/8/3N4/8/8/4K3 w - - 0 1",
+      "description": "哇！看马在d4可以跳到8个位置，形成一个不规则的圆圈！马走L形：先2后1，或先1后2。就像跳舞一样有趣！",
+      "highlights": [
+        "c2",
+        "e2",
+        "b3",
+        "f3",
+        "b5",
+        "f5",
+        "c6",
+        "e6"
+      ]
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "surprised",
+      "content": "8个位置！形状好像一个花瓣！那如果马被包围了呢？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "好问题！就算被团团围住，马照样能跳出去！看——"
     },
     {
       "type": "board_demo",
-      "fen": "8/8/8/8/3Q4/8/8/8 w - - 0 1",
-      "description": "后在d4，她可以往8个方向走任意远——4条直线加4条对角线。后是棋盘上最强大的棋子！",
-      "highlights": ["d1", "d2", "d3", "d5", "d6", "d7", "d8", "a4", "b4", "c4", "e4", "f4", "g4", "h4", "a1", "b2", "c3", "e5", "f6", "g7", "h8", "a7", "b6", "c5", "e3", "f2", "g1"]
-    },
-    {
-      "type": "board_demo",
+      "character": "douding",
+      "expression": "happy",
       "fen": "8/8/2p1p3/1p3p2/3N4/1p3p2/2p1p3/8 w - - 0 1",
-      "description": "看！即使马被兵团团围住，它依然可以跳出去，因为马是唯一可以跳过其他棋子的棋子。马可以吃掉它落点上的任何敌方棋子。",
-      "highlights": ["c2", "e2", "b3", "f3", "b5", "f5", "c6", "e6"]
+      "description": "看！即使马被兵团团围住，它依然可以跳出去！因为马是唯一可以跳过其他棋子的棋子。就像一匹会飞的小马驹！",
+      "highlights": [
+        "c2",
+        "e2",
+        "b3",
+        "f3",
+        "b5",
+        "f5",
+        "c6",
+        "e6"
+      ]
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "celebrate",
+      "content": "马太酷了！会飞的小马驹！那今天还学什么呀？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "还有最强大的棋子——后！她结合了车和象的走法，既能走直线又能走对角线！"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "surprised",
+      "content": "车加象？那她不是无敌了！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "几乎是无敌的！后值9分，相当于将近两个车呢。来看看她有多厉害——"
+    },
+    {
+      "type": "board_demo",
+      "character": "douding",
+      "expression": "surprised",
+      "fen": "7k/8/8/8/3Q4/8/8/4K3 w - - 0 1",
+      "description": "后在d4，她可以往8个方向走任意远——4条直线加4条对角线。后简直是棋盘上的超级英雄！",
+      "highlights": [
+        "d1",
+        "d2",
+        "d3",
+        "d5",
+        "d6",
+        "d7",
+        "d8",
+        "a4",
+        "b4",
+        "c4",
+        "e4",
+        "f4",
+        "g4",
+        "h4",
+        "a1",
+        "b2",
+        "c3",
+        "e5",
+        "f6",
+        "g7",
+        "h8",
+        "a7",
+        "b6",
+        "c5",
+        "e3",
+        "f2",
+        "g1"
+      ]
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "surprised",
+      "content": "后能到的格子也太多了吧！怪不得值9分！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "thinking",
+      "content": "不过后虽然厉害，但她不能像马一样跳过棋子哦。好了，来自己动手走棋吧！"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "celebrate",
+      "content": "我来试试！先走马！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "encourage",
+      "content": "好！让白马跳一个L形，从d4跳到f5！"
     },
     {
       "type": "interactive",
-      "instruction": "马在b1（初始位置）。请点击它可以跳到的所有格子。",
-      "fen": "8/8/8/8/8/8/8/1N6 w - - 0 1",
-      "correct_squares": ["a3", "c3", "d2"],
-      "hint": "从b1出发，马可以跳到a3、c3和d2。在棋盘边角，马的选择更少。"
+      "character": "douding",
+      "expression": "encourage",
+      "instruction": "让白马跳一个L形！从d4跳到f5！先走2格再转1格。",
+      "fen": "7k/8/8/8/3N4/8/8/4K3 w - - 0 1",
+      "expectedMove": "d4f5",
+      "hint": "点击d4的白马，再点击f5"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "celebrate",
+      "content": "跳过去了！马的L形好有意思！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "接下来，用马吃掉那个黑兵！"
     },
     {
       "type": "interactive",
-      "instruction": "后在d1（初始位置）。请点击她向上可以走到的格子（只算d列方向）。",
-      "fen": "8/8/8/8/8/8/8/3Q4 w - - 0 1",
-      "correct_squares": ["d2", "d3", "d4", "d5", "d6", "d7", "d8"],
-      "hint": "后可以沿d列一直走到d8"
+      "character": "douding",
+      "expression": "encourage",
+      "instruction": "马可以跳过去吃掉黑兵！从d4跳到f5！",
+      "fen": "7k/8/5p2/8/3N4/8/8/4K3 w - - 0 1",
+      "expectedMove": "d4f5",
+      "hint": "点击d4的白马，再点击f5的黑兵位置"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "happy",
+      "content": "马还能吃子！太帅了！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "thinking",
+      "content": "这次让马往另一个方向跳！试试左上方！"
+    },
+    {
+      "type": "interactive",
+      "character": "douding",
+      "expression": "encourage",
+      "instruction": "这次让马往左上方跳！从d4跳到b5！",
+      "fen": "7k/8/8/8/3N4/8/8/4K3 w - - 0 1",
+      "expectedMove": "d4b5",
+      "hint": "点击d4的白马，再点击b5"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "celebrate",
+      "content": "马往哪个方向都能跳！好灵活呀！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "现在换后登场！让白后沿直线冲过去吃掉黑兵！"
+    },
+    {
+      "type": "interactive",
+      "character": "douding",
+      "expression": "encourage",
+      "instruction": "白后沿直线冲过去吃掉黑兵！",
+      "fen": "7k/8/8/8/3Q3p/8/8/4K3 w - - 0 1",
+      "expectedMove": "d4h4",
+      "hint": "点击d4的白后，再点击h4的黑兵位置"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "surprised",
+      "content": "后横冲过去了！真是霸气！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "最后一个挑战！让白后沿对角线走到角落！"
+    },
+    {
+      "type": "interactive",
+      "character": "douding",
+      "expression": "encourage",
+      "instruction": "白后沿对角线走到角落h8！",
+      "fen": "7k/8/8/8/3Q4/8/8/4K3 w - - 0 1",
+      "expectedMove": "d4h8",
+      "hint": "点击d4的白后，再点击h8"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "thinking",
+      "content": "考考你，看你记住了没有！"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "happy",
+      "content": "来吧，我准备好了！"
     },
     {
       "type": "quiz",
+      "character": "douding",
+      "expression": "thinking",
       "question": "哪个棋子可以跳过其他棋子？",
-      "options": ["后", "车", "马", "象"],
+      "options": [
+        "后",
+        "车",
+        "马",
+        "象"
+      ],
       "correct": 2,
-      "explanation": "马是唯一可以跳过其他棋子的棋子，它走的是L形路线。"
+      "explanation": "没错！马是唯一可以跳过其他棋子的棋子，它走的是L形路线。马就是棋盘上的\"跳跳虎\"！"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "celebrate",
+      "content": "耶！马会跳跳跳，后是超级英雄！我都记住了！"
+    },
+    {
+      "type": "celebration",
+      "character": "douding",
+      "expression": "celebrate",
+      "content": "太棒了！你学会了马的L形跳跃和后的全方向走法！马会跳，后最强，记住它们的特点了吗？+30经验值！",
+      "xp_earned": 30
     }
   ],
   "exercises": [
     {
       "type": "choice",
       "question": "马在棋盘中央最多可以跳到几个格子？",
-      "options": ["4个", "6个", "8个", "10个"],
+      "options": [
+        "4个",
+        "6个",
+        "8个",
+        "10个"
+      ],
       "correct": 2
     },
     {
       "type": "choice",
       "question": "后相当于哪两个棋子的能力合体？",
-      "options": ["车+马", "车+象", "象+马", "车+兵"],
+      "options": [
+        "车+马",
+        "车+象",
+        "象+马",
+        "车+兵"
+      ],
       "correct": 1
     },
     {
       "type": "choice",
       "question": "后值几分？",
-      "options": ["5分", "7分", "9分", "10分"],
+      "options": [
+        "5分",
+        "7分",
+        "9分",
+        "10分"
+      ],
       "correct": 2
     }
   ]

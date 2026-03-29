@@ -5,46 +5,167 @@
   "title": "认识棋盘",
   "description": "学习8x8棋盘的结构、行列和坐标系统",
   "estimated_minutes": 15,
+  "theme": {
+    "bgGradient": "from-green-50 to-emerald-100",
+    "accentColor": "#10b981"
+  },
   "steps": [
     {
-      "type": "text",
-      "content": "国际象棋的棋盘由8行8列组成，总共64个格子。格子有深浅两种颜色交替排列，我们通常叫它们\"黑格\"和\"白格\"。记住一个小窍门：摆棋盘的时候，右下角一定是白色格子！"
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "thinking",
+      "content": "豆丁老师，上次你说棋盘有64个格子。可是这么多格子，下棋的时候怎么说清楚是哪个格子呀？"
     },
     {
-      "type": "image_text",
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "好问题！每个格子都有自己的\"门牌号\"呢。今天我们就来学这个！"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "surprised",
+      "content": "格子也有门牌号？就像我家的门牌号一样吗？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "差不多！棋盘由8行8列组成，格子是深浅两种颜色交替排列的。还有个小秘密——摆棋盘时，右下角一定是白色格子！"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "thinking",
+      "content": "那门牌号是怎么编的呢？"
+    },
+    {
+      "type": "story",
+      "character": "douding",
+      "expression": "thinking",
       "content": "棋盘的列用字母a到h表示（从左到右），行用数字1到8表示（从下到上）。每个格子都有唯一的名字，比如左下角的格子叫a1，右上角叫h8。这个坐标系统非常重要，以后记录棋谱都要用到它。",
       "image_hint": "标注了坐标的空棋盘示意图"
     },
     {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "surprised",
+      "content": "原来是字母加数字！a1、h8……我想看看空棋盘！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "来，让我给你看一个空棋盘，注意看底部和左边的标注！"
+    },
+    {
       "type": "board_demo",
+      "character": "douding",
+      "expression": "happy",
       "fen": "8/8/8/8/8/8/8/8 w - - 0 1",
-      "description": "这是一个空的棋盘。注意看底部的字母a-h和左侧的数字1-8，它们组合起来就是每个格子的坐标。",
+      "description": "看！这是一个空的棋盘。注意看底部的字母a-h和左侧的数字1-8，它们组合起来就是每个格子的\"门牌号\"。比如左下角是a1，右上角是h8，是不是很简单？",
       "highlights": ["a1", "h1", "a8", "h8"]
     },
     {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "celebrate",
+      "content": "我看懂了！左下角a1，右下角h1！让我试试找格子！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "encourage",
+      "content": "好的，那我来考考你！找找e4在哪里？"
+    },
+    {
       "type": "interactive",
-      "instruction": "请点击棋盘上的e4格子。提示：e是从左数第5列，4是从下数第4行。",
+      "character": "douding",
+      "expression": "encourage",
+      "instruction": "来挑战一下！请点击棋盘上的e4格子。提示：e是从左数第5列，4是从下数第4行哦。",
       "fen": "8/8/8/8/8/8/8/8 w - - 0 1",
       "correct_squares": ["e4"],
       "hint": "e列是从左数第5列，第4行在棋盘中间偏下"
     },
     {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "happy",
+      "content": "找到了！这就像玩找宝藏游戏一样！再来一个！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "你学得真快！再找找d5在哪里吧！"
+    },
+    {
       "type": "interactive",
-      "instruction": "请点击d5格子。",
+      "character": "douding",
+      "expression": "encourage",
+      "instruction": "太厉害了！再试试，请点击d5格子。",
       "fen": "8/8/8/8/8/8/8/8 w - - 0 1",
       "correct_squares": ["d5"],
       "hint": "d列是从左数第4列，第5行在棋盘中间偏上"
     },
     {
-      "type": "text",
-      "content": "棋盘上还有一些重要的区域概念：中间的4个格子（d4、d5、e4、e5）叫做\"中心\"，控制中心是下棋的重要策略。第1行和第2行是白方的\"领地\"，第7行和第8行是黑方的\"领地\"。"
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "thinking",
+      "content": "豆丁老师，棋盘上有没有特别重要的区域呀？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "thinking",
+      "content": "你问到点子上了！中间的4个格子——d4、d5、e4、e5——叫做\"中心\"。控制中心是下棋的重要策略！"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "surprised",
+      "content": "就像足球比赛控制中场一样吗？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "没错，比喻得太好了！另外，第1行和第2行是白方的\"领地\"，第7行和第8行是黑方的\"领地\"。"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "thinking",
+      "content": "考考你，看你记住了没有！"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "happy",
+      "content": "来吧，我准备好了！"
     },
     {
       "type": "quiz",
+      "character": "douding",
+      "expression": "thinking",
       "question": "棋盘右下角应该是什么颜色的格子？",
       "options": ["黑色", "白色", "都可以", "看情况"],
       "correct": 1,
-      "explanation": "摆棋盘时，右下角一定是白色格子（h1是白格），这是标准规则。"
+      "explanation": "答对啦！摆棋盘时，右下角一定是白色格子（h1是白格），这是标准规则哦！"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "celebrate",
+      "content": "耶！我记住了！以后摆棋盘我肯定不会摆错！"
+    },
+    {
+      "type": "celebration",
+      "character": "douding",
+      "expression": "celebrate",
+      "content": "太棒了！你已经学会了棋盘的坐标系统！现在你可以像专业棋手一样说出每个格子的名字了！+30经验值！",
+      "xp_earned": 30
     }
   ],
   "exercises": [
