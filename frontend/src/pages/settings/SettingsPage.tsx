@@ -22,6 +22,7 @@ const MEMBERSHIP_LABEL: Record<string, string> = {
 
 const SettingsPage: React.FC = () => {
   const user = useAuthStore((s) => s.user)
+  const logout = useAuthStore((s) => s.logout)
   const theme = useUIStore((s) => s.theme)
   const setTheme = useUIStore((s) => s.setTheme)
 
@@ -323,6 +324,16 @@ const SettingsPage: React.FC = () => {
           </div>
         </div>
       </Card>
+      {/* Logout */}
+      <button
+        onClick={() => {
+          logout()
+          window.location.href = import.meta.env.BASE_URL || '/'
+        }}
+        className="w-full py-3 rounded-xl text-center text-[var(--danger)] font-semibold bg-[rgba(239,68,68,0.08)] hover:bg-[rgba(239,68,68,0.15)] transition-colors"
+      >
+        退出登录
+      </button>
     </div>
   )
 }

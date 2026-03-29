@@ -185,7 +185,7 @@ const PuzzlesHomePage: React.FC = () => {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <span className="text-[var(--text-md)] font-semibold text-[var(--text)]">
-                      Level {lvl.level}: {lvl.label}
+                      第{lvl.level}关: {lvl.label}
                     </span>
                     {!lvl.unlocked && (
                       <Badge color="neutral">{'\uD83D\uDD12'} 未解锁</Badge>

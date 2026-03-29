@@ -1,8 +1,11 @@
 import axios from 'axios'
 import type { TokenRefreshResponse, APIResponse } from '@/types/api'
 
+const base = import.meta.env.BASE_URL || '/'
+const apiBase = `${base.replace(/\/$/, '')}/api/v1`
+
 const apiClient = axios.create({
-  baseURL: '/api/v1',
+  baseURL: apiBase,
   timeout: 15000,
   headers: {
     'Content-Type': 'application/json',

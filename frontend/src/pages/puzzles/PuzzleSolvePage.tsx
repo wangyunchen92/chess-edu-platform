@@ -125,7 +125,7 @@ const PuzzleSolvePage: React.FC = () => {
           fen,
           solution,
           theme: translateTheme(raw.theme ?? raw.themes ?? ''),
-          difficulty: raw.difficulty ?? (raw.difficulty_level ? `Level ${raw.difficulty_level}` : ''),
+          difficulty: raw.difficulty ?? (raw.difficulty_level ? `第${raw.difficulty_level}关` : ''),
           hint: raw.hint ?? raw.hint_text ?? undefined,
           explanation: raw.explanation ?? undefined,
         }

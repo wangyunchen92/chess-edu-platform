@@ -3,10 +3,24 @@
 from typing import Optional
 
 from fastapi import Depends, Header, HTTPException, Query, status
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.database import get_db
+from app.models.user import User
 from app.utils.security import decode_token
+
+
+def _check_user_status(db: Session, user_id: str) -> None:
+    """Check if a user exists and is active. Raises 401 if not."""
+    stmt = select(User.id, User.status).where(User.id == user_id)
+    row = db.execute(stmt).first()
+    if row is None or row.status == "disabled":
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Account is disabled",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
 
 
 def get_current_user(
@@ -34,8 +48,11 @@ def get_current_user(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
+    user_id = payload.get("sub")
+    _check_user_status(db, user_id)
+
     return {
-        "user_id": payload.get("sub"),
+        "user_id": user_id,
         "username": payload.get("username"),
         "role": payload.get("role", "student"),
     }
@@ -54,8 +71,15 @@ def get_optional_user(
     if payload is None:
         return None
 
+    user_id = payload.get("sub")
+    # Disabled users are treated as unauthenticated
+    stmt = select(User.id, User.status).where(User.id == user_id)
+    row = db.execute(stmt).first()
+    if row is None or row.status == "disabled":
+        return None
+
     return {
-        "user_id": payload.get("sub"),
+        "user_id": user_id,
         "username": payload.get("username"),
         "role": payload.get("role", "student"),
     }

@@ -7,8 +7,20 @@ from sqlalchemy import func, or_, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
+from app.models.gamification import RatingHistory, UserRating
 from app.models.user import User
-from app.schemas.admin import CreateUserRequest, UserListItem, UserListResponse
+from app.schemas.admin import (
+    AdminStatsResponse,
+    AdminUpdateUserRequest,
+    AdjustPointsRequest,
+    BatchMembershipResult,
+    BatchUpdateMembershipRequest,
+    CreateUserRequest,
+    RecentUserItem,
+    UserListItem,
+    UserListResponse,
+    UserPointsDetail,
+)
 from app.utils.security import hash_password
 
 
@@ -148,14 +160,20 @@ def list_users(
     page: int = 1,
     page_size: int = 20,
     search: Optional[str] = None,
+    role: Optional[str] = None,
+    status: Optional[str] = None,
+    membership_tier: Optional[str] = None,
 ) -> UserListResponse:
-    """List users with pagination and optional search.
+    """List users with pagination and optional search/filters.
 
     Args:
         db: Database session.
         page: Page number (1-based).
         page_size: Number of items per page.
         search: Optional search string to filter by username or nickname.
+        role: Optional role filter.
+        status: Optional status filter.
+        membership_tier: Optional membership tier filter.
 
     Returns:
         UserListResponse with paginated results.
@@ -170,6 +188,16 @@ def list_users(
         )
         base_stmt = base_stmt.where(search_filter)
         count_stmt = count_stmt.where(search_filter)
+
+    if role:
+        base_stmt = base_stmt.where(User.role == role)
+        count_stmt = count_stmt.where(User.role == role)
+    if status:
+        base_stmt = base_stmt.where(User.status == status)
+        count_stmt = count_stmt.where(User.status == status)
+    if membership_tier:
+        base_stmt = base_stmt.where(User.membership_tier == membership_tier)
+        count_stmt = count_stmt.where(User.membership_tier == membership_tier)
 
     # Get total count
     total_result = db.execute(count_stmt)
@@ -189,4 +217,275 @@ def list_users(
         page=page,
         page_size=page_size,
         total_pages=total_pages,
+    )
+
+
+def get_admin_stats(db: Session) -> AdminStatsResponse:
+    """Get admin dashboard statistics.
+
+    Returns:
+        AdminStatsResponse with overview stats.
+    """
+    today_start = datetime.now(timezone.utc).replace(
+        hour=0, minute=0, second=0, microsecond=0
+    )
+
+    total_users = db.execute(select(func.count(User.id))).scalar() or 0
+
+    today_registered = db.execute(
+        select(func.count(User.id)).where(User.created_at >= today_start)
+    ).scalar() or 0
+
+    today_active = db.execute(
+        select(func.count(User.id)).where(User.last_login_at >= today_start)
+    ).scalar() or 0
+
+    # Membership distribution
+    membership_rows = db.execute(
+        select(User.membership_tier, func.count(User.id)).group_by(User.membership_tier)
+    ).all()
+    membership_distribution = {"free": 0, "basic": 0, "premium": 0}
+    for tier, count in membership_rows:
+        membership_distribution[tier] = count
+
+    # Role distribution
+    role_rows = db.execute(
+        select(User.role, func.count(User.id)).group_by(User.role)
+    ).all()
+    role_distribution = {"student": 0, "teacher": 0, "admin": 0}
+    for role_val, count in role_rows:
+        role_distribution[role_val] = count
+
+    # Recent users
+    recent_users_rows = db.execute(
+        select(User).order_by(User.created_at.desc()).limit(10)
+    ).scalars().all()
+
+    recent_users = [RecentUserItem.model_validate(u) for u in recent_users_rows]
+
+    return AdminStatsResponse(
+        total_users=total_users,
+        today_registered=today_registered,
+        today_active=today_active,
+        membership_distribution=membership_distribution,
+        role_distribution=role_distribution,
+        recent_users=recent_users,
+    )
+
+
+def update_user(
+    db: Session,
+    user_id: str,
+    data: AdminUpdateUserRequest,
+) -> User:
+    """Update user info (partial update).
+
+    Raises:
+        ValueError: If user not found.
+    """
+    stmt = select(User).where(User.id == user_id)
+    user = db.execute(stmt).scalar_one_or_none()
+
+    if user is None:
+        raise ValueError("User not found")
+
+    if data.nickname is not None:
+        user.nickname = data.nickname
+    if data.role is not None:
+        user.role = data.role
+
+    db.flush()
+    return user
+
+
+def reset_password(db: Session, user_id: str, new_password: str) -> None:
+    """Reset a user's password.
+
+    Raises:
+        ValueError: If user not found.
+    """
+    stmt = select(User).where(User.id == user_id)
+    user = db.execute(stmt).scalar_one_or_none()
+
+    if user is None:
+        raise ValueError("User not found")
+
+    user.password_hash = hash_password(new_password)
+    db.flush()
+
+
+def update_user_status(
+    db: Session,
+    user_id: str,
+    new_status: str,
+    admin_user_id: str,
+) -> User:
+    """Update user status (enable/disable).
+
+    Raises:
+        ValueError: If user not found or admin tries to disable self.
+    """
+    if user_id == admin_user_id:
+        raise ValueError("Cannot disable your own account")
+
+    stmt = select(User).where(User.id == user_id)
+    user = db.execute(stmt).scalar_one_or_none()
+
+    if user is None:
+        raise ValueError("User not found")
+
+    user.status = new_status
+    db.flush()
+    return user
+
+
+def batch_update_membership(
+    db: Session,
+    data: BatchUpdateMembershipRequest,
+) -> BatchMembershipResult:
+    """Batch update membership for multiple users.
+
+    Returns:
+        BatchMembershipResult with success count and failures.
+    """
+    # Batch fetch users
+    stmt = select(User).where(User.id.in_(data.user_ids))
+    users = {str(u.id): u for u in db.execute(stmt).scalars().all()}
+
+    success_count = 0
+    failed: list[dict] = []
+
+    for uid in data.user_ids:
+        user = users.get(uid)
+        if user is None:
+            failed.append({"user_id": uid, "reason": "User not found"})
+            continue
+
+        user.membership_tier = data.membership_tier
+        if data.membership_expires_at is not None:
+            user.membership_expires_at = data.membership_expires_at
+        elif data.membership_tier != "free":
+            user.membership_expires_at = datetime.now(timezone.utc) + timedelta(days=30)
+        else:
+            user.membership_expires_at = None
+
+        success_count += 1
+
+    db.flush()
+
+    return BatchMembershipResult(
+        success_count=success_count,
+        failed=failed,
+    )
+
+
+def get_user_points(db: Session, user_id: str) -> UserPointsDetail:
+    """Get user points/rating detail.
+
+    Raises:
+        ValueError: If user not found.
+    """
+    stmt = select(User).where(User.id == user_id)
+    user = db.execute(stmt).scalar_one_or_none()
+
+    if user is None:
+        raise ValueError("User not found")
+
+    rating = user.rating
+
+    return UserPointsDetail(
+        user_id=str(user.id),
+        username=user.username,
+        nickname=user.nickname,
+        game_rating=rating.game_rating if rating else 300,
+        puzzle_rating=rating.puzzle_rating if rating else 300,
+        rank_title=rating.rank_title if rating else "apprentice_1",
+        rank_tier=rating.rank_tier if rating else 1,
+        rank_region=rating.rank_region if rating else "meadow",
+        xp_total=rating.xp_total if rating else 0,
+        xp_today=rating.xp_today if rating else 0,
+        coins=rating.coins if rating else 0,
+    )
+
+
+def adjust_user_points(
+    db: Session,
+    user_id: str,
+    data: AdjustPointsRequest,
+    admin_user_id: str,
+) -> UserPointsDetail:
+    """Adjust user points/xp/coins with audit trail.
+
+    Raises:
+        ValueError: If user not found or resulting values would be negative.
+    """
+    stmt = select(User).where(User.id == user_id)
+    user = db.execute(stmt).scalar_one_or_none()
+
+    if user is None:
+        raise ValueError("User not found")
+
+    # Ensure user_rating exists
+    rating = user.rating
+    if rating is None:
+        rating = UserRating(user_id=user_id)
+        db.add(rating)
+        db.flush()
+
+    # Calculate new values and validate
+    new_xp = rating.xp_total + data.xp_change
+    new_coins = rating.coins + data.coins_change
+    new_game_rating = rating.game_rating + data.game_rating_change
+    new_puzzle_rating = rating.puzzle_rating + data.puzzle_rating_change
+
+    if new_xp < 0:
+        raise ValueError("XP cannot be negative after adjustment")
+    if new_coins < 0:
+        raise ValueError("Coins cannot be negative after adjustment")
+    if new_game_rating < 100:
+        raise ValueError("Game rating cannot be below 100 after adjustment")
+    if new_puzzle_rating < 100:
+        raise ValueError("Puzzle rating cannot be below 100 after adjustment")
+
+    # Write rating_histories for each non-zero change
+    changes = [
+        ("xp", rating.xp_total, new_xp, data.xp_change),
+        ("coins", rating.coins, new_coins, data.coins_change),
+        ("game", rating.game_rating, new_game_rating, data.game_rating_change),
+        ("puzzle", rating.puzzle_rating, new_puzzle_rating, data.puzzle_rating_change),
+    ]
+
+    for rating_type, old_val, new_val, change_amount in changes:
+        if change_amount != 0:
+            history = RatingHistory(
+                user_id=user_id,
+                rating_type=rating_type,
+                old_rating=old_val,
+                new_rating=new_val,
+                change_amount=change_amount,
+                source_type="admin_adjust",
+                source_id=admin_user_id,
+            )
+            db.add(history)
+
+    # Apply updates
+    rating.xp_total = new_xp
+    rating.coins = new_coins
+    rating.game_rating = new_game_rating
+    rating.puzzle_rating = new_puzzle_rating
+
+    db.flush()
+
+    return UserPointsDetail(
+        user_id=str(user.id),
+        username=user.username,
+        nickname=user.nickname,
+        game_rating=rating.game_rating,
+        puzzle_rating=rating.puzzle_rating,
+        rank_title=rating.rank_title,
+        rank_tier=rating.rank_tier,
+        rank_region=rating.rank_region,
+        xp_total=rating.xp_total,
+        xp_today=rating.xp_today,
+        coins=rating.coins,
     )

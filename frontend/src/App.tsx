@@ -49,7 +49,11 @@ const AchievementsPage = React.lazy(() => import('@/pages/profile/AchievementsPa
 const SettingsPage = React.lazy(() => import('@/pages/settings/SettingsPage'))
 
 // Admin
-const UserManagePage = React.lazy(() => import('@/pages/admin/UserManagePage'))
+const AdminLayout = React.lazy(() => import('@/pages/admin/AdminLayout'))
+const AdminDashboard = React.lazy(() => import('@/pages/admin/AdminDashboard'))
+const AdminUsers = React.lazy(() => import('@/pages/admin/AdminUsers'))
+const AdminMembership = React.lazy(() => import('@/pages/admin/AdminMembership'))
+const AdminPoints = React.lazy(() => import('@/pages/admin/AdminPoints'))
 
 /**
  * Suspense wrapper providing a loading fallback for lazy-loaded pages.
@@ -155,7 +159,12 @@ function App() {
         {/* Admin routes */}
         <Route element={<ProtectedRoute requireAdmin />}>
           <Route element={<AppLayout />}>
-            <Route path="/admin/users" element={<SuspenseWrapper><UserManagePage /></SuspenseWrapper>} />
+            <Route path="/admin" element={<SuspenseWrapper><AdminLayout /></SuspenseWrapper>}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="users" element={<AdminUsers />} />
+              <Route path="membership" element={<AdminMembership />} />
+              <Route path="points" element={<AdminPoints />} />
+            </Route>
           </Route>
         </Route>
 

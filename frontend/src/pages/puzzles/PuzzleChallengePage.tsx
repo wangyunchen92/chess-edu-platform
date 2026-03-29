@@ -40,7 +40,7 @@ const PuzzleChallengePage: React.FC = () => {
           const mapped: ChallengePuzzle[] = list.map((p: any) => ({
             id: p.id ?? p.puzzle_code ?? '',
             theme: p.theme ?? p.themes ?? '',
-            difficulty: p.difficulty ?? (p.difficulty_level ? `Level ${p.difficulty_level}` : info.label),
+            difficulty: p.difficulty ?? (p.difficulty_level ? `第${p.difficulty_level}关` : info.label),
             solved: p.solved !== undefined ? !!p.solved : (p.is_correct === true),
           }))
           setPuzzles(mapped)
@@ -71,7 +71,7 @@ const PuzzleChallengePage: React.FC = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-[var(--text-2xl)] font-bold text-[var(--text)]">
-            {info.emoji} Level {level}: {info.label}
+            {info.emoji} 第{level}关: {info.label}
           </h1>
           <p className="text-[var(--text-sm)] text-[var(--text-sub)] mt-1">
             完成所有题目解锁下一关
@@ -117,7 +117,7 @@ const PuzzleChallengePage: React.FC = () => {
                 variant="primary"
                 onClick={() => navigate(`/puzzles/challenge?level=${level + 1}`)}
               >
-                进入 Level {level + 1}
+                进入第{level + 1}关
               </Button>
             )}
           </div>

@@ -19,7 +19,10 @@ function getPageTitle(pathname: string): string {
     '/profile': '个人中心',
     '/profile/achievements': '成就',
     '/settings': '设置',
-    '/admin/users': '用户管理',
+    '/admin': '后台管理',
+    '/admin/users': '后台管理',
+    '/admin/membership': '后台管理',
+    '/admin/points': '后台管理',
     '/adventure': '棋境大陆',
   }
 
