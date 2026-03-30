@@ -53,7 +53,7 @@ def get_dashboard(
     streak = db.execute(
         select(UserStreak).where(UserStreak.user_id == user_id)
     ).scalar_one_or_none()
-    streak_val = streak.train_streak if streak else 0
+    streak_val = streak.login_streak if streak else 0
 
     # Recent games (last 3)
     games_stmt = (

@@ -104,12 +104,49 @@ def refresh_tokens(refresh_token_str: str) -> Optional[dict[str, str]]:
 
 
 def update_login_info(db: Session, user: User) -> None:
-    """Update user's login timestamp and count.
+    """Update user's login timestamp, count, and login streak.
 
     Args:
         db: Database session.
         user: The user who just logged in.
     """
+    from app.models.gamification import UserStreak
+    from sqlalchemy import select
+    from datetime import date, timedelta
+
     user.last_login_at = datetime.now(timezone.utc)
     user.login_count += 1
     db.add(user)
+
+    # Update login streak
+    today = date.today()
+    streak = db.execute(
+        select(UserStreak).where(UserStreak.user_id == str(user.id))
+    ).scalar_one_or_none()
+
+    if streak is None:
+        import uuid
+        streak = UserStreak(
+            id=str(uuid.uuid4()),
+            user_id=str(user.id),
+            login_streak=1,
+            login_streak_max=1,
+            last_login_date=today,
+        )
+        db.add(streak)
+    else:
+        if streak.last_login_date == today:
+            # Already logged in today, no change
+            pass
+        elif streak.last_login_date == today - timedelta(days=1):
+            # Consecutive day — increment streak
+            streak.login_streak += 1
+            if streak.login_streak > streak.login_streak_max:
+                streak.login_streak_max = streak.login_streak
+            streak.last_login_date = today
+            db.add(streak)
+        else:
+            # Streak broken — reset to 1
+            streak.login_streak = 1
+            streak.last_login_date = today
+            db.add(streak)
