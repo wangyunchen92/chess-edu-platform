@@ -27,11 +27,11 @@ const FILES = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
 const RANKS = ['8', '7', '6', '5', '4', '3', '2', '1']
 
 /** FEN char -> SVG image path */
+const BASE = import.meta.env.BASE_URL || '/'
+const p = (path: string) => `${BASE}assets/pieces/${path}.svg`
 const PIECE_SVG: Record<string, string> = {
-  K: '/assets/pieces/wK.svg', Q: '/assets/pieces/wQ.svg', R: '/assets/pieces/wR.svg',
-  B: '/assets/pieces/wB.svg', N: '/assets/pieces/wN.svg', P: '/assets/pieces/wP.svg',
-  k: '/assets/pieces/bK.svg', q: '/assets/pieces/bQ.svg', r: '/assets/pieces/bR.svg',
-  b: '/assets/pieces/bB.svg', n: '/assets/pieces/bN.svg', p: '/assets/pieces/bP.svg',
+  K: p('wK'), Q: p('wQ'), R: p('wR'), B: p('wB'), N: p('wN'), P: p('wP'),
+  k: p('bK'), q: p('bQ'), r: p('bR'), b: p('bB'), n: p('bN'), p: p('bP'),
 }
 
 // ---------------------------------------------------------------------------

@@ -11,7 +11,8 @@ const audioCache: Record<string, HTMLAudioElement> = {}
 
 function getAudio(name: string): HTMLAudioElement {
   if (!audioCache[name]) {
-    audioCache[name] = new Audio(`/assets/sounds/${name}.mp3`)
+    const base = import.meta.env.BASE_URL || '/'
+    audioCache[name] = new Audio(`${base}assets/sounds/${name}.mp3`)
     audioCache[name].volume = 0.6
   }
   return audioCache[name]

@@ -1,7 +1,7 @@
 """Dashboard module router (B2-11)."""
 
 from fastapi import APIRouter, Depends
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.orm import Session
 
 from app.database import get_db
@@ -76,18 +76,40 @@ def get_dashboard(
     puzzle_quota = get_daily_quota(db, user_id, "daily_puzzles")
     puzzles_remaining = puzzle_quota["remaining"] if puzzle_quota["limit"] != -1 else -1
 
+    # Today's game count
+    from datetime import date
+    today = date.today()
+    today_games_count = db.execute(
+        select(func.count()).select_from(Game).where(
+            Game.user_id == user_id,
+            Game.status == "completed",
+            func.date(Game.ended_at) == today,
+        )
+    ).scalar() or 0
+
+    # Today's XP — use daily quota record for accurate today count
+    from app.models.membership import UserDailyQuota
+    today_quota = db.execute(
+        select(UserDailyQuota).where(
+            UserDailyQuota.user_id == user_id,
+            UserDailyQuota.quota_date == today,
+        )
+    ).scalar_one_or_none()
+    xp_earned_today = today_quota.xp_earned if today_quota else 0
+
     # Unread notifications
     unread = notification_service.get_unread_count(db, user_id)
 
     return APIResponse.success(data={
         "train_progress": train_progress,
         "rating": rating_data,
-        "xp_today": xp_today,
+        "xp_today": xp_earned_today,
         "xp_total": xp_total,
         "level": level,
         "xp_to_next_level": xp_to_next_level,
         "streak": streak_val,
         "recent_games": recent_games,
+        "today_games_count": today_games_count,
         "daily_puzzles_remaining": puzzles_remaining,
         "unread_notifications": unread,
     })

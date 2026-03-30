@@ -18,6 +18,7 @@ interface DashboardData {
   rating: number
   rankTitle: string
   dailyPuzzlesRemaining: number
+  todayGamesCount: number
   recentGames: Array<{
     id: string
     opponent: string
@@ -45,6 +46,7 @@ const MOCK_DASHBOARD: DashboardData = {
   rating: 1200,
   rankTitle: '',
   dailyPuzzlesRemaining: 3,
+  todayGamesCount: 0,
   recentGames: [
     { id: '1', opponent: '豆丁', result: 'win', ratingChange: 15 },
     { id: '2', opponent: '棉花糖', result: 'loss', ratingChange: -12 },
@@ -126,6 +128,7 @@ function parseDashboardResponse(resData: unknown): DashboardData | null {
   const recommendations = payload.recommendations ?? MOCK_DASHBOARD.recommendations
 
   const dailyPuzzlesRemaining = payload.dailyPuzzlesRemaining ?? payload.daily_puzzles_remaining ?? 3
+  const todayGamesCount = payload.todayGamesCount ?? payload.today_games_count ?? 0
 
   if (trainProgress == null && rating == null) return null
 
@@ -136,6 +139,7 @@ function parseDashboardResponse(resData: unknown): DashboardData | null {
     rating: rating ?? 1200,
     rankTitle,
     dailyPuzzlesRemaining,
+    todayGamesCount,
     recentGames,
     weekStats,
     recommendations,
@@ -249,8 +253,8 @@ const DashboardPage: React.FC = () => {
             },
             {
               done: false,
-              label: d.recentGames.length > 0
-                ? `今日已下${d.recentGames.length}盘棋，再来一局？`
+              label: d.todayGamesCount > 0
+                ? `今日已下${d.todayGamesCount}盘棋，再来一局？`
                 : '和AI角色下一盘棋',
               link: '/play',
               emoji: '\u265E',

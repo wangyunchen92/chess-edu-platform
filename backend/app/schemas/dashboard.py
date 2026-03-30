@@ -42,5 +42,6 @@ class DashboardResponse(BaseModel):
     xp_to_next_level: int = 0
     streak: int
     recent_games: list[DashboardRecentGame] = []
+    today_games_count: int = 0
     daily_puzzles_remaining: int = 0
     unread_notifications: int = 0

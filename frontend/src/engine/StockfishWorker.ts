@@ -17,7 +17,7 @@ import {
 const DEFAULT_TIMEOUT_MS = 30_000;
 
 /** Worker 脚本默认路径（相对于 public 目录） */
-const DEFAULT_WORKER_PATH = '/stockfish/stockfish-worker.js';
+const DEFAULT_WORKER_PATH = `${import.meta.env.BASE_URL || '/'}stockfish/stockfish-worker.js`;
 
 /**
  * 封装与 Stockfish WASM Web Worker 的通信。

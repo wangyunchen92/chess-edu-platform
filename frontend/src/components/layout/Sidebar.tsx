@@ -1,11 +1,13 @@
 import React from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { useUIStore } from '@/stores/uiStore'
+import { useAuthStore } from '@/stores/authStore'
 
 interface NavItem {
   path: string
   label: string
   icon: React.ReactNode
+  adminOnly?: boolean
 }
 
 const navItems: NavItem[] = [
@@ -56,12 +58,26 @@ const navItems: NavItem[] = [
       </svg>
     ),
   },
+  {
+    path: '/settings',
+    label: '设置',
+    adminOnly: true,
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <path d="M10 13a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" strokeWidth="1.8" />
+        <path d="M16.5 10a6.5 6.5 0 01-.4 2.2l1.6 1.3-1.4 2.4-2-.5a6.5 6.5 0 01-3.8 0l-2 .5-1.4-2.4 1.6-1.3a6.5 6.5 0 010-4.4L7.1 6.5l1.4-2.4 2 .5a6.5 6.5 0 013.8 0l2-.5 1.4 2.4-1.6 1.3c.3.7.4 1.4.4 2.2z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+  },
 ]
 
 const Sidebar: React.FC = () => {
   const collapsed = useUIStore((s) => s.sidebarCollapsed)
   const toggleSidebar = useUIStore((s) => s.toggleSidebar)
   const location = useLocation()
+  const user = useAuthStore((s) => s.user)
+  const isAdmin = user?.role === 'admin'
+  const visibleItems = navItems.filter((item) => !item.adminOnly || isAdmin)
 
   const isActive = (path: string) => {
     if (path === '/') return location.pathname === '/'
@@ -95,7 +111,7 @@ const Sidebar: React.FC = () => {
 
       {/* Nav Items */}
       <nav className="flex-1 mt-2 px-3 space-y-1">
-        {navItems.map((item) => (
+        {visibleItems.map((item) => (
           <NavLink
             key={item.path}
             to={item.path}

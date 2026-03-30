@@ -383,6 +383,17 @@ const ProfilePage: React.FC = () => {
           </p>
         )}
       </Card>
+
+      {/* Logout */}
+      <button
+        onClick={() => {
+          useAuthStore.getState().logout()
+          window.location.href = import.meta.env.BASE_URL || '/'
+        }}
+        className="w-full py-3 rounded-xl text-center text-[var(--danger)] font-semibold bg-[rgba(239,68,68,0.08)] hover:bg-[rgba(239,68,68,0.15)] transition-colors"
+      >
+        退出登录
+      </button>
     </div>
   )
 }

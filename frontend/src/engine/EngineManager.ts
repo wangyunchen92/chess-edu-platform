@@ -26,7 +26,7 @@ export class EngineManager {
 
   private constructor(config?: EngineConfig) {
     this.config = {
-      workerPath: config?.workerPath ?? '/stockfish/stockfish-worker.js',
+      workerPath: config?.workerPath ?? `${import.meta.env.BASE_URL || '/'}stockfish/stockfish-worker.js`,
       defaultDepth: config?.defaultDepth ?? DEFAULT_DEPTH,
       timeoutMs: config?.timeoutMs ?? 30_000,
     };

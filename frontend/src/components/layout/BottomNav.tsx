@@ -1,10 +1,12 @@
 import React from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
+import { useAuthStore } from '@/stores/authStore'
 
 interface BottomNavItem {
   path: string
   label: string
   emoji: string
+  adminOnly?: boolean
 }
 
 const NAV_ITEMS: BottomNavItem[] = [
@@ -13,10 +15,13 @@ const NAV_ITEMS: BottomNavItem[] = [
   { path: '/puzzles', label: '谜题', emoji: '\uD83E\uDDE9' },
   { path: '/learn', label: '学习', emoji: '\uD83D\uDCD6' },
   { path: '/profile', label: '我的', emoji: '\uD83D\uDC64' },
+  { path: '/settings', label: '设置', emoji: '\u2699\uFE0F', adminOnly: true },
 ]
 
 const BottomNav: React.FC = () => {
   const location = useLocation()
+  const user = useAuthStore((s) => s.user)
+  const isAdmin = user?.role === 'admin'
 
   const isActive = (path: string) => {
     if (path === '/') return location.pathname === '/'
@@ -32,7 +37,7 @@ const BottomNav: React.FC = () => {
         paddingBottom: 'env(safe-area-inset-bottom, 0px)',
       }}
     >
-      {NAV_ITEMS.map((item) => {
+      {NAV_ITEMS.filter((item) => !item.adminOnly || isAdmin).map((item) => {
         const active = isActive(item.path)
         return (
           <NavLink
