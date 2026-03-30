@@ -100,18 +100,7 @@ const PuzzleSolvePage: React.FC = () => {
       })
       .catch((err) => {
         console.error('[PuzzleSolvePage] Failed to load puzzle:', err)
-        const mock: PuzzleData = {
-          id: id,
-          fen: 'r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4',
-          solution: ['h5f7'],
-          theme: '将杀',
-          difficulty: '入门',
-          hint: '1步杀。找到国王的弱点！',
-          explanation: '这是经典的学者将杀（Scholar\'s Mate）。白后移到f7格，同时受到c4主教的保护，黑王无处可逃！',
-        }
-        setPuzzle(mock)
-        setCurrentFen(mock.fen)
-        puzzleStore.setPuzzle(mock.id, mock.fen, mock.solution)
+        setPuzzle(null)
       })
       .finally(() => setLoading(false))
   }, [id]) // eslint-disable-line react-hooks/exhaustive-deps
@@ -124,17 +113,19 @@ const PuzzleSolvePage: React.FC = () => {
   }, [currentFen])
 
   const handleMove = useCallback(
-    (from: string, to: string) => {
+    (from: string, to: string, promotion?: string) => {
       if (!puzzle || solved) return
 
-      const userMove = `${from}${to}`
+      const userMove = `${from}${to}${promotion ?? ''}`
       const expectedMove = puzzle.solution[solutionStep]
+      const isMatch = userMove === expectedMove ||
+        (`${from}${to}` === expectedMove.slice(0, 4) && expectedMove.length > 4)
 
-      if (userMove === expectedMove) {
+      if (isMatch) {
         // Correct
         try {
           const chess = new Chess(currentFen)
-          chess.move({ from, to })
+          chess.move({ from, to, promotion: (promotion ?? expectedMove[4]) as any })
           const newFen = chess.fen()
           setCurrentFen(newFen)
 
@@ -161,7 +152,8 @@ const PuzzleSolvePage: React.FC = () => {
               if (opMove) {
                 try {
                   const chess2 = new Chess(newFen)
-                  chess2.move({ from: opMove.slice(0, 2), to: opMove.slice(2, 4) })
+                  const opPromo = opMove.length > 4 ? opMove[4] : undefined
+                  chess2.move({ from: opMove.slice(0, 2), to: opMove.slice(2, 4), promotion: opPromo as any })
                   setCurrentFen(chess2.fen())
                   setSolutionStep((s) => s + 1)
                 } catch { /* skip */ }
@@ -216,7 +208,7 @@ const PuzzleSolvePage: React.FC = () => {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center">
-          <p className="text-[var(--text-sub)]">未找到谜题</p>
+          <p className="text-[var(--text-sub)]">谜题加载失败，请返回重试</p>
           <Button variant="secondary" className="mt-4" onClick={() => navigate('/puzzles')}>返回</Button>
         </div>
       </div>

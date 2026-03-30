@@ -55,41 +55,64 @@ const ReviewPage: React.FC = () => {
   useEffect(() => {
     if (!id) return
     setLoading(true)
+    // Try review data first, then fall back to game detail for PGN replay
     playApi.getGameReview(id)
-      .then((res) => {
-        // Unwrap {code, data: {...}} wrapper
+      .then(async (res) => {
         const payload: any = (res.data as any)?.data ?? res.data
-        // Backend returns { game_id, review_data: {...} } - extract review_data
         const reviewPayload = payload?.review_data ?? payload
-        if (reviewPayload && reviewPayload.moves) {
+        if (reviewPayload && reviewPayload.moves && reviewPayload.moves.length > 0) {
           setReview(reviewPayload)
+          setCurrentStep(0)
+          return
+        }
+
+        // No review_data — try to rebuild from game PGN
+        const gameRes = await playApi.getGameDetail(id)
+        const gameData: any = (gameRes.data as any)?.data ?? gameRes.data
+        const pgn = gameData?.pgn ?? ''
+        const charName = gameData?.character_name ?? gameData?.character_id ?? '对手'
+
+        if (pgn) {
+          // Parse PGN into moves with chess.js
+          const { Chess } = await import('chess.js')
+          const chess = new Chess()
+          chess.loadPgn(pgn)
+          const history = chess.history({ verbose: true })
+
+          // Rebuild FEN at each step
+          const replayChess = new Chess()
+          const moves: ReviewMove[] = history.map((h) => {
+            replayChess.move(h.san)
+            return {
+              san: h.san,
+              fen: replayChess.fen(),
+              from: h.from,
+              to: h.to,
+            }
+          })
+
+          setReview({
+            id: id,
+            white: '你',
+            black: charName,
+            result: gameData?.result === 'win' ? '1-0' : gameData?.result === 'loss' ? '0-1' : '1/2',
+            moves,
+            summary: `共${moves.length}步，${gameData?.result === 'win' ? '你赢了！' : gameData?.result === 'loss' ? '对手获胜' : '和棋'}`,
+          })
         } else {
-          throw new Error('Invalid review data')
+          throw new Error('No PGN data')
         }
         setCurrentStep(0)
       })
       .catch((err) => {
-        console.error('[ReviewPage] Failed to load review data:', err)
+        console.error('[ReviewPage] Failed to load review:', err)
         setReview({
-          id: id,
+          id: id ?? 'unknown',
           white: '你',
-          black: '豆丁',
-          result: '1-0',
-          summary: '这盘棋你在中局通过战术组合获得了优势，最终成功将杀对手。开局阶段双方发展正常，但第12步的弃子进攻非常精彩！',
-          moves: [
-            { san: 'e4', fen: 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1', from: 'e2', to: 'e4', eval: 20 },
-            { san: 'e5', fen: 'rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq e6 0 2', from: 'e7', to: 'e5', eval: 10 },
-            { san: 'Nf3', fen: 'rnbqkbnr/pppp1ppp/8/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2', from: 'g1', to: 'f3', eval: 25, annotation: 'good', comment: '标准的开局走法，发展马的同时攻击e5兵。' },
-            { san: 'Nc6', fen: 'r1bqkbnr/pppp1ppp/2n5/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 2 3', from: 'b8', to: 'c6', eval: 15 },
-            { san: 'Bb5', fen: 'r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3', from: 'f1', to: 'b5', eval: 30, annotation: 'good', comment: '西班牙开局，经典的进攻路线。' },
-            { san: 'a6', fen: 'r1bqkbnr/1ppp1ppp/p1n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 0 4', from: 'a7', to: 'a6', eval: 20 },
-            { san: 'Ba4', fen: 'r1bqkbnr/1ppp1ppp/p1n5/4p3/B3P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 1 4', from: 'b5', to: 'a4', eval: 28 },
-            { san: 'Nf6', fen: 'r1bqkb1r/1ppp1ppp/p1n2n2/4p3/B3P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 2 4', from: 'g8', to: 'f6', eval: 15 },
-            { san: 'O-O', fen: 'r1bqkb1r/1ppp1ppp/p1n2n2/4p3/B3P3/5N2/PPPP1PPP/RNBQ1RK1 b kq - 3 4', from: 'e1', to: 'g1', eval: 30, annotation: 'good', comment: '及时王车易位，保护国王安全。' },
-            { san: 'Be7', fen: 'r1bqk2r/1pppbppp/p1n2n2/4p3/B3P3/5N2/PPPP1PPP/RNBQ1RK1 w kq - 4 5', from: 'f8', to: 'e7', eval: 22 },
-            { san: 'Re1', fen: 'r1bqk2r/1pppbppp/p1n2n2/4p3/B3P3/5N2/PPPP1PPP/RNBQR1K1 b kq - 5 5', from: 'f1', to: 'e1', eval: 35 },
-            { san: 'b5', fen: 'r1bqk2r/2ppbppp/p1n2n2/1p2p3/B3P3/5N2/PPPP1PPP/RNBQR1K1 w kq b6 0 6', from: 'b7', to: 'b5', eval: 20, annotation: 'inaccuracy', comment: '这步有些冒进，削弱了后翼结构。' },
-          ],
+          black: '对手',
+          result: '?',
+          summary: '暂无复盘数据。请下一盘新棋后再来复盘。',
+          moves: [],
         })
       })
       .finally(() => setLoading(false))

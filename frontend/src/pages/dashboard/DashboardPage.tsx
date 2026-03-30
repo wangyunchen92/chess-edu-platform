@@ -5,7 +5,6 @@ import { dashboardApi } from '@/api/dashboard'
 import Card from '@/components/common/Card'
 import Button from '@/components/common/Button'
 import RatingDisplay from '@/components/gamification/RatingDisplay'
-import XPBar from '@/components/gamification/XPBar'
 import StreakBadge from '@/components/gamification/StreakBadge'
 import ProgressBar from '@/components/common/ProgressBar'
 import Loading from '@/components/common/Loading'
@@ -40,24 +39,16 @@ interface DashboardData {
 }
 
 const MOCK_DASHBOARD: DashboardData = {
-  trainProgress: { completed: 1, total: 3 },
-  xp: { current: 65, target: 100, level: 3 },
-  streak: 7,
-  rating: 1200,
+  trainProgress: { completed: 0, total: 3 },
+  xp: { current: 0, target: 200, level: 1 },
+  streak: 0,
+  rating: 300,
   rankTitle: '',
   dailyPuzzlesRemaining: 3,
   todayGamesCount: 0,
-  recentGames: [
-    { id: '1', opponent: '豆丁', result: 'win', ratingChange: 15 },
-    { id: '2', opponent: '棉花糖', result: 'loss', ratingChange: -12 },
-    { id: '3', opponent: '豆丁', result: 'win', ratingChange: 10 },
-  ],
-  weekStats: { games: 5, winRate: '60%', puzzles: 12, learnMinutes: 45 },
-  recommendations: [
-    { type: 'puzzle', title: '完成今日谜题', emoji: '\uD83E\uDDE9', link: '/puzzles/daily' },
-    { type: 'learn', title: '继续学习：认识棋盘', emoji: '\uD83D\uDCDA', link: '/learn' },
-    { type: 'game', title: '挑战新对手', emoji: '\u265E', link: '/play' },
-  ],
+  recentGames: [],
+  weekStats: { games: 0, winRate: '0%', puzzles: 0, learnMinutes: 0 },
+  recommendations: [],
 }
 
 const RESULT_EMOJI = { win: '\uD83C\uDFC6', loss: '\uD83D\uDCAA', draw: '\uD83E\uDD1D' }
@@ -125,7 +116,7 @@ function parseDashboardResponse(resData: unknown): DashboardData | null {
     learnMinutes: 0,
   }
 
-  const recommendations = payload.recommendations ?? MOCK_DASHBOARD.recommendations
+  const recommendations = payload.recommendations ?? []
 
   const dailyPuzzlesRemaining = payload.dailyPuzzlesRemaining ?? payload.daily_puzzles_remaining ?? 3
   const todayGamesCount = payload.todayGamesCount ?? payload.today_games_count ?? 0
@@ -136,7 +127,7 @@ function parseDashboardResponse(resData: unknown): DashboardData | null {
     trainProgress: trainProgress ?? { completed: 0, total: 3 },
     xp,
     streak,
-    rating: rating ?? 1200,
+    rating: rating ?? 300,
     rankTitle,
     dailyPuzzlesRemaining,
     todayGamesCount,
@@ -194,17 +185,20 @@ const DashboardPage: React.FC = () => {
     return <Loading size="lg" text="加载仪表盘..." />
   }
 
-  if (error && !data) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-        <div className="text-4xl">😿</div>
-        <p className="text-[var(--text-sub)]">加载失败，请稍后重试</p>
-      </div>
-    )
-  }
-
   return (
     <div className="space-y-6">
+      {/* Error banner */}
+      {error && (
+        <div className="px-4 py-3 rounded-[var(--radius-sm)] bg-[rgba(239,68,68,0.1)] text-[var(--danger)] text-[var(--text-sm)] flex items-center justify-between">
+          <span>加载失败：{error}</span>
+          <button
+            onClick={() => loadDashboard()}
+            className="text-xs px-3 py-1 rounded-full bg-[var(--danger)] text-white hover:opacity-90"
+          >
+            重试
+          </button>
+        </div>
+      )}
       {/* ── Welcome Section ── */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div className="flex items-center gap-4">
@@ -303,7 +297,6 @@ const DashboardPage: React.FC = () => {
               <span className="text-[var(--text-muted)]">{d.trainProgress.completed} / {d.trainProgress.total}</span>
             </div>
             <ProgressBar value={d.trainProgress.completed} max={d.trainProgress.total} height={6} />
-            <XPBar current={d.xp.current} target={d.xp.target} level={d.xp.level} className="mt-2" />
           </div>
         </Card>
 

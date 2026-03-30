@@ -168,17 +168,21 @@ const DailyPuzzlePage: React.FC = () => {
   const currentPuzzle = puzzles[currentIdx]
 
   const handleMove = useCallback(
-    (from: string, to: string) => {
+    (from: string, to: string, promotion?: string) => {
       if (!currentPuzzle || feedback === 'correct') return
 
-      const userMove = `${from}${to}`
-      const expectedMove = currentPuzzle.solution[solutionStep]
+      const userMove = `${from}${to}${promotion ?? ''}`
+      const expectedBase = currentPuzzle.solution[solutionStep]
+      // Match with or without promotion suffix (e7f8q matches e7f8 if user picks queen)
+      const isMatch = userMove === expectedBase ||
+        (promotion && userMove === expectedBase) ||
+        (`${from}${to}` === expectedBase.slice(0, 4) && expectedBase.length > 4)
 
-      if (userMove === expectedMove) {
+      if (isMatch) {
         // Correct move
         try {
           const chess = new Chess(currentFen)
-          chess.move({ from, to })
+          chess.move({ from, to, promotion: (promotion ?? expectedBase[4]) as any })
           setCurrentFen(chess.fen())
         } catch {
           setCurrentFen(currentFen)
@@ -216,8 +220,11 @@ const DailyPuzzlePage: React.FC = () => {
             if (opMove) {
               try {
                 const chess2 = new Chess(currentFen)
-                chess2.move({ from, to }) // our move
-                chess2.move({ from: opMove.slice(0, 2), to: opMove.slice(2, 4) }) // opponent
+                const ourPromo = (promotion ?? expectedBase[4]) as any
+                chess2.move({ from, to, promotion: ourPromo || undefined }) // our move
+                const opFrom = opMove.slice(0, 2), opTo = opMove.slice(2, 4)
+                const opPromo = opMove.length > 4 ? opMove[4] : undefined
+                chess2.move({ from: opFrom, to: opTo, promotion: opPromo as any }) // opponent
                 setCurrentFen(chess2.fen())
                 setSolutionStep((s) => s + 1)
               } catch {

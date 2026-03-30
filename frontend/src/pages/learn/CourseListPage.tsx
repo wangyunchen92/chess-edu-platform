@@ -22,50 +22,11 @@ interface Course {
   locked: boolean
 }
 
-const MOCK_COURSES: Course[] = [
-  {
-    id: 'c1', title: '国际象棋入门', description: '认识棋盘、棋子和基本规则', level: 0, emoji: '\uD83C\uDF1F',
-    lessons: [
-      { id: 'l1', title: '认识棋盘', completed: true },
-      { id: 'l2', title: '棋子的走法', completed: true },
-      { id: 'l3', title: '特殊规则', completed: false },
-      { id: 'l4', title: '将军与将杀', completed: false },
-    ],
-    progress: 50, locked: false,
-  },
-  {
-    id: 'c2', title: '开局基础', description: '学习开局原则和常见开局', level: 0, emoji: '\uD83D\uDCDA',
-    lessons: [
-      { id: 'l5', title: '开局三原则', completed: false },
-      { id: 'l6', title: '意大利开局', completed: false },
-      { id: 'l7', title: '西班牙开局', completed: false },
-    ],
-    progress: 0, locked: false,
-  },
-  {
-    id: 'c3', title: '战术训练', description: '学习叉子、钉子、串击等战术', level: 1, emoji: '\u2694\uFE0F',
-    lessons: [
-      { id: 'l8', title: '双重攻击（叉子）', completed: false },
-      { id: 'l9', title: '钉子战术', completed: false },
-      { id: 'l10', title: '串击战术', completed: false },
-      { id: 'l11', title: '引离和引入', completed: false },
-    ],
-    progress: 0, locked: false,
-  },
-  {
-    id: 'c4', title: '残局技巧', description: '掌握常见残局的胜法', level: 1, emoji: '\uD83D\uDC51',
-    lessons: [
-      { id: 'l12', title: '王兵残局', completed: false },
-      { id: 'l13', title: '车残局基础', completed: false },
-    ],
-    progress: 0, locked: true,
-  },
-]
-
 const CourseListPage: React.FC = () => {
   const navigate = useNavigate()
-  const [courses, setCourses] = useState<Course[]>(MOCK_COURSES)
+  const [courses, setCourses] = useState<Course[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     setLoading(true)
@@ -110,13 +71,17 @@ const CourseListPage: React.FC = () => {
           })
           setCourses(normalized)
         }
-        // If not array or empty, keep MOCK_COURSES from initial state
+        // If not array or empty, keep empty state
       })
-      .catch((err) => { console.error('[CourseListPage] Failed to load courses:', err) })
+      .catch((err) => {
+        console.error('[CourseListPage] Failed to load courses:', err)
+        setError('加载课程失败，请检查网络后重试')
+        setCourses([])
+      })
       .finally(() => setLoading(false))
   }, [])
 
-  const courseList = Array.isArray(courses) ? courses : MOCK_COURSES
+  const courseList = Array.isArray(courses) ? courses : []
   const level0 = courseList.filter((c) => c.level === 0)
   const level1 = courseList.filter((c) => c.level === 1)
 
@@ -203,7 +168,17 @@ const CourseListPage: React.FC = () => {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
         <div className="text-5xl">{'\uD83D\uDCDA'}</div>
-        <p className="text-[var(--text-sub)] text-lg">暂无课程，敬请期待</p>
+        <p className="text-[var(--text-sub)] text-lg">
+          {error ? error : '暂无课程，敬请期待'}
+        </p>
+        {error && (
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 rounded-full bg-[var(--accent)] text-white text-sm hover:opacity-90"
+          >
+            重试
+          </button>
+        )}
       </div>
     )
   }

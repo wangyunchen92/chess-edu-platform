@@ -12,23 +12,6 @@ interface DayStat {
   games: number
 }
 
-const MOCK_WEEK: DayStat[] = [
-  { label: '周一', puzzles: 3, lessons: 1, games: 2 },
-  { label: '周二', puzzles: 5, lessons: 2, games: 1 },
-  { label: '周三', puzzles: 2, lessons: 0, games: 3 },
-  { label: '周四', puzzles: 4, lessons: 1, games: 1 },
-  { label: '周五', puzzles: 6, lessons: 2, games: 2 },
-  { label: '周六', puzzles: 3, lessons: 1, games: 0 },
-  { label: '周日', puzzles: 0, lessons: 0, games: 0 },
-]
-
-const MOCK_MONTH: DayStat[] = Array.from({ length: 4 }, (_, i) => ({
-  label: `第${i + 1}周`,
-  puzzles: Math.floor(Math.random() * 20) + 5,
-  lessons: Math.floor(Math.random() * 8) + 1,
-  games: Math.floor(Math.random() * 10) + 2,
-}))
-
 const BAR_COLORS = {
   puzzles: 'var(--warning)',
   lessons: 'var(--info)',
@@ -41,17 +24,25 @@ const TrainStatsPage: React.FC = () => {
   const [data, setData] = useState<DayStat[]>([])
   const [streak, setStreak] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     setLoading(true)
+    setError(null)
     Promise.all([
-      trainApi.getTrainStats().catch((err) => { console.error('[TrainStatsPage] Failed to load stats:', err); return { data: period === 'week' ? MOCK_WEEK : MOCK_MONTH } as any }),
-      trainApi.getStreak().catch((err) => { console.error('[TrainStatsPage] Failed to load streak:', err); return { data: { train_streak: 0 } } as any }),
+      trainApi.getTrainStats().catch((err) => { console.error('[TrainStatsPage] Failed to load stats:', err); setError('加载训练统计失败'); return null }),
+      trainApi.getStreak().catch((err) => { console.error('[TrainStatsPage] Failed to load streak:', err); return null }),
     ]).then(([statsRes, streakRes]) => {
-      const statsPayload: any = (statsRes.data as any)?.data ?? statsRes.data
-      const streakPayload: any = (streakRes.data as any)?.data ?? streakRes.data
-      setData(statsPayload?.days ?? (Array.isArray(statsPayload) ? statsPayload : (period === 'week' ? MOCK_WEEK : MOCK_MONTH)))
-      setStreak(streakPayload?.train_streak ?? streakPayload?.days ?? 0)
+      if (statsRes?.data) {
+        const statsPayload: any = (statsRes.data as any)?.data ?? statsRes.data
+        setData(statsPayload?.days ?? (Array.isArray(statsPayload) ? statsPayload : []))
+      } else {
+        setData([])
+      }
+      if (streakRes?.data) {
+        const streakPayload: any = (streakRes.data as any)?.data ?? streakRes.data
+        setStreak(streakPayload?.train_streak ?? streakPayload?.days ?? 0)
+      }
     }).finally(() => setLoading(false))
   }, [period])
 
@@ -122,10 +113,19 @@ const TrainStatsPage: React.FC = () => {
         ))}
       </div>
 
+      {/* Error banner */}
+      {error && (
+        <div className="px-4 py-3 rounded-[var(--radius-sm)] bg-[rgba(239,68,68,0.1)] text-[var(--danger)] text-[var(--text-sm)]">
+          {error}
+        </div>
+      )}
+
       {/* Bar chart */}
       <Card padding="lg" hoverable={false}>
         {loading ? (
           <div className="text-center py-8 text-[var(--text-muted)]">加载中...</div>
+        ) : data.length === 0 ? (
+          <div className="text-center py-12 text-[var(--text-muted)]">暂无训练数据</div>
         ) : (
           <div className="space-y-4">
             {/* Legend */}

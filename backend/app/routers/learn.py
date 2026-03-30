@@ -97,6 +97,14 @@ def update_lesson_progress(
     if result["xp_earned"] > 0:
         award_xp(db, user_id, result["xp_earned"], reason="lesson_complete")
 
+    # Auto-complete training plan "lesson" item when a lesson reaches 100%
+    if request.progress_pct >= 100:
+        try:
+            from app.services import train_service
+            train_service.auto_complete_item(db, user_id, "lesson")
+        except Exception:
+            pass
+
     return APIResponse.success(data=result)
 
 

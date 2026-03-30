@@ -44,16 +44,16 @@ const RatingDisplay: React.FC<RatingDisplayProps> = ({ rating, className = '' })
   return (
     <div className={`inline-flex items-center gap-2 ${className}`}>
       <span
-        className="text-[var(--text-2xl)] font-extrabold tabular-nums"
-        style={{ color: rank.color }}
-      >
-        {rating}
-      </span>
-      <span
         className="text-[var(--text-xs)] font-semibold px-2 py-0.5 rounded-full"
         style={{ color: rank.color, background: rank.bg }}
       >
         {rank.emoji} {rank.title}
+      </span>
+      <span
+        className="text-[var(--text-2xl)] font-extrabold tabular-nums"
+        style={{ color: rank.color }}
+      >
+        {rating}
       </span>
     </div>
   )

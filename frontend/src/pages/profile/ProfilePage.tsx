@@ -6,7 +6,6 @@ import { gamificationApi } from '@/api/gamification'
 import Card from '@/components/common/Card'
 import Button from '@/components/common/Button'
 import RatingDisplay from '@/components/gamification/RatingDisplay'
-import XPBar from '@/components/gamification/XPBar'
 import StreakBadge from '@/components/gamification/StreakBadge'
 import ProgressBar from '@/components/common/ProgressBar'
 
@@ -21,17 +20,13 @@ interface ProfileData {
 }
 
 const MOCK_PROFILE: ProfileData = {
-  rating: 1200,
-  xp: { current: 65, target: 100, level: 3 },
+  rating: 300,
+  xp: { current: 0, target: 200, level: 1 },
   streak: 0,
-  gameStats: { total: 42, wins: 24, losses: 14, draws: 4, winRate: 57.1 },
-  puzzleStats: { rating: 1150, solved: 86, accuracy: 72 },
-  learnProgress: { completed: 5, total: 12 },
-  achievements: [
-    { id: 'first_win', name: '初次胜利', emoji: '\uD83C\uDFC6', unlockedAt: '2026-03-20' },
-    { id: 'studious', name: '好学不倦', emoji: '\uD83D\uDCDA', unlockedAt: '2026-03-22' },
-    { id: 'persistent', name: '坚持不懈', emoji: '\uD83D\uDD25', unlockedAt: '2026-03-25' },
-  ],
+  gameStats: { total: 0, wins: 0, losses: 0, draws: 0, winRate: 0 },
+  puzzleStats: { rating: 300, solved: 0, accuracy: 0 },
+  learnProgress: { completed: 0, total: 0 },
+  achievements: [],
 }
 
 const ACHIEVEMENT_EMOJI: Record<string, string> = {
@@ -173,7 +168,7 @@ const ProfilePage: React.FC = () => {
       })
 
       if (!hadAnyData) {
-        setError('加载个人数据失败，显示的是缓存数据')
+        setError('加载个人数据失败，请检查网络后重试')
       }
     }).finally(() => setLoading(false))
   }, [])
@@ -230,7 +225,6 @@ const ProfilePage: React.FC = () => {
             </div>
             <p className="text-[var(--text-sm)] text-[var(--text-muted)] mt-0.5">@{username}</p>
             <div className="flex items-center gap-4 mt-2">
-              <RatingDisplay rating={data.rating} />
               <StreakBadge days={data.streak} />
             </div>
           </div>
@@ -240,14 +234,25 @@ const ProfilePage: React.FC = () => {
         </div>
       </Card>
 
-      {/* ── XP Card ── */}
-      <Card padding="lg" hoverable={false}>
-        <div className="flex items-center gap-3 mb-3">
-          <span className="text-xl">{'\u2B50'}</span>
-          <h3 className="text-[var(--text-md)] font-semibold text-[var(--text)]">经验等级</h3>
-        </div>
-        <XPBar current={data.xp.current} target={data.xp.target} level={data.xp.level} />
-      </Card>
+      {/* ── Rating Cards ── */}
+      <div className="grid grid-cols-2 gap-4">
+        <Card padding="lg" hoverable={false}>
+          <div className="text-center">
+            <span className="text-xs text-[var(--text-muted)]">对弈评分</span>
+            <div className="mt-1">
+              <RatingDisplay rating={data.rating} />
+            </div>
+          </div>
+        </Card>
+        <Card padding="lg" hoverable={false}>
+          <div className="text-center">
+            <span className="text-xs text-[var(--text-muted)]">谜题评分</span>
+            <div className="mt-1">
+              <RatingDisplay rating={data.puzzleStats.rating} />
+            </div>
+          </div>
+        </Card>
+      </div>
 
       {/* ── Stats Grid ── */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">

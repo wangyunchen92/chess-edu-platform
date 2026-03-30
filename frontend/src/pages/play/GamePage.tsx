@@ -142,9 +142,15 @@ const GamePage: React.FC = () => {
         const resultStr = gameResult.winner === 'white' ? 'win'
           : gameResult.winner === 'black' ? 'loss'
           : 'draw'
+        // Build PGN from move history (more reliable than gameState.pgn which may be stale)
+        const pgnMoves = moveHistory.map((m, i) => {
+          const moveNum = Math.floor(i / 2) + 1
+          return i % 2 === 0 ? `${moveNum}. ${m.san}` : m.san
+        }).join(' ')
+
         playApi.completeGame(serverGameId, {
           result: resultStr,
-          pgn: gameState.pgn ?? '',
+          pgn: gameState.pgn || pgnMoves || '',
           moves_count: moveHistory.length,
           user_color: 'white',
           final_fen: gameState.fen,

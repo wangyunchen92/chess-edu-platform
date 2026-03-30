@@ -23,14 +23,14 @@ STANDARD_TEMPLATE = [
         "title": "继续学习",
         "description": "学习一个新的课时",
         "estimated_minutes": 10,
-        "link": "/learn/courses",
+        "link": "/learn",
     },
     {
         "item_type": "game",
         "title": "实战对弈",
         "description": "与AI对手下一局棋",
         "estimated_minutes": 15,
-        "link": "/play/characters",
+        "link": "/play",
     },
 ]
 
@@ -101,7 +101,9 @@ def complete_plan_item(db: Session, user_id: str, item_index: int) -> dict:
         }
 
     items[item_index]["is_completed"] = True
+    from sqlalchemy.orm.attributes import flag_modified
     plan.items = items
+    flag_modified(plan, "items")
     plan.completed_items = sum(1 for it in items if it.get("is_completed"))
     plan.is_completed = plan.completed_items >= plan.total_items
 
@@ -279,7 +281,10 @@ def auto_complete_item(db: Session, user_id: str, item_type: str) -> None:
     for i, item in enumerate(items):
         if item.get("item_type") == item_type and not item.get("is_completed"):
             items[i]["is_completed"] = True
+            # Force SQLAlchemy to detect JSON mutation
+            from sqlalchemy.orm.attributes import flag_modified
             plan.items = items
+            flag_modified(plan, "items")
             plan.completed_items = sum(1 for it in items if it.get("is_completed"))
             plan.is_completed = plan.completed_items >= plan.total_items
 

@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { trainApi } from '@/api/train'
-import { useTrainStore } from '@/stores/trainStore'
+// import { useTrainStore } from '@/stores/trainStore'
 import Card from '@/components/common/Card'
 import Button from '@/components/common/Button'
 import StreakBadge from '@/components/gamification/StreakBadge'
-import XPBar from '@/components/gamification/XPBar'
 
 interface PlanTask {
   id: string
@@ -18,43 +17,28 @@ interface PlanTask {
 }
 
 const MOCK_TASKS: PlanTask[] = [
-  {
-    id: 't1', type: 'puzzle', title: '战术热身',
-    description: '完成3道每日谜题', emoji: '\uD83E\uDDE9',
-    link: '/puzzles/daily', completed: false,
-  },
-  {
-    id: 't2', type: 'lesson', title: '继续学习',
-    description: '完成一节课程', emoji: '\uD83D\uDCDA',
-    link: '/learn', completed: false,
-  },
-  {
-    id: 't3', type: 'game', title: '实战对弈',
-    description: '和AI对弈一局', emoji: '\u265E',
-    link: '/play', completed: false,
-  },
+  { id: 't1', type: 'puzzle', title: '战术热身', description: '完成3道每日谜题', emoji: '\uD83E\uDDE9', link: '/puzzles/daily', completed: false },
+  { id: 't2', type: 'lesson', title: '继续学习', description: '完成一节课程', emoji: '\uD83D\uDCDA', link: '/learn', completed: false },
+  { id: 't3', type: 'game', title: '实战对弈', description: '和AI对弈一局', emoji: '\u265E', link: '/play', completed: false },
 ]
 
 const DailyPlanPage: React.FC = () => {
   const navigate = useNavigate()
-  const trainStore = useTrainStore()
+  // const trainStore = useTrainStore()
   const [tasks, setTasks] = useState<PlanTask[]>([])
   const [loading, setLoading] = useState(true)
   const [streakDays, setStreakDays] = useState(0)
 
-  useEffect(() => {
+  const loadData = useCallback(() => {
     setLoading(true)
     Promise.all([
       trainApi.getTodayPlan().catch((err) => { console.error('[DailyPlanPage] Failed to load plan:', err); return { data: { tasks: MOCK_TASKS } } as any }),
       trainApi.getStreak().catch((err) => { console.error('[DailyPlanPage] Failed to load streak:', err); return { data: { train_streak: 0 } } as any }),
     ]).then(([planRes, streakRes]) => {
-      // Handle nested {code, data: {...}} format
       const planPayload: any = (planRes.data as any)?.data ?? planRes.data
-      // Backend returns { items: [...] }, frontend expects tasks
       const rawTasks = Array.isArray(planPayload)
         ? planPayload
         : planPayload?.tasks ?? planPayload?.items ?? MOCK_TASKS
-      // Normalize field names from backend snake_case to frontend camelCase
       const TASK_EMOJI: Record<string, string> = { puzzle: '\uD83E\uDDE9', lesson: '\uD83D\uDCDA', game: '\u265E' }
       const planTasks: PlanTask[] = rawTasks.map((t: any, idx: number) => ({
         id: t.id ?? String(t.index ?? idx),
@@ -66,27 +50,24 @@ const DailyPlanPage: React.FC = () => {
         completed: t.completed ?? t.is_completed ?? false,
       }))
       setTasks(planTasks)
-      trainStore.setDailyTasks(planTasks.map((t: PlanTask) => ({
-        id: t.id, type: t.type, title: t.title, completed: t.completed,
-      })))
       const streakPayload: any = (streakRes.data as any)?.data ?? streakRes.data
       setStreakDays(streakPayload?.train_streak ?? streakPayload?.days ?? 0)
-      trainStore.setStreak(streakPayload?.train_streak ?? streakPayload?.days ?? 0)
     }).finally(() => setLoading(false))
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Load on mount
+  useEffect(() => { loadData() }, [loadData])
+
+  // Refresh when page gets focus (returning from puzzle/game/learn)
+  useEffect(() => {
+    const handleFocus = () => loadData()
+    window.addEventListener('focus', handleFocus)
+    return () => window.removeEventListener('focus', handleFocus)
+  }, [loadData])
 
   const completedCount = tasks.filter((t) => t.completed).length
   const totalCount = tasks.length
   const completionPercent = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0
-
-  const handleCompleteTask = useCallback(async (idx: number) => {
-    try {
-      await trainApi.completeItem(idx)
-    } catch (err) { console.error('[DailyPlanPage] Failed to complete task:', err) }
-    setTasks((prev) => prev.map((t, i) => i === idx ? { ...t, completed: true } : t))
-    trainStore.completeTask(tasks[idx]?.id)
-    trainStore.addXP(30)
-  }, [tasks, trainStore])
 
   if (loading) {
     return (
@@ -124,7 +105,7 @@ const DailyPlanPage: React.FC = () => {
         <StreakBadge days={streakDays} />
       </div>
 
-      {/* Completion ring (simplified as progress circle) */}
+      {/* Progress */}
       <Card padding="lg" hoverable={false}>
         <div className="flex items-center gap-6">
           {/* Progress circle */}
@@ -157,42 +138,39 @@ const DailyPlanPage: React.FC = () => {
           <div className="flex-1">
             <h3 className="text-[var(--text-md)] font-semibold text-[var(--text)]">
               {completedCount === totalCount
-                ? '\uD83C\uDF89 今日任务全部完成！太棒了！'
-                : `还有 ${totalCount - completedCount} 项任务等你完成`}
+                ? '\uD83C\uDF89 今日训练全部完成！太棒了！'
+                : `还有 ${totalCount - completedCount} 项训练待完成`}
             </h3>
-            <XPBar
-              current={trainStore.xpToday}
-              target={trainStore.xpTarget}
-              className="mt-3"
-            />
+            <p className="text-[var(--text-xs)] text-[var(--text-muted)] mt-1">
+              {completedCount === totalCount
+                ? '明天继续保持，连续训练提升更快'
+                : '完成对应活动后自动打勾，去试试吧'}
+            </p>
           </div>
         </div>
       </Card>
 
       {/* Task list */}
       <div className="space-y-3">
-        {tasks.map((task, idx) => (
+        {tasks.map((task) => (
           <Card key={task.id} padding="md">
             <div className="flex items-center gap-4">
-              {/* Checkbox */}
-              <button
-                className="w-8 h-8 rounded-full flex items-center justify-center text-lg shrink-0 transition-all"
+              {/* Status icon */}
+              <div
+                className="w-8 h-8 rounded-full flex items-center justify-center text-lg shrink-0"
                 style={{
                   background: task.completed
                     ? 'linear-gradient(135deg, var(--success), #34d399)'
                     : 'var(--border)',
                   color: task.completed ? '#fff' : 'var(--text-muted)',
-                  cursor: task.completed ? 'default' : 'pointer',
                 }}
-                onClick={() => !task.completed && handleCompleteTask(idx)}
               >
-                {task.completed ? '\u2713' : ''}
-              </button>
+                {task.completed ? '\u2713' : task.emoji}
+              </div>
 
               {/* Info */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <span className="text-lg">{task.emoji}</span>
                   <span
                     className="text-[var(--text-md)] font-semibold"
                     style={{
@@ -202,6 +180,9 @@ const DailyPlanPage: React.FC = () => {
                   >
                     {task.title}
                   </span>
+                  {task.completed && (
+                    <span className="text-[var(--text-xs)] text-[var(--success)] font-medium">已完成</span>
+                  )}
                 </div>
                 <p className="text-[var(--text-xs)] text-[var(--text-muted)] mt-0.5">
                   {task.description}
@@ -224,7 +205,7 @@ const DailyPlanPage: React.FC = () => {
       {/* Stats link */}
       <div className="text-center">
         <Button variant="secondary" size="sm" onClick={() => navigate('/train/stats')}>
-          {'\uD83D\uDCCA'} 查看训练统计
+          查看训练统计
         </Button>
       </div>
     </div>

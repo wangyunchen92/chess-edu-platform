@@ -27,61 +27,6 @@ const DEFAULT_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
 // Mock data (fallback when API unavailable)
 // ---------------------------------------------------------------------------
 
-const MOCK_LESSON: LessonData = {
-  id: 'l1',
-  title: '认识棋盘',
-  courseId: 'c1',
-  lessonOrder: 0,
-  xpReward: 30,
-  nextLessonId: 'l2',
-  exerciseId: 'ex-l1',
-  blocks: [
-    {
-      type: 'dialogue',
-      character: 'douding',
-      expression: 'happy',
-      content: '你好呀！我是豆丁老师，今天我们一起来认识国际象棋的棋盘吧！',
-    },
-    {
-      type: 'dialogue',
-      character: 'douding',
-      expression: 'idle',
-      content: '国际象棋的棋盘由8x8=64个格子组成，交替排列黑色和白色。每一列用字母a-h表示（从左到右），每一行用数字1-8表示（从下到上）。',
-    },
-    {
-      type: 'board_demo',
-      fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
-      description: '这是国际象棋的初始局面。白棋在下方，黑棋在上方。',
-      highlights: ['e1', 'e8'],
-    },
-    {
-      type: 'dialogue',
-      character: 'douding',
-      expression: 'thinking',
-      content: '棋盘上最重要的棋子是国王（King），用 K 表示。如果你的国王被将死，你就输了！上面用高亮标记了双方国王的位置。',
-    },
-    {
-      type: 'interactive',
-      fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
-      instruction: '试试看：把白方的兵从e2移动到e4！',
-      expectedMove: 'e2e4',
-      successMessage: '太棒了！这就是最常见的开局第一步 - 国王前兵推两格！',
-    },
-    {
-      type: 'quiz',
-      question: '国际象棋的棋盘有多少个格子？',
-      options: ['32', '48', '64', '81'],
-      correctIndex: 2,
-    },
-    {
-      type: 'dialogue',
-      character: 'douding',
-      expression: 'celebrate',
-      content: '恭喜你完成了第一课！你已经认识了棋盘的基本结构。接下来我们将学习每个棋子的走法。',
-    },
-  ],
-}
-
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
@@ -146,7 +91,7 @@ const LessonPage: React.FC = () => {
       .then((res) => {
         const raw: any = (res.data as any)?.data ?? res.data
         if (!raw || !raw.id) {
-          setLesson(MOCK_LESSON)
+          setLesson(null)
           return
         }
         const rawSteps: any[] =
@@ -166,7 +111,7 @@ const LessonPage: React.FC = () => {
       })
       .catch((err) => {
         console.error('[LessonPage] Failed to load lesson:', err)
-        setLesson(MOCK_LESSON)
+        setLesson(null)
       })
       .finally(() => setLoading(false))
   }, [id]) // eslint-disable-line react-hooks/exhaustive-deps
@@ -435,7 +380,7 @@ const LessonPage: React.FC = () => {
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
         <div className="text-center space-y-3">
           <TeacherAvatar expression="surprised" accentColor="#6366f1" size={64} />
-          <p className="text-gray-500 text-lg">未找到课程</p>
+          <p className="text-gray-500 text-lg">课程加载失败</p>
           <button
             onClick={() => navigate('/learn')}
             className="px-6 py-2 rounded-full bg-indigo-500 text-white font-medium hover:bg-indigo-600 transition-colors"

@@ -29,34 +29,6 @@ interface ExerciseSet {
   nextLessonId?: string
 }
 
-const MOCK_EXERCISES: ExerciseSet = {
-  id: 'ex-l1',
-  lessonId: 'l1',
-  title: '认识棋盘 - 课后练习',
-  nextLessonId: 'l2',
-  exercises: [
-    {
-      id: 'q1', type: 'quiz',
-      question: '棋盘上有多少个白色格子？',
-      options: ['16', '32', '48', '64'],
-      correctIndex: 1,
-    },
-    {
-      id: 'q2', type: 'board',
-      fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
-      instruction: '将白方的d2兵移动到d4',
-      expectedMove: 'd2d4',
-      explanation: 'd4是另一个非常常见的开局首步，控制中心。',
-    },
-    {
-      id: 'q3', type: 'quiz',
-      question: '白方的国王在初始位置位于哪个格子？',
-      options: ['d1', 'e1', 'f1', 'g1'],
-      correctIndex: 1,
-    },
-  ],
-}
-
 const ExercisePage: React.FC = () => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
@@ -81,7 +53,7 @@ const ExercisePage: React.FC = () => {
         const payload = (res.data as any)?.data ?? res.data
         if (payload) setExerciseSet(payload)
       })
-      .catch((err) => { console.error('[ExercisePage] Failed to load exercises:', err); setExerciseSet(MOCK_EXERCISES) })
+      .catch((err) => { console.error('[ExercisePage] Failed to load exercises:', err); setExerciseSet(null) })
       .finally(() => setLoading(false))
   }, [id])
 
@@ -168,7 +140,7 @@ const ExercisePage: React.FC = () => {
   if (!exerciseSet) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <p className="text-[var(--text-sub)]">未找到练习</p>
+        <p className="text-[var(--text-sub)]">练习加载失败，请返回重试</p>
       </div>
     )
   }

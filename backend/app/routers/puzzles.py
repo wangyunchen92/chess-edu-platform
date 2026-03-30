@@ -1,6 +1,7 @@
 """Puzzles module router (B2-1 & B2-2)."""
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy import select, func
 from sqlalchemy.orm import Session
 
 from app.database import get_db
@@ -145,10 +146,21 @@ def submit_puzzle_attempt(
     if request.source == "daily":
         try:
             from app.services import train_service
-            quota = get_daily_quota(db, user_id, "daily_puzzles")
-            if quota["limit"] != -1 and quota["remaining"] <= 0:
+            # Check if all 3 daily puzzles are done (count today's daily attempts)
+            from app.models.puzzle import PuzzleAttempt
+            from datetime import date as _date
+            today_str = _date.today().isoformat()
+            today_daily_count = db.execute(
+                select(func.count()).select_from(PuzzleAttempt).where(
+                    PuzzleAttempt.user_id == user_id,
+                    PuzzleAttempt.source == "daily",
+                    PuzzleAttempt.created_at >= today_str,
+                )
+            ).scalar() or 0
+            if today_daily_count >= 3:
                 train_service.auto_complete_item(db, user_id, "puzzle")
-        except Exception:
-            pass  # best-effort, don't fail the puzzle submission
+        except Exception as e:
+            import logging
+            logging.getLogger("chess_edu").error(f"auto_complete_item failed: {e}", exc_info=True)
 
     return APIResponse.success(data=result)

@@ -80,13 +80,7 @@ const PuzzlesHomePage: React.FC = () => {
         })
         .catch((err) => {
           console.error('[PuzzlesHomePage] Failed to load puzzle stats:', err)
-          setStats({ puzzleRating: 300, totalSolved: 42, accuracy: 73 })
-          setLevels([
-            { ...CHALLENGE_LEVELS[0], progress: 7 },
-            { ...CHALLENGE_LEVELS[1], unlocked: true, progress: 3 },
-            ...CHALLENGE_LEVELS.slice(2),
-          ])
-          setDailyDone(1)
+          setStats({ puzzleRating: 300, totalSolved: 0, accuracy: 0 })
         }),
     ]).finally(() => setLoading(false))
   }, [])

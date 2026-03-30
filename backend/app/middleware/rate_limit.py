@@ -29,7 +29,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         auth_rpm: Max requests per minute for auth endpoints (default 10).
     """
 
-    def __init__(self, app, default_rpm: int = 100, auth_rpm: int = 10):
+    def __init__(self, app, default_rpm: int = 600, auth_rpm: int = 30):
         super().__init__(app)
         self.default_rpm = default_rpm
         self.auth_rpm = auth_rpm

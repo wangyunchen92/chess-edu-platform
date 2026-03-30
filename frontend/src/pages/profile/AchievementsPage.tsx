@@ -30,19 +30,6 @@ const ACHIEVEMENT_EMOJI: Record<string, string> = {
   all_rounder: '\uD83C\uDFAF',
 }
 
-const MOCK_ACHIEVEMENTS: Achievement[] = [
-  { id: 'first_game', slug: 'first_game', name: '初出茅庐', description: '完成第一盘对局', category: 'game', emoji: '\u2694\uFE0F', unlocked: true, unlockedAt: '2026-03-15', xpReward: 50, coinReward: 10, rarity: 'common' },
-  { id: 'first_win', slug: 'first_win', name: '初次胜利', description: '赢得第一盘对局', category: 'game', emoji: '\uD83C\uDFC6', unlocked: true, unlockedAt: '2026-03-16', xpReward: 100, coinReward: 20, rarity: 'common' },
-  { id: 'ten_wins', slug: 'ten_wins', name: '十胜将军', description: '累计赢得10盘对局', category: 'game', emoji: '\uD83C\uDF1F', unlocked: true, unlockedAt: '2026-03-22', xpReward: 200, coinReward: 50, rarity: 'uncommon' },
-  { id: 'speed_master', slug: 'speed_master', name: '闪电战术', description: '在30秒内完成一道谜题', category: 'puzzle', emoji: '\u26A1', unlocked: false, xpReward: 150, coinReward: 30, rarity: 'uncommon' },
-  { id: 'comeback', slug: 'comeback', name: '绝地反击', description: '在劣势局面下逆转获胜', category: 'game', emoji: '\uD83D\uDD04', unlocked: false, xpReward: 300, coinReward: 80, rarity: 'rare' },
-  { id: 'studious', slug: 'studious', name: '好学不倦', description: '完成5节课程学习', category: 'learn', emoji: '\uD83D\uDCDA', unlocked: true, unlockedAt: '2026-03-24', xpReward: 200, coinReward: 50, rarity: 'uncommon' },
-  { id: 'puzzle_eye', slug: 'puzzle_eye', name: '火眼金睛', description: '谜题正确率达到80%以上', category: 'puzzle', emoji: '\uD83D\uDC41\uFE0F', unlocked: false, xpReward: 250, coinReward: 60, rarity: 'rare' },
-  { id: 'perfect_streak', slug: 'perfect_streak', name: '完美连胜', description: '连续赢得5盘对局', category: 'game', emoji: '\uD83D\uDC8E', unlocked: false, xpReward: 350, coinReward: 100, rarity: 'epic' },
-  { id: 'persistent', slug: 'persistent', name: '坚持不懈', description: '连续7天完成每日训练', category: 'train', emoji: '\uD83D\uDD25', unlocked: true, unlockedAt: '2026-03-27', xpReward: 300, coinReward: 80, rarity: 'rare' },
-  { id: 'all_rounder', slug: 'all_rounder', name: '全能选手', description: '在对弈、谜题、学习中均达到一定水平', category: 'general', emoji: '\uD83C\uDFAF', unlocked: false, xpReward: 500, coinReward: 150, rarity: 'legendary' },
-]
-
 const AchievementsPage: React.FC = () => {
   const [achievements, setAchievements] = useState<Achievement[]>([])
   const [unlockedCount, setUnlockedCount] = useState(0)
@@ -75,20 +62,20 @@ const AchievementsPage: React.FC = () => {
           setUnlockedCount(payload.unlocked_count ?? mapped.filter((a) => a.unlocked).length)
           setTotalCount(payload.total_count ?? mapped.length)
         } else {
-          // Unexpected format, fall back to mock
+          // Unexpected format, show empty state
           console.error('[AchievementsPage] Unexpected response format:', payload)
-          setAchievements(MOCK_ACHIEVEMENTS)
-          setUnlockedCount(MOCK_ACHIEVEMENTS.filter((a) => a.unlocked).length)
-          setTotalCount(MOCK_ACHIEVEMENTS.length)
-          setError('数据格式异常，显示缓存数据')
+          setAchievements([])
+          setUnlockedCount(0)
+          setTotalCount(0)
+          setError('数据格式异常，无法加载成就')
         }
       })
       .catch((err) => {
         console.error('[AchievementsPage] Failed to load achievements:', err)
-        setAchievements(MOCK_ACHIEVEMENTS)
-        setUnlockedCount(MOCK_ACHIEVEMENTS.filter((a) => a.unlocked).length)
-        setTotalCount(MOCK_ACHIEVEMENTS.length)
-        setError('加载成就失败，显示缓存数据')
+        setAchievements([])
+        setUnlockedCount(0)
+        setTotalCount(0)
+        setError('加载成就失败，请检查网络后重试')
       })
       .finally(() => setLoading(false))
   }, [])
@@ -141,6 +128,12 @@ const AchievementsPage: React.FC = () => {
       </Card>
 
       {/* ── Achievement Grid ── */}
+      {achievements.length === 0 && !error && (
+        <div className="flex flex-col items-center justify-center py-12 gap-3">
+          <div className="text-4xl">🏅</div>
+          <p className="text-[var(--text-muted)] text-[var(--text-sm)]">暂无成就数据</p>
+        </div>
+      )}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {achievements.map((ach) => (
           <Card
