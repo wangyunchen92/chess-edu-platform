@@ -217,11 +217,7 @@ const DashboardPage: React.FC = () => {
             </h1>
             <div className="flex items-center gap-3 mt-1">
               <RatingDisplay rating={d.rating} />
-              {d.rankTitle && (
-                <span className="text-[var(--text-xs)] px-2 py-0.5 rounded-full bg-[var(--accent-light)] text-[var(--accent)] font-semibold">
-                  {d.rankTitle}
-                </span>
-              )}
+              <span className="text-[var(--text-xs)] text-[var(--text-muted)]">对弈评分</span>
             </div>
           </div>
         </div>
@@ -243,14 +239,18 @@ const DashboardPage: React.FC = () => {
               link: '/train',
               emoji: '\uD83C\uDFAF',
             },
-            {
-              done: d.dailyPuzzlesRemaining === 0,
-              label: d.dailyPuzzlesRemaining === 0
-                ? '每日谜题已完成'
-                : `完成每日谜题 (剩余${d.dailyPuzzlesRemaining}题)`,
+            ...(d.dailyPuzzlesRemaining === 0 ? [{
+              done: true,
+              label: '每日谜题已完成',
               link: '/puzzles/daily',
               emoji: '\uD83E\uDDE9',
-            },
+            }] : d.dailyPuzzlesRemaining > 0 ? [{
+              done: false,
+              label: `完成每日谜题 (剩余${d.dailyPuzzlesRemaining}题)`,
+              link: '/puzzles/daily',
+              emoji: '\uD83E\uDDE9',
+            }] : []),
+            // dailyPuzzlesRemaining === -1 (unlimited/premium) → don't show
             {
               done: false,
               label: d.todayGamesCount > 0

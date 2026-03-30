@@ -49,11 +49,37 @@ def get_dashboard(
     xp_today = user_rating.xp_today if user_rating else 0
     level, xp_to_next_level = get_level_for_xp(xp_total)
 
-    # Streak
+    # Streak — also update if not yet updated today
+    from datetime import date, timedelta
+    import uuid as _uuid
+    today = date.today()
+
     streak = db.execute(
         select(UserStreak).where(UserStreak.user_id == user_id)
     ).scalar_one_or_none()
-    streak_val = streak.login_streak if streak else 0
+
+    if streak is None:
+        streak = UserStreak(
+            id=str(_uuid.uuid4()),
+            user_id=user_id,
+            login_streak=1,
+            login_streak_max=1,
+            last_login_date=today,
+        )
+        db.add(streak)
+        db.flush()
+    elif streak.last_login_date != today:
+        if streak.last_login_date == today - timedelta(days=1):
+            streak.login_streak += 1
+            if streak.login_streak > streak.login_streak_max:
+                streak.login_streak_max = streak.login_streak
+        else:
+            streak.login_streak = 1
+        streak.last_login_date = today
+        db.add(streak)
+        db.flush()
+
+    streak_val = streak.login_streak
 
     # Recent games (last 3)
     games_stmt = (
@@ -63,11 +89,21 @@ def get_dashboard(
         .limit(3)
     )
     recent_games_orm = db.execute(games_stmt).scalars().all()
+    # Load character names for recent games
+    from app.models.character import Character
+    char_names: dict[str, str] = {}
+    char_ids = {g.character_id for g in recent_games_orm if g.character_id}
+    if char_ids:
+        chars = db.execute(
+            select(Character.id, Character.name).where(Character.id.in_(char_ids))
+        ).all()
+        char_names = {c.id: c.name for c in chars}
+
     recent_games = []
     for g in recent_games_orm:
         recent_games.append({
             "game_id": g.id,
-            "character_name": None,  # Could join character table
+            "character_name": char_names.get(g.character_id, g.character_id),
             "result": g.result,
             "rating_change": g.rating_change,
         })

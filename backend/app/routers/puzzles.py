@@ -141,4 +141,14 @@ def submit_puzzle_attempt(
     if result["xp_earned"] > 0:
         award_xp(db, user_id, result["xp_earned"], reason="puzzle_attempt")
 
+    # Auto-complete training plan "puzzle" item if daily puzzles are done
+    if request.source == "daily":
+        try:
+            from app.services import train_service
+            quota = get_daily_quota(db, user_id, "daily_puzzles")
+            if quota["limit"] != -1 and quota["remaining"] <= 0:
+                train_service.auto_complete_item(db, user_id, "puzzle")
+        except Exception:
+            pass  # best-effort, don't fail the puzzle submission
+
     return APIResponse.success(data=result)

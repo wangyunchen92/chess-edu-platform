@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { puzzlesApi } from '@/api/puzzles'
+import { translateTheme } from '@/utils/puzzleTheme'
 import Card from '@/components/common/Card'
 import Button from '@/components/common/Button'
 import ProgressBar from '@/components/common/ProgressBar'
@@ -39,7 +40,7 @@ const PuzzleChallengePage: React.FC = () => {
         if (list.length > 0) {
           const mapped: ChallengePuzzle[] = list.map((p: any) => ({
             id: p.id ?? p.puzzle_code ?? '',
-            theme: p.theme ?? p.themes ?? '',
+            theme: translateTheme(p.theme ?? p.themes ?? ''),
             difficulty: p.difficulty ?? (p.difficulty_level ? `第${p.difficulty_level}关` : info.label),
             solved: p.solved !== undefined ? !!p.solved : (p.is_correct === true),
           }))

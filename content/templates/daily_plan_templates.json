@@ -6,8 +6,8 @@
       {
         "type": "puzzles",
         "title": "战术热身",
-        "description": "完成5道谜题",
-        "target": 5,
+        "description": "完成3道每日谜题",
+        "target": 3,
         "icon": "🧩",
         "link": "/puzzles/daily"
       },

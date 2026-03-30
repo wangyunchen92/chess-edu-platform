@@ -109,6 +109,14 @@ def complete_game(
 
     # Re-fetch as GameDetail for complete response
     detail = game_service.get_game_detail(db, game_id, user_id)
+
+    # Auto-complete training plan "game" item
+    try:
+        from app.services import train_service
+        train_service.auto_complete_item(db, user_id, "game")
+    except Exception:
+        pass
+
     return APIResponse.success(data=detail)
 
 

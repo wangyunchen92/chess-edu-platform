@@ -23,7 +23,7 @@ interface ProfileData {
 const MOCK_PROFILE: ProfileData = {
   rating: 1200,
   xp: { current: 65, target: 100, level: 3 },
-  streak: 7,
+  streak: 0,
   gameStats: { total: 42, wins: 24, losses: 14, draws: 4, winRate: 57.1 },
   puzzleStats: { rating: 1150, solved: 86, accuracy: 72 },
   learnProgress: { completed: 5, total: 12 },
@@ -129,7 +129,7 @@ const ProfilePage: React.FC = () => {
             }
           }
           if (p.streak) {
-            next.streak = p.streak.train_streak ?? p.streak.login_streak ?? next.streak
+            next.streak = p.streak.login_streak ?? p.streak.train_streak ?? next.streak
           }
         }
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { puzzlesApi } from '@/api/puzzles'
+import { translateTheme } from '@/utils/puzzleTheme'
 import { gamificationApi } from '@/api/gamification'
 import { usePuzzleStore } from '@/stores/puzzleStore'
 import Chessboard from '@/components/chess/Chessboard'
@@ -47,7 +48,7 @@ const MOCK_DAILY: DailyPuzzle[] = [
     solution: ['h5f7'],
     theme: '将杀',
     difficulty: '入门',
-    hint: '白方走，1步杀',
+    hint: '1步杀，找到将杀的走法',
   },
   {
     id: 'daily-2',
@@ -55,7 +56,7 @@ const MOCK_DAILY: DailyPuzzle[] = [
     solution: ['c4b5', 'c6d4', 'f3d4'],
     theme: '战术',
     difficulty: '初级',
-    hint: '白方走，利用钉子战术',
+    hint: '利用钉子战术',
   },
   {
     id: 'daily-3',
@@ -63,18 +64,19 @@ const MOCK_DAILY: DailyPuzzle[] = [
     solution: ['e1e8'],
     theme: '残局',
     difficulty: '入门',
-    hint: '白方走，1步杀',
+    hint: '底线杀！找到将杀的走法',
   },
 ]
 
 const DailyPuzzlePage: React.FC = () => {
   const navigate = useNavigate()
-  const { message, checkAndBlock } = usePaywall('puzzle')
+  const { message } = usePaywall('puzzle')
   const [showPaywall, setShowPaywall] = useState(false)
   const [puzzles, setPuzzles] = useState<DailyPuzzle[]>([])
   const [currentIdx, setCurrentIdx] = useState(0)
   const [loading, setLoading] = useState(true)
   const [currentFen, setCurrentFen] = useState('')
+  const [boardOrientation, setBoardOrientation] = useState<'white' | 'black'>('white')
   const [solutionStep, setSolutionStep] = useState(0)
   const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null)
   const [puzzleStatus, setPuzzleStatus] = useState<('pending' | 'solved' | 'failed')[]>([])
@@ -116,7 +118,7 @@ const DailyPuzzlePage: React.FC = () => {
               id: p.id ?? p.puzzle_code ?? '',
               fen,
               solution,
-              theme: p.theme ?? p.themes ?? '',
+              theme: translateTheme(p.theme ?? p.themes ?? ''),
               difficulty: p.difficulty ?? (p.difficulty_level ? `Level ${p.difficulty_level}` : ''),
               hint: p.hint ?? p.hint_text ?? undefined,
             }
@@ -156,6 +158,7 @@ const DailyPuzzlePage: React.FC = () => {
     if (puzzles.length > 0 && currentIdx < puzzles.length) {
       const p = puzzles[currentIdx]
       setCurrentFen(p.fen)
+      setBoardOrientation(p.fen.split(' ')[1] === 'b' ? 'black' : 'white')
       setSolutionStep(0)
       setFeedback(null)
       puzzleStore.setPuzzle(p.id, p.fen, p.solution)
@@ -247,16 +250,12 @@ const DailyPuzzlePage: React.FC = () => {
   )
 
   const goNext = useCallback(() => {
-    if (checkAndBlock()) {
-      setShowPaywall(true)
-      return
-    }
     if (currentIdx + 1 < puzzles.length) {
       setCurrentIdx((i) => i + 1)
     } else {
       setAllDone(true)
     }
-  }, [currentIdx, puzzles.length, checkAndBlock])
+  }, [currentIdx, puzzles.length])
 
   if (loading) {
     return (
@@ -345,7 +344,7 @@ const DailyPuzzlePage: React.FC = () => {
               fen={currentFen}
               onMove={handleMove}
               getValidMoves={getValidMoves}
-              orientation="white"
+              orientation={boardOrientation}
               interactive={feedback !== 'correct'}
             />
             {/* Feedback overlay */}
@@ -371,10 +370,22 @@ const DailyPuzzlePage: React.FC = () => {
         <div className="flex-1 space-y-4 min-w-0">
           <Card padding="md">
             <div className="space-y-3">
+              <div className="flex items-center gap-2 mb-1">
+                <span
+                  className="text-[var(--text-xs)] font-bold px-2 py-0.5 rounded-full"
+                  style={{
+                    background: boardOrientation === 'white' ? 'rgba(255,255,255,0.9)' : 'rgba(0,0,0,0.8)',
+                    color: boardOrientation === 'white' ? '#333' : '#fff',
+                    border: '1px solid var(--border)',
+                  }}
+                >
+                  {boardOrientation === 'white' ? '⬜ 白方走' : '⬛ 黑方走'}
+                </span>
+              </div>
               <div className="flex items-center gap-2">
                 <span className="text-lg">{'\uD83D\uDCA1'}</span>
                 <span className="text-[var(--text-sm)] font-semibold text-[var(--text)]">
-                  {currentPuzzle?.hint ?? '白方走'}
+                  {currentPuzzle?.hint ?? '找到最佳走法'}
                 </span>
               </div>
               <div className="flex gap-2">

@@ -14,7 +14,7 @@ STANDARD_TEMPLATE = [
     {
         "item_type": "puzzle",
         "title": "战术热身",
-        "description": "完成5道战术谜题",
+        "description": "完成3道每日谜题",
         "estimated_minutes": 10,
         "link": "/puzzles/daily",
     },
@@ -258,6 +258,47 @@ def _update_train_streak(db: Session, user_id: str) -> None:
 
     db.add(streak)
     db.flush()
+
+
+def auto_complete_item(db: Session, user_id: str, item_type: str) -> None:
+    """Auto-complete a training plan item by its type (puzzle/game/lesson).
+
+    Called from other modules when user completes a puzzle/game/lesson.
+    Silently does nothing if no plan exists or item already completed.
+    """
+    today = date.today()
+    stmt = select(DailyTrainPlan).where(
+        DailyTrainPlan.user_id == user_id,
+        DailyTrainPlan.plan_date == today,
+    )
+    plan = db.execute(stmt).scalar_one_or_none()
+    if plan is None:
+        return
+
+    items = list(plan.items)
+    for i, item in enumerate(items):
+        if item.get("item_type") == item_type and not item.get("is_completed"):
+            items[i]["is_completed"] = True
+            plan.items = items
+            plan.completed_items = sum(1 for it in items if it.get("is_completed"))
+            plan.is_completed = plan.completed_items >= plan.total_items
+
+            record = DailyTrainRecord(
+                id=str(uuid.uuid4()),
+                user_id=user_id,
+                plan_id=plan.id,
+                item_index=i,
+                item_type=item_type,
+                completed_at=datetime.now(timezone.utc),
+            )
+            db.add(record)
+
+            if plan.is_completed:
+                _update_train_streak(db, user_id)
+
+            db.add(plan)
+            db.flush()
+            return
 
 
 def _plan_to_dict(plan: DailyTrainPlan) -> dict:

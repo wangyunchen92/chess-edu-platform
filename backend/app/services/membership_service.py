@@ -28,6 +28,13 @@ TIER_FEATURES = {
         "hints_per_game": 3,
         "ai_qa_daily": 20,
     },
+    "premium": {
+        "daily_games": -1,
+        "daily_puzzles": -1,
+        "course_level_max": -1,
+        "hints_per_game": -1,
+        "ai_qa_daily": -1,
+    },
 }
 
 # Map quota_type to the column name in UserDailyQuota
@@ -39,13 +46,19 @@ QUOTA_COLUMN_MAP = {
 
 
 def _get_user_tier(db: Session, user_id: str) -> str:
-    """Get user's membership tier."""
-    stmt = select(User.membership_tier, User.membership_expires_at).where(
+    """Get user's membership tier. Admin users always get premium."""
+    stmt = select(User.membership_tier, User.membership_expires_at, User.role).where(
         User.id == user_id
     )
     row = db.execute(stmt).one_or_none()
     if row is None:
         return "free"
+
+    tier, expires_at, role = row
+
+    # Admin always has full access
+    if role == "admin":
+        return "premium"
 
     tier, expires_at = row
     if tier != "free" and expires_at is not None:

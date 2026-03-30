@@ -1,99 +1,413 @@
 {
   "level": 2,
-  "title": "闯关谜题 - 难度2",
-  "description": "中级战术练习：两步杀、捉双、牵制",
-  "rating_range": [600, 900],
-  "total_puzzles": 50,
+  "title": "中级挑战",
+  "description": "中级挑战 - 精选自Lichess",
   "puzzles": [
     {
       "id": "p_l2_001",
-      "fen": "r1b1k2r/pppp1ppp/2n2n2/2b5/2BqP3/2N2N2/PPPP1PPP/R1BQ1RK1 w kq - 0 6",
-      "solution": ["Nxd4", "Nxd4", "Bxf7+"],
-      "themes": ["fork", "mate_in_2"],
-      "difficulty_rating": 650,
-      "description": "白方走，先赢回后再叉王",
-      "explanation": "Nxd4吃黑后，黑马Nxd4吃回后，Bxf7+象吃f7将军叉王和车h8。白方获得巨大物质优势。"
+      "fen": "1r6/5k2/2Q1pNp1/p5Pp/1p2P2P/2P4R/KP3P2/3q4 b - - 0 31",
+      "solution": [
+        "b3+",
+        "Ka3",
+        "Qa1#"
+      ],
+      "solution_moves": "b3+,Ka3,Qa1#",
+      "themes": [
+        "endgame",
+        "mate",
+        "mateIn2"
+      ],
+      "difficulty": "medium",
+      "difficulty_rating": 1163,
+      "hint": "两步将杀！找到正确的组合",
+      "explanation": "来自Lichess (006HV)，1014人已挑战"
     },
     {
       "id": "p_l2_002",
-      "fen": "r2qk2r/ppp2ppp/2n1b3/3np3/2B5/3P1N2/PPP2PPP/R1BQR1K1 w kq - 0 8",
-      "solution": ["Bxd5", "Bxd5", "Nxe5"],
-      "themes": ["fork"],
-      "difficulty_rating": 700,
-      "description": "白方走，先兑换再马叉",
-      "explanation": "Bxd5先吃掉中心马，Bxd5吃回，Nxe5马吃e5兵同时叉c6马和d5象。白方赢子。"
+      "fen": "r4r2/2q1Nb2/5Qpk/2n4p/pp5P/8/1PP2PP1/2KR3R w - - 0 29",
+      "solution": [
+        "Nf5+",
+        "Kh7",
+        "Qg7#"
+      ],
+      "solution_moves": "Nf5+,Kh7,Qg7#",
+      "themes": [
+        "master",
+        "mate",
+        "mateIn2",
+        "middlegame",
+        "pin"
+      ],
+      "difficulty": "hard",
+      "difficulty_rating": 1531,
+      "hint": "两步将杀！找到正确的组合",
+      "explanation": "来自Lichess (006pe)，4224人已挑战"
     },
     {
       "id": "p_l2_003",
-      "fen": "r1bqr1k1/ppp2ppp/2n5/3N4/8/8/PPP2PPP/R1BQR1K1 w - - 0 12",
-      "solution": ["Nf6+", "Kh8", "Nxe8"],
-      "themes": ["fork"],
-      "difficulty_rating": 650,
-      "description": "白方走，马叉王和车",
-      "explanation": "Nf6+马跳f6将军，黑王被迫Kh8，白马Nxe8吃掉e8车。用3分的马赢得5分的车！"
+      "fen": "Q7/5qk1/p2p4/b1p1pr2/P7/6P1/4KP1R/8 w - - 4 39",
+      "solution": [
+        "Qh8+",
+        "Kg6",
+        "Qh6#"
+      ],
+      "solution_moves": "Qh8+,Kg6,Qh6#",
+      "themes": [
+        "endgame",
+        "mate",
+        "mateIn2",
+        "swallowstailMate"
+      ],
+      "difficulty": "medium",
+      "difficulty_rating": 1024,
+      "hint": "两步将杀！找到正确的组合",
+      "explanation": "来自Lichess (00CtS)，3130人已挑战"
     },
     {
       "id": "p_l2_004",
-      "fen": "r4rk1/ppp1qppp/2n5/3pN3/3Pn1b1/4P3/PPP1BPPP/R2Q1RK1 w - - 0 10",
-      "solution": ["Bxg4", "Nxg4", "Qxg4"],
-      "themes": ["pin"],
-      "difficulty_rating": 750,
-      "description": "白方走，利用牵制赢子",
-      "explanation": "Bxg4象吃g4象，黑马Nxg4吃回，Qxg4后吃g4马。白方利用后对g4的攻击，净赚一个象。"
+      "fen": "8/1P6/8/7p/3P4/3k1p1P/4p3/4K3 b - - 1 49",
+      "solution": [
+        "Ke3",
+        "h4",
+        "f2#"
+      ],
+      "solution_moves": "Ke3,h4,f2#",
+      "themes": [
+        "advancedPawn",
+        "endgame",
+        "mate",
+        "mateIn2",
+        "pawnEndgame"
+      ],
+      "difficulty": "hard",
+      "difficulty_rating": 1770,
+      "hint": "两步将杀！找到正确的组合",
+      "explanation": "来自Lichess (00FND)，2199人已挑战"
     },
     {
       "id": "p_l2_005",
-      "fen": "r1b1kb1r/ppppqppp/2n2n2/4p3/2B1P3/2N2N2/PPPP1PPP/R1BQK2R w KQkq - 4 4",
-      "solution": ["Nd5", "Nxd5", "exd5"],
-      "themes": ["fork", "pin"],
-      "difficulty_rating": 700,
-      "description": "白方走，马跳d5攻击后和马",
-      "explanation": "Nd5马跳到中心攻击e7后和f6马。如果Nxd5则exd5同时攻击e7后和c6马。白方赢子。"
+      "fen": "8/2p1r1kp/5pp1/3P3r/4P3/2N1QbPq/PPP2R1P/5RK1 b - - 4 23",
+      "solution": [
+        "Qxg3+",
+        "hxg3",
+        "Rh1#"
+      ],
+      "solution_moves": "Qxg3+,hxg3,Rh1#",
+      "themes": [
+        "clearance",
+        "kingsideAttack",
+        "mate",
+        "mateIn2",
+        "middlegame",
+        "operaMate",
+        "sacrifice"
+      ],
+      "difficulty": "hard",
+      "difficulty_rating": 1719,
+      "hint": "两步将杀！找到正确的组合",
+      "explanation": "来自Lichess (00IUW)，1621人已挑战"
     },
     {
       "id": "p_l2_006",
-      "fen": "2kr3r/ppp2ppp/2n1b3/4q3/2B1P3/2N5/PPP2PPP/R2QR1K1 w - - 0 10",
-      "solution": ["Nd5", "Bxd5", "exd5"],
-      "themes": ["fork"],
-      "difficulty_rating": 800,
-      "description": "白方走，马跳中心赢子",
-      "explanation": "Nd5马跳中心攻击e7和c7，如果Bxd5吃马，exd5兵吃回攻击c6马和e5后，白方赢子。"
+      "fen": "8/6pk/1Q1p2n1/4p3/2P3P1/P2PPK1P/1B6/4q3 b - - 2 35",
+      "solution": [
+        "Nh4+",
+        "Ke4",
+        "Qh1#"
+      ],
+      "solution_moves": "Nh4+,Ke4,Qh1#",
+      "themes": [
+        "endgame",
+        "mate",
+        "mateIn2"
+      ],
+      "difficulty": "hard",
+      "difficulty_rating": 1437,
+      "hint": "两步将杀！找到正确的组合",
+      "explanation": "来自Lichess (00KHR)，1526人已挑战"
     },
     {
       "id": "p_l2_007",
-      "fen": "r1bq1rk1/pppp1ppp/2n2n2/2b5/4P3/2NB1N2/PPP2PPP/R1BQ1RK1 w - - 0 6",
-      "solution": ["e5", "Nd5", "Bg5"],
-      "themes": ["pin"],
-      "difficulty_rating": 750,
-      "description": "白方走，推兵赶马再牵制",
-      "explanation": "e5推兵攻击f6马，Nd5马退到d5，Bg5象出动牵制d8后。白方获得主动。"
+      "fen": "3r1k2/p2n3p/1p2Bpp1/2r2N2/4q3/6QP/P5P1/5R1K w - - 2 41",
+      "solution": [
+        "Qd6+",
+        "Ke8",
+        "Qe7#"
+      ],
+      "solution_moves": "Qd6+,Ke8,Qe7#",
+      "themes": [
+        "mate",
+        "mateIn2",
+        "middlegame"
+      ],
+      "difficulty": "hard",
+      "difficulty_rating": 1352,
+      "hint": "两步将杀！找到正确的组合",
+      "explanation": "来自Lichess (00KYU)，1667人已挑战"
     },
     {
       "id": "p_l2_008",
-      "fen": "r2qkb1r/ppp1pppp/2n2n2/3p1b2/3P1B2/2N1PN2/PPP2PPP/R2QKB1R w KQkq - 0 5",
-      "solution": ["Nb5", "Rc8", "Nc7+"],
-      "themes": ["fork"],
-      "difficulty_rating": 850,
-      "description": "白方走，马入侵叉王和车",
-      "explanation": "Nb5马跳到b5威胁Nc7+叉王和车。黑方Rc8防守，但Nc7+照样叉王和a8...不对，车已到c8。此处黑方Rc8后白方仍有Nc7+叉王Ke8上的王和a8位置。重新分析：Nb5后黑方防不住Nc7+。"
+      "fen": "R7/1p3kp1/2pK3p/3p1PP1/3r2nP/8/1P6/8 w - - 0 40",
+      "solution": [
+        "g6+",
+        "Kf6",
+        "Rf8#"
+      ],
+      "solution_moves": "g6+,Kf6,Rf8#",
+      "themes": [
+        "endgame",
+        "mate",
+        "mateIn2"
+      ],
+      "difficulty": "medium",
+      "difficulty_rating": 880,
+      "hint": "两步将杀！找到正确的组合",
+      "explanation": "来自Lichess (00Keu)，1401人已挑战"
     },
     {
       "id": "p_l2_009",
-      "fen": "r3k2r/ppp1bppp/2n1bn2/3qp3/8/1BN2N2/PPPP1PPP/R1BQR1K1 w kq - 0 8",
-      "solution": ["Nxd5", "Nxd5", "Rxe5"],
-      "themes": ["pin"],
-      "difficulty_rating": 800,
-      "description": "白方走，兑换后利用牵制赢兵",
-      "explanation": "Nxd5马吃后，Nxd5马吃回，Rxe5车吃e5兵。因为e6象被d5马牵制在保护位置上，白方顺利赢兵。"
+      "fen": "1r1q1rk1/1b4b1/4p1Bp/3pP3/p2B2P1/7Q/PPP5/2KR3R b - - 0 23",
+      "solution": [
+        "Qg5+",
+        "Kb1",
+        "Qxg6"
+      ],
+      "solution_moves": "Qg5+,Kb1,Qxg6",
+      "themes": [
+        "advantage",
+        "fork",
+        "middlegame"
+      ],
+      "difficulty": "medium",
+      "difficulty_rating": 920,
+      "hint": "找到捉双的走法，同时攻击两个目标",
+      "explanation": "来自Lichess (00UgJ)，1868人已挑战"
     },
     {
       "id": "p_l2_010",
-      "fen": "r1b1k1nr/pppp1ppp/2n5/2b1p3/2B1P1q1/2N2N2/PPPP1PPP/R1BQR1K1 w kq - 0 6",
-      "solution": ["Nxe5", "Nxe5", "Bxf7+"],
-      "themes": ["fork", "mate_in_2"],
-      "difficulty_rating": 900,
-      "description": "白方走，连续战术赢后",
-      "explanation": "Nxe5马吃e5兵攻击g4后和c6马。如果Nxe5，Bxf7+将军叉王和g4...不对。让我重新分析：Nxe5攻击g4后，如果Bxf2+则Kh1，局面复杂。白方的Nxe5直接攻击后是关键。"
+      "fen": "r5k1/5pp1/2p5/P1N4p/2PR1n2/1P3P2/5P1P/6K1 b - - 0 26",
+      "solution": [
+        "Ne2+",
+        "Kf1",
+        "Nxd4"
+      ],
+      "solution_moves": "Ne2+,Kf1,Nxd4",
+      "themes": [
+        "crushing",
+        "endgame",
+        "fork"
+      ],
+      "difficulty": "easy",
+      "difficulty_rating": 721,
+      "hint": "找到捉双的走法，同时攻击两个目标",
+      "explanation": "来自Lichess (00Ui0)，1899人已挑战"
+    },
+    {
+      "id": "p_l2_011",
+      "fen": "2r5/4kp2/p3p2q/1p3nNP/3rQP2/P1N5/1P3K2/6R1 w - - 0 35",
+      "solution": [
+        "Qb7+",
+        "Rd7",
+        "Qxc8"
+      ],
+      "solution_moves": "Qb7+,Rd7,Qxc8",
+      "themes": [
+        "crushing",
+        "fork",
+        "master",
+        "middlegame"
+      ],
+      "difficulty": "medium",
+      "difficulty_rating": 1192,
+      "hint": "找到捉双的走法，同时攻击两个目标",
+      "explanation": "来自Lichess (00Ybq)，2087人已挑战"
+    },
+    {
+      "id": "p_l2_012",
+      "fen": "2r4k/6RP/8/3p4/pp1qn3/3N1Q2/PPP5/1K5R b - - 0 35",
+      "solution": [
+        "Nd2+",
+        "Ka1",
+        "Nxf3"
+      ],
+      "solution_moves": "Nd2+,Ka1,Nxf3",
+      "themes": [
+        "advantage",
+        "fork",
+        "master",
+        "middlegame"
+      ],
+      "difficulty": "medium",
+      "difficulty_rating": 1101,
+      "hint": "找到捉双的走法，同时攻击两个目标",
+      "explanation": "来自Lichess (00bTs)，1006人已挑战"
+    },
+    {
+      "id": "p_l2_013",
+      "fen": "8/2p5/1p2B3/p7/5r2/P4p2/1PP1N2k/1K4R1 b - - 2 59",
+      "solution": [
+        "fxe2",
+        "Re1",
+        "Rf1",
+        "Kc1",
+        "Rxe1+"
+      ],
+      "solution_moves": "fxe2,Re1,Rf1,Kc1,Rxe1+",
+      "themes": [
+        "advancedPawn",
+        "crushing",
+        "endgame",
+        "hangingPiece",
+        "pin"
+      ],
+      "difficulty": "medium",
+      "difficulty_rating": 1171,
+      "hint": "找到牵制对方棋子的走法",
+      "explanation": "来自Lichess (01M89)，1603人已挑战"
+    },
+    {
+      "id": "p_l2_014",
+      "fen": "5r2/2p2pbk/4p1p1/7p/1q3P1n/pP3Q2/P5P1/1BBR3K w - - 0 29",
+      "solution": [
+        "Qxh5+",
+        "Kg8",
+        "Qxh4"
+      ],
+      "solution_moves": "Qxh5+,Kg8,Qxh4",
+      "themes": [
+        "advantage",
+        "middlegame",
+        "pin"
+      ],
+      "difficulty": "hard",
+      "difficulty_rating": 1359,
+      "hint": "找到牵制对方棋子的走法",
+      "explanation": "来自Lichess (01PBg)，3342人已挑战"
+    },
+    {
+      "id": "p_l2_015",
+      "fen": "r2q1r1k/4b1p1/p3b2p/4B1pQ/4P3/1p1p3P/P2P1P2/2KR2R1 w - - 0 23",
+      "solution": [
+        "Qxh6+",
+        "Kg8",
+        "Qxg7#"
+      ],
+      "solution_moves": "Qxh6+,Kg8,Qxg7#",
+      "themes": [
+        "kingsideAttack",
+        "mate",
+        "mateIn2",
+        "middlegame",
+        "pin"
+      ],
+      "difficulty": "hard",
+      "difficulty_rating": 1342,
+      "hint": "两步将杀！找到正确的组合",
+      "explanation": "来自Lichess (01b3S)，1130人已挑战"
+    },
+    {
+      "id": "p_l2_016",
+      "fen": "r2qk2r/3pppb1/p4npp/1p6/3p3B/3P1Q2/PPP2PPP/R3RBK1 w kq - 2 15",
+      "solution": [
+        "Bxf6",
+        "Bxf6",
+        "Qxf6"
+      ],
+      "solution_moves": "Bxf6,Bxf6,Qxf6",
+      "themes": [
+        "advantage",
+        "master",
+        "middlegame",
+        "pin"
+      ],
+      "difficulty": "medium",
+      "difficulty_rating": 1221,
+      "hint": "找到牵制对方棋子的走法",
+      "explanation": "来自Lichess (01eyQ)，4572人已挑战"
+    },
+    {
+      "id": "p_l2_017",
+      "fen": "8/p2r3p/4k3/8/4P3/3p2P1/PP3K1P/3B4 w - - 4 33",
+      "solution": [
+        "Bg4+",
+        "Ke5",
+        "Bxd7"
+      ],
+      "solution_moves": "Bg4+,Ke5,Bxd7",
+      "themes": [
+        "crushing",
+        "endgame",
+        "master",
+        "skewer"
+      ],
+      "difficulty": "medium",
+      "difficulty_rating": 944,
+      "hint": "找到串击的走法",
+      "explanation": "来自Lichess (01iaw)，1976人已挑战"
+    },
+    {
+      "id": "p_l2_018",
+      "fen": "1r6/1n4p1/1P1p1kp1/4p3/2K1P3/5P1P/5BP1/2R5 b - - 12 46",
+      "solution": [
+        "Rc8+",
+        "Kb5",
+        "Rxc1"
+      ],
+      "solution_moves": "Rc8+,Kb5,Rxc1",
+      "themes": [
+        "crushing",
+        "endgame",
+        "skewer"
+      ],
+      "difficulty": "hard",
+      "difficulty_rating": 1328,
+      "hint": "找到串击的走法",
+      "explanation": "来自Lichess (01qI9)，1846人已挑战"
+    },
+    {
+      "id": "p_l2_019",
+      "fen": "6B1/p2R4/5p1p/2r3k1/4b3/6P1/P5PK/8 w - - 10 45",
+      "solution": [
+        "Rg7+",
+        "Kf5",
+        "Bh7+",
+        "Ke6",
+        "Bxe4"
+      ],
+      "solution_moves": "Rg7+,Kf5,Bh7+,Ke6,Bxe4",
+      "themes": [
+        "advantage",
+        "deflection",
+        "endgame",
+        "skewer"
+      ],
+      "difficulty": "hard",
+      "difficulty_rating": 1381,
+      "hint": "找到串击的走法",
+      "explanation": "来自Lichess (01rGW)，1587人已挑战"
+    },
+    {
+      "id": "p_l2_020",
+      "fen": "3b4/3P1k2/2pB4/1p1bK1p1/2p3B1/2P5/P4P2/8 b - - 3 47",
+      "solution": [
+        "Bf6+",
+        "Kf5",
+        "Be6+",
+        "Ke4",
+        "Bxg4"
+      ],
+      "solution_moves": "Bf6+,Kf5,Be6+,Ke4,Bxg4",
+      "themes": [
+        "bishopEndgame",
+        "crushing",
+        "deflection",
+        "endgame",
+        "skewer"
+      ],
+      "difficulty": "medium",
+      "difficulty_rating": 1227,
+      "hint": "找到串击的走法",
+      "explanation": "来自Lichess (0240A)，1820人已挑战"
     }
   ]
 }
