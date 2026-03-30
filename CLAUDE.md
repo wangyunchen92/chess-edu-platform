@@ -328,7 +328,12 @@ python3 -m uvicorn app.main:app --host 127.0.0.1 --port 8001
 | Sprint 1 修复 | 前后端协议对齐 + 页面数据绑定修复 | ✅ 完成 |
 | 学习模块打磨 | 卡通课堂改造（双角色对话+聊天布局+音效+升变） | ✅ 完成 |
 | 数据联通 | 对弈结果提交+谜题状态跟踪+Dashboard刷新 | ✅ 完成 |
-| 部署上线 | 阿里云服务器部署 | 🔄 进行中 |
+| 后台管理 | 管理员控制台（账号/会员/积分/数据概览） | ✅ 完成 |
+| 谜题库替换 | Lichess 真实谜题160道，chess.js 100%验证 | ✅ 完成 |
+| 段位系统 | 去掉XP等级，统一用对弈/谜题双评分段位制 | ✅ 完成 |
+| 训练自动完成 | 做完谜题/课程/对弈自动标记训练计划 | ✅ 完成 |
+| 数据清洁 | 清除所有MOCK假数据，API失败显示错误不显示假数据 | ✅ 完成 |
+| 部署上线 | 阿里云服务器 http://118.31.237.111/chess/ | ✅ 已上线 |
 
 ## 常见陷阱
 
@@ -343,3 +348,9 @@ python3 -m uvicorn app.main:app --host 127.0.0.1 --port 8001
 - 兵升变需要 promotion 参数，Chessboard 组件弹选择框
 - Dashboard 需要 window.focus 监听，返回时自动刷新数据
 - rank_title 后端返回 code（如 `apprentice_1`），前端需用 `translateRankTitle` 翻译
+- SQLAlchemy JSON 字段修改后必须 `flag_modified(obj, "field")` 才能持久化
+- 谜题走子匹配要处理 promotion 后缀（`e7f8q`），`handleMove(from,to,promotion?)`
+- 训练计划 auto_complete_item 用 puzzle_attempts 计数触发，不依赖 quota（premium 用户 limit=-1）
+- useCallback 依赖列表不要包含会被 callback 内部修改的 store（会导致无限循环）
+- 所有 MOCK 默认值必须是 0/空，不能用假数据（1200分、42局等）
+- 静态资源路径（棋子SVG/音效/Stockfish）必须用 `import.meta.env.BASE_URL` 前缀
