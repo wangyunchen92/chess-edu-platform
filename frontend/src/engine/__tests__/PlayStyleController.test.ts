@@ -109,7 +109,7 @@ describe('PlayStyleController', () => {
 
       // 进攻型的 f3d4（吃子）和 f1b5（将军）频率应高于均衡型
       const aggressiveTactical = (aggressive['f3d4'] ?? 0) + (aggressive['f1b5'] ?? 0);
-      const balancedTactical = (balanced['f3d4'] ?? 0) + (balanced['f1b5'] ?? 0);
+      const _balancedTactical = (balanced['f3d4'] ?? 0) + (balanced['f1b5'] ?? 0);
 
       // 进攻型至少选择这些走法的频率应 > 0
       expect(aggressiveTactical).toBeGreaterThan(0);
@@ -127,8 +127,8 @@ describe('PlayStyleController', () => {
       });
 
       // 防守型选择第一手（最佳手，非进攻）的频率应更高
-      const defensiveFirst = defensive['e2e4'] ?? 0;
-      const aggressiveFirst = aggressive['e2e4'] ?? 0;
+      const _defensiveFirst = defensive['e2e4'] ?? 0;
+      const _aggressiveFirst = aggressive['e2e4'] ?? 0;
 
       // 防守型不太可能选择排名最低的进攻走法
       expect(defensive['c3a2'] ?? 0).toBeLessThanOrEqual(100);
