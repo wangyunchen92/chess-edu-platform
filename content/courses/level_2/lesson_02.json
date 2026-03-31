@@ -1,0 +1,111 @@
+{
+  "id": "l2_02",
+  "course_id": "level_2",
+  "unit": "unit_1",
+  "order": 2,
+  "title": "双重攻击进阶",
+  "description": "深入学习各种棋子的捉双技巧，包括后的捉双、象的捉双和兵的捉双",
+  "estimated_minutes": 25,
+  "steps": [
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "在Level 1我们学了马的捉双，但其实每种棋子都能捉双！今天我们来深入学习。"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "surprised",
+      "content": "后也能捉双吗？她不是太强大了，对手应该会躲开吧？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "thinking",
+      "content": "好观察！后确实容易被对手防御，但后的捉双威力巨大——因为她可以同时向多个方向攻击。关键是找到将军的同时攻击另一个目标！"
+    },
+    {
+      "type": "text",
+      "content": "双重攻击（Fork）进阶要点：\n\n**后的捉双**：后能横竖斜全方向攻击，最强的捉双是将军+攻击无保护子力。\n**象的捉双**：象沿斜线攻击两个目标，常见于攻击被牵制的子力。\n**兵的捉双**：兵便宜但攻击方向固定，兵的捉双几乎总是赚子。\n**车的捉双**：车沿直线攻击，常见于底线或七线攻击。\n\n核心原则：用低价值的子去捉双高价值的目标，赚子效率最高！"
+    },
+    {
+      "type": "board_demo",
+      "fen": "r1b1k2r/ppppnppp/8/4N1q1/2B5/8/PPPP1PPP/RNBQK2R w KQkq - 0 8",
+      "description": "后的捉双经典例子：白方走Bxf7+将军，黑王被迫移动后，白方Qxg5吃掉黑后。这里白象先将军（引离国王），然后后就能安全吃子。",
+      "highlights": ["c4", "f7", "e8"]
+    },
+    {
+      "type": "board_demo",
+      "fen": "r3k2r/ppp2ppp/3b4/3pn3/8/2N5/PPPB1PPP/R2QK2R w KQkq - 0 10",
+      "description": "兵的捉双：如果白方的兵在c4，走c4就能同时攻击d5的兵和......不对。让我们看一个更清晰的例子。白方Nc3攻击d5的兵，如果黑方不理，Nxd5捉双c7和e7两个方向。",
+      "highlights": ["c3", "d5"]
+    },
+    {
+      "type": "board_demo",
+      "fen": "r2qk2r/ppp1bppp/2n5/3np1B1/2B5/5N2/PPP2PPP/RN1Q1RK1 w kq - 0 8",
+      "description": "象的捉双：白方Bg5攻击了e7的象，同时如果e7象移开，d8的后就暴露在Bg5的攻击下。这是利用牵制制造的\"间接捉双\"。",
+      "highlights": ["g5", "e7", "d8"]
+    },
+    {
+      "type": "quiz",
+      "question": "为什么兵的捉双特别有效？",
+      "options": ["因为兵走得快", "因为兵价值最低，捉住任何子都赚", "因为兵数量多", "因为兵可以升变"],
+      "correct": 1,
+      "explanation": "兵只值1分，所以兵攻击任何其他棋子（马3分、象3分、车5分、后9分）时，对方都不愿意用高价值子去换兵。兵的捉双几乎总是赚子。"
+    },
+    {
+      "type": "board_demo",
+      "fen": "r1bqk2r/pppp1ppp/2n5/2b1p3/4n3/2N2N2/PPPP1PPP/R1BQKB1R w KQkq - 0 5",
+      "description": "实战中寻找捉双的思路：先找到对方无保护或弱保护的棋子，然后看自己是否有一步棋能同时攻击其中两个。这里黑方Ne4同时攻击了c3的马和f2的兵（将军威胁），就是一个典型捉双。",
+      "highlights": ["e4", "c3", "f2"]
+    },
+    {
+      "type": "quiz",
+      "question": "以下哪种捉双最难防守？",
+      "options": ["后捉双两个兵", "马将军同时攻击后", "象攻击两个兵", "车攻击两个兵"],
+      "correct": 1,
+      "explanation": "马将军同时攻击后是最难防守的——因为必须先应将，没有时间救后。这就是为什么马叉王后是最经典的战术之一。"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "encourage",
+      "content": "记住，捉双的关键不是死记棋型，而是培养\"同时攻击两个目标\"的思维方式！"
+    },
+    {
+      "type": "celebration",
+      "character": "douding",
+      "expression": "celebrate",
+      "content": "双重攻击进阶学完了！你现在知道了每种棋子的捉双特点，实战中多多运用吧！+40经验值！",
+      "xp_earned": 40
+    }
+  ],
+  "exercises": [
+    {
+      "type": "choice",
+      "question": "后的捉双最有效的形式是？",
+      "options": ["攻击两个兵", "将军同时攻击无保护子力", "攻击两个马", "攻击两个象"],
+      "correct": 1
+    },
+    {
+      "type": "choice",
+      "question": "\"用低价值子捉双高价值目标\"，以下哪个最符合？",
+      "options": ["后捉双两个兵", "兵捉双车和象", "车捉双两个兵", "后捉双马和象"],
+      "correct": 1
+    },
+    {
+      "type": "choice",
+      "question": "实战中发现捉双机会的第一步是？",
+      "options": ["随便走一步看看", "找到对方无保护的棋子", "把后走到中心", "交换所有棋子"],
+      "correct": 1
+    },
+    {
+      "type": "board_interactive",
+      "fen": "r1bqk2r/pppp1Bpp/2n2n2/2b1p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 0 4",
+      "question": "白方刚走了Bxf7+将军。黑王应该往哪里走才能避免更大损失？",
+      "options": ["Kf8", "Ke7", "Kxf7", "Kd8"],
+      "correct": 0
+    }
+  ]
+}

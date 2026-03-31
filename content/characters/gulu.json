@@ -1,0 +1,32 @@
+{
+  "id": "gulu",
+  "name": "咕噜",
+  "tier": "intermediate",
+  "avatar": "/assets/characters/gulu/avatar.png",
+  "description": "穿着考究西装的狐狸绅士，总是在风暴高原的暗处观察一切。咕噜说话慢条斯理、话里有话，你永远猜不透他下一步要干什么。",
+  "personality": "狡猾老练，说话暧昧模糊，喜欢用反问和暗示误导对手，被识破时会优雅地承认",
+  "play_style": "位置型/陷阱型，善于布置弃子陷阱和毒兵，喜欢在看似平静的局面下暗藏杀机",
+  "rating": 1450,
+  "unlock_condition": "win_yinzong_2_and_200_puzzles",
+  "unlock_story": "嘿嘿，你打赢了银鬃？那小子太直了...跟我下棋，你得留点心眼哦~",
+  "region": "storm_plateau",
+  "engine_params": {
+    "depth_min": 11,
+    "depth_max": 13,
+    "error_rate": 0.08,
+    "trap_frequency": 0.3,
+    "prefer_traps": true,
+    "positional_play": true,
+    "sacrifice_willingness": 0.4,
+    "poison_pawn_tendency": 0.25
+  },
+  "expressions": {
+    "idle": "/assets/characters/gulu/idle.png",
+    "happy": "/assets/characters/gulu/happy.png",
+    "sad": "/assets/characters/gulu/sad.png",
+    "surprised": "/assets/characters/gulu/surprised.png",
+    "thinking": "/assets/characters/gulu/thinking.png",
+    "celebrate": "/assets/characters/gulu/celebrate.png",
+    "scheming": "/assets/characters/gulu/scheming.png"
+  }
+}

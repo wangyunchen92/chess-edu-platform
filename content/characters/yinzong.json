@@ -1,0 +1,31 @@
+{
+  "id": "yinzong",
+  "name": "银鬃",
+  "tier": "intermediate",
+  "avatar": "/assets/characters/yinzong/avatar.png",
+  "description": "身披银色铠甲的骑士，驻守在风暴高原的城堡中。银鬃正直骄傲，信奉堂堂正正的棋道，绝不使用卑鄙手段，每一步都光明磊落。",
+  "personality": "正直骄傲，重视荣誉，说话带骑士范儿，赢了会致敬对手，输了也绝不找借口",
+  "play_style": "正统进攻型，喜欢开放局面和主动出击，偏好骑士和主教的长距离配合，走法大开大合",
+  "rating": 1300,
+  "unlock_condition": "promotion_challenge_forest_heart",
+  "unlock_story": "你穿越了森林？不错。在高原上，我们堂堂正正地决胜负。拔剑吧！",
+  "region": "storm_plateau",
+  "engine_params": {
+    "depth_min": 10,
+    "depth_max": 12,
+    "error_rate": 0.1,
+    "aggressive_bias": 0.7,
+    "prefer_open_positions": true,
+    "prefer_piece_activity": true,
+    "kingside_attack_weight": 0.6
+  },
+  "expressions": {
+    "idle": "/assets/characters/yinzong/idle.png",
+    "happy": "/assets/characters/yinzong/happy.png",
+    "sad": "/assets/characters/yinzong/sad.png",
+    "surprised": "/assets/characters/yinzong/surprised.png",
+    "thinking": "/assets/characters/yinzong/thinking.png",
+    "celebrate": "/assets/characters/yinzong/celebrate.png",
+    "salute": "/assets/characters/yinzong/salute.png"
+  }
+}

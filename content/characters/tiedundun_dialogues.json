@@ -1,0 +1,89 @@
+{
+  "character_id": "tiedundun",
+  "dialogues": {
+    "greeting": [
+      { "text": "嘀嘀——检测到对弈请求。铁墩墩准备就绪，启动对弈程序！", "expression": "idle" },
+      { "text": "你好！铁墩墩是森林大门的守护者。要想过去，先赢铁墩墩！", "expression": "defense_mode" },
+      { "text": "嘟嘟~铁墩墩今天也要好好守住每一颗棋子！来吧！", "expression": "happy" },
+      { "text": "对弈者身份确认——欢迎。铁墩墩将全力防守！请进攻吧！", "expression": "defense_mode" },
+      { "text": "嗨！铁墩墩虽然圆滚滚的，但防守可是一等一的哦！开始吧！", "expression": "happy" }
+    ],
+    "good_move": [
+      { "text": "数据分析……这步走法威胁指数较高。铁墩墩需要加强防御。", "expression": "thinking" },
+      { "text": "嗯嗯？好棋！铁墩墩的传感器检测到了危险信号！", "expression": "surprised" },
+      { "text": "威胁检测——警告！对手走了一步很厉害的棋！铁墩墩小心！", "expression": "defense_mode" },
+      { "text": "好走法！铁墩墩的防守压力增加了……嘟嘟，要认真了！", "expression": "thinking" },
+      { "text": "分析完毕——这步棋质量很高。铁墩墩佩服！但我不会倒下的！", "expression": "surprised" }
+    ],
+    "blunder": [
+      { "text": "错误——错误——铁墩墩走错了！系统自检中……嘟嘟，好丢脸。", "expression": "sad" },
+      { "text": "警告：走法偏差！铁墩墩的防御出现了漏洞……正在修复！", "expression": "sad" },
+      { "text": "嘟……铁墩墩失误了。但铁墩墩是机器人，不会犯同样的错！", "expression": "thinking" },
+      { "text": "系统异常——这步不应该这样走的。铁墩墩要反省……嘟嘟。", "expression": "sad" },
+      { "text": "失误检测！铁墩墩的处理器短路了一下……重新启动防御！", "expression": "defense_mode" }
+    ],
+    "check_given": [
+      { "text": "将军！铁墩墩的反击程序启动！嘟嘟嘟~", "expression": "celebrate" },
+      { "text": "将！防守到位了就轮到铁墩墩进攻啦！", "expression": "happy" },
+      { "text": "反击模式——将军！你攻铁墩墩，铁墩墩反击你！", "expression": "defense_mode" },
+      { "text": "将军！嘟嘟~铁墩墩不只会防守，也会进攻的！", "expression": "celebrate" },
+      { "text": "将！数据分析显示——这是最佳反击时机！", "expression": "happy" }
+    ],
+    "check_received": [
+      { "text": "被将军——启动紧急防御程序！铁墩墩不慌！", "expression": "defense_mode" },
+      { "text": "将军？嘟嘟，铁墩墩的防线被突破了？让我分析分析……", "expression": "thinking" },
+      { "text": "警告——王受到威胁！铁墩墩立即组织防御！", "expression": "defense_mode" },
+      { "text": "被将了！嘟嘟……铁墩墩要找到最安全的位置！", "expression": "thinking" },
+      { "text": "将军检测——铁墩墩的装甲足够厚，一定能挡住！", "expression": "defense_mode" }
+    ],
+    "capture_given": [
+      { "text": "目标捕获！嘟嘟~铁墩墩的反击成功了！", "expression": "celebrate" },
+      { "text": "吃子！铁墩墩等了好久的反击机会终于来了！", "expression": "happy" },
+      { "text": "拿下——入侵铁墩墩防线的棋子已被清除！", "expression": "defense_mode" },
+      { "text": "吃掉！嘟嘟~你进入了铁墩墩的防御圈，那就别想出去了！", "expression": "celebrate" },
+      { "text": "目标消灭！铁墩墩虽然慢，但抓住机会绝不手软！", "expression": "happy" }
+    ],
+    "capture_received": [
+      { "text": "棋子损失——嘟嘟，铁墩墩的防线出现缺口了……", "expression": "sad" },
+      { "text": "丢子了……铁墩墩要重新组织防御阵型！", "expression": "thinking" },
+      { "text": "损失报告——一颗棋子阵亡。铁墩墩缩紧防线！", "expression": "defense_mode" },
+      { "text": "被吃了一个……嘟嘟，没关系，铁墩墩的核心防御还在！", "expression": "thinking" },
+      { "text": "棋子被吃了！嘟嘟……铁墩墩要更谨慎了！", "expression": "sad" }
+    ],
+    "advantage": [
+      { "text": "形势评估——铁墩墩优势！嘟嘟~防守成功，现在可以反击了！", "expression": "happy" },
+      { "text": "数据显示铁墩墩领先！但不能放松，继续守好每一步！", "expression": "defense_mode" },
+      { "text": "优势确认！铁墩墩的防守策略起效了！嘟嘟嘟~", "expression": "celebrate" },
+      { "text": "领先了！铁墩墩的钢铁防线没有白建！继续稳住！", "expression": "happy" },
+      { "text": "形势对铁墩墩有利！但铁墩墩知道——防守一刻不能松！", "expression": "defense_mode" }
+    ],
+    "disadvantage": [
+      { "text": "警告——形势不利！铁墩墩启动加强防御模式！", "expression": "defense_mode" },
+      { "text": "落后了……嘟嘟，但铁墩墩的装甲还很厚！不会轻易倒下！", "expression": "thinking" },
+      { "text": "数据不乐观……铁墩墩收紧防线，寻找反击机会！", "expression": "defense_mode" },
+      { "text": "劣势中……但铁墩墩最擅长在困境中防守！嘟嘟，不放弃！", "expression": "thinking" },
+      { "text": "形势困难，但铁墩墩的防御从不崩溃！等我找到机会！", "expression": "defense_mode" }
+    ],
+    "win": [
+      { "text": "对弈结束——铁墩墩获胜！嘟嘟嘟~防守反击策略成功！", "expression": "celebrate" },
+      { "text": "赢了！铁墩墩的钢铁防线不可突破！嘟嘟嘟~", "expression": "celebrate" },
+      { "text": "胜利确认！你进攻得很猛，但铁墩墩守住了！好棋！", "expression": "happy" },
+      { "text": "铁墩墩获胜！嘟嘟~你的实力很强，但防守才是王道！", "expression": "happy" },
+      { "text": "赢啦赢啦！嘟嘟~铁墩墩是最强的守护者！", "expression": "celebrate" }
+    ],
+    "lose": [
+      { "text": "系统报告——铁墩墩……输了？防御参数需要重新校准……嘟嘟。", "expression": "sad" },
+      { "text": "防线被突破了……你的攻击力超出了铁墩墩的防御等级……", "expression": "sad" },
+      { "text": "输了……嘟嘟，铁墩墩的防守还不够完美。要回去升级了！", "expression": "sad" },
+      { "text": "对弈结束——铁墩墩战败。你很强……铁墩墩会加固防线再来的！", "expression": "thinking" },
+      { "text": "数据分析……你的实力已超出铁墩墩的防御参数。厉害！嘟嘟。", "expression": "surprised" }
+    ],
+    "draw": [
+      { "text": "平局——双方势均力敌！嘟嘟，铁墩墩的防守还是很稳的！", "expression": "happy" },
+      { "text": "和棋！你攻不进来，铁墩墩也追不上你~嘟嘟~", "expression": "thinking" },
+      { "text": "平局确认——铁墩墩守住了！虽然没赢，但也没输！", "expression": "defense_mode" },
+      { "text": "平了！嘟嘟~看来你我旗鼓相当！下次再决胜负！", "expression": "happy" },
+      { "text": "和棋——铁墩墩的防线依然坚固！但下次要想办法赢！", "expression": "thinking" }
+    ]
+  }
+}

@@ -1,0 +1,111 @@
+{
+  "id": "l2_15",
+  "course_id": "level_2",
+  "unit": "unit_4",
+  "order": 15,
+  "title": "战术综合训练",
+  "description": "综合运用所有学过的战术，在复杂局面中识别和执行正确的战术",
+  "estimated_minutes": 30,
+  "steps": [
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "小琪，恭喜你学完了所有基础战术！今天是综合训练——我会给你一些复杂的局面，你要判断应该用哪种战术。"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "happy",
+      "content": "来吧！我准备好了，让我试试把所有战术串起来用！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "thinking",
+      "content": "记住流程：1) 用战术眼扫描 2) 识别战术类型 3) 计算变化 4) 执行。我们开始！"
+    },
+    {
+      "type": "text",
+      "content": "战术综合训练思维清单：\n\n扫描阶段（2-3秒）：\n- 对方有无保护的子吗？（→捉双/消除保护）\n- 有子排在同一线上吗？（→牵制/串击/X光）\n- 有子挡在攻击线上吗？（→闪击）\n- 有子承担多重任务吗？（→过载）\n- 国王安全吗？（→组合攻击/连续杀）\n- 有兵接近底线吗？（→升变威胁/突破）\n\n计算阶段：\n- 第一步走什么？对方最佳应对是什么？\n- 然后我走什么？一直算到结果确定为止。\n\n决策阶段：\n- 这个战术能否成功？值不值得执行？"
+    },
+    {
+      "type": "board_demo",
+      "fen": "r2q1rk1/pp2ppbp/2np1np1/2p5/4PB2/2NP1N2/PPP1QPPP/R4RK1 w - - 0 10",
+      "description": "综合训练第一题：用战术眼扫描——黑方c5兵无保护，d6的马保护c5但也在保护f7。如果白方Ng5攻击f7，d6马就面临过载（既要保护c5又要保护f7）。这就是过载+双重攻击的组合。",
+      "highlights": ["f3", "d6", "c5", "f7"]
+    },
+    {
+      "type": "board_demo",
+      "fen": "r1b2rk1/ppq2ppp/2n1pn2/2Pp4/1b6/2N1PN2/PP1BBPPP/R2Q1RK1 w - - 0 10",
+      "description": "综合训练第二题：白方可以走Nxd5! 如果exd5，白方Bf3发现牵制——d5兵被牵制在d线上（后面是d8...不对）。让我们换个思路：Nxd5 Nxd5, Bxb4赢回子力并消灭黑方的暗格象。这是消除保护+子力交换的组合。",
+      "highlights": ["c3", "d5", "b4"]
+    },
+    {
+      "type": "board_demo",
+      "fen": "r3r1k1/pp3ppp/2qb1n2/3p4/3P1B2/2PB4/PP1Q1PPP/R3R1K1 w - - 0 15",
+      "description": "综合训练第三题：白方Bd3瞄准h7，Bf4控制暗格。如果Bxh7+ Nxh7（消除保护引王），Qxd6赢子。或者更直接：Bxh7+ Kxh7, Qd3+将军叉王和d6象。这是引入+捉双的组合！",
+      "highlights": ["d3", "h7", "f4", "d6"]
+    },
+    {
+      "type": "quiz",
+      "question": "看到对方两个重要子在同一条线上时，应该想到？",
+      "options": ["捉双", "牵制或串击", "闪击", "过载"],
+      "correct": 1,
+      "explanation": "两个子在同一条直线或斜线上→想到牵制（弱子在前保护强子）或串击（强子在前被迫移开）。这是战术眼的核心识别模式之一。"
+    },
+    {
+      "type": "board_demo",
+      "fen": "r4rk1/pp1q1ppp/2p1pn2/3n4/1b1PN3/1B3N2/PP2QPPP/R1B2RK1 w - - 0 12",
+      "description": "最后一题：白方Ne4攻击f6，同时Nf3也在场。白方Nxf6+ gxf6，打开g线！然后Qe4瞄准g线和b7，是闪击+开线攻王的组合。Nxf6+是牺牲消除保护（消除g7兵的保护者f6马），暴露黑王。",
+      "highlights": ["e4", "f6", "e2"]
+    },
+    {
+      "type": "quiz",
+      "question": "战术综合训练的最大收获是？",
+      "options": ["记住更多棋型", "学会在复杂局面中用战术眼扫描→识别→计算→执行", "每步棋都下战术", "赢每盘棋"],
+      "correct": 1,
+      "explanation": "战术综合训练的目的不是记住特定棋型，而是掌握一个系统的思维流程：扫描→识别→计算→执行。只要坚持这个流程，你会在实战中越来越快地发现战术机会。"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "encourage",
+      "content": "Level 2全部学完了！你已经掌握了所有基础战术——从捉双到连续杀，从进攻到防守。接下来Level 3我们将学习战略思维，让你的棋更有深度！"
+    },
+    {
+      "type": "celebration",
+      "character": "douding",
+      "expression": "celebrate",
+      "content": "恭喜完成Level 2——基础战术课程！你已经掌握了战术眼、捉双、牵制、串击、闪击、引离、引入、消除保护、过载、截断、X光、兵的战术、组合战术和战术防守。这是巨大的进步！+60经验值！",
+      "xp_earned": 60
+    }
+  ],
+  "exercises": [
+    {
+      "type": "choice",
+      "question": "战术眼扫描的五大信号是？",
+      "options": ["子力多少、位置好坏、时间多少、心态好坏、对手水平", "无保护子、王暴露、子过载、同线排列、位置差", "将军、吃子、推兵、交换、弃子", "开局、中局、残局、攻击、防守"],
+      "correct": 1
+    },
+    {
+      "type": "choice",
+      "question": "以下哪个是正确的战术思维流程？",
+      "options": ["想到什么走什么", "扫描→识别战术类型→计算变化→执行", "只计算将军", "只看对手的棋"],
+      "correct": 1
+    },
+    {
+      "type": "choice",
+      "question": "组合战术的核心是？",
+      "options": ["每步棋都随机走", "多种战术手段连续使用形成强制序列", "只用一种战术", "等对手犯错"],
+      "correct": 1
+    },
+    {
+      "type": "board_interactive",
+      "fen": "r1bq1rk1/ppp2ppp/2n2n2/3Np3/2B1P1b1/5N2/PPPP1PPP/R1BQ1RK1 w - - 0 7",
+      "question": "白方Nd5在中心非常强大。白方下一步最佳着法是？",
+      "options": ["Nxf6+捉双王和g4象", "c3保守下法", "d3慢慢来", "h3赶走g4象"],
+      "correct": 0
+    }
+  ]
+}

@@ -136,7 +136,7 @@ const GameHistoryPage: React.FC = () => {
                   >
                     {game.rating_change > 0 ? '+' : ''}{game.rating_change}
                   </div>
-                  <div className="text-[var(--text-xs)] text-[var(--text-muted)]">Rating</div>
+                  <div className="text-[var(--text-xs)] text-[var(--text-muted)]">评分</div>
                 </div>
 
                 {/* Arrow */}

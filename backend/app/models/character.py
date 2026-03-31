@@ -34,7 +34,10 @@ class Character(Base):
     mistake_rate: Mapped[float] = mapped_column(
         Numeric(3, 2), nullable=False, default=0.30
     )
+    play_style_params: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
     unlock_condition: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
+    unlock_story: Mapped[Optional[str]] = mapped_column(Text, nullable=True, default=None)
+    region: Mapped[str] = mapped_column(String(30), nullable=False, default="meadow")
     is_free: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     sort_order: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     created_at: Mapped[datetime] = mapped_column(
@@ -94,6 +97,7 @@ class UserCharacterRelation(Base):
         DateTime(timezone=True), nullable=True
     )
     affinity: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    affinity_level: Mapped[str] = mapped_column(String(20), nullable=False, default="stranger")
     games_played: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     games_won: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     games_lost: Mapped[int] = mapped_column(Integer, nullable=False, default=0)

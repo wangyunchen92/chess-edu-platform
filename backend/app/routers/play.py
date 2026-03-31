@@ -7,16 +7,20 @@ from app.database import get_db
 from app.dependencies import PaginationParams, get_current_user
 from app.schemas.common import APIResponse, PaginatedResponse
 from app.schemas.play import (
+    AdaptiveDifficultyResponse,
     CharacterDetail,
     CharacterListItem,
+    CheckUnlockResponse,
     CompleteGameRequest,
     CreateGameRequest,
     CreateGameResponse,
     GameDetail,
     GameListItem,
     GameReviewResponse,
+    UnlockResponse,
 )
 from app.services import dialogue_service, game_service
+from app.services import character_service, adaptive_service
 from app.services.membership_service import consume_quota
 
 router = APIRouter()
@@ -51,6 +55,53 @@ def get_character_detail(
             detail="Character not found",
         )
     return APIResponse.success(data=detail)
+
+
+# ── Character unlock endpoints ───────────────────────────────────
+
+
+@router.post("/characters/{character_id}/unlock", response_model=APIResponse[UnlockResponse])
+def unlock_character(
+    character_id: str,
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> APIResponse[UnlockResponse]:
+    """Attempt to unlock a character. Checks conditions and unlocks if met."""
+    user_id = current_user["user_id"]
+    result = character_service.unlock_character(db, character_id, user_id)
+    return APIResponse.success(data=result)
+
+
+@router.post("/characters/{character_id}/check-unlock", response_model=APIResponse[CheckUnlockResponse])
+def check_unlock(
+    character_id: str,
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> APIResponse[CheckUnlockResponse]:
+    """Check unlock conditions for a character (read-only, does not perform unlock)."""
+    user_id = current_user["user_id"]
+    result = character_service.check_unlock(db, character_id, user_id)
+    return APIResponse.success(data=result)
+
+
+# ── Adaptive difficulty endpoints ────────────────────────────────
+
+
+@router.get("/adaptive/{character_id}", response_model=APIResponse[AdaptiveDifficultyResponse])
+def get_adaptive_difficulty(
+    character_id: str,
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> APIResponse[AdaptiveDifficultyResponse]:
+    """Get adaptive difficulty status for a user-character pair."""
+    user_id = current_user["user_id"]
+    result = adaptive_service.get_adaptive_status(db, user_id, character_id)
+    if result is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Character not found",
+        )
+    return APIResponse.success(data=result)
 
 
 # ── Game endpoints ────────────────────────────────────────────────

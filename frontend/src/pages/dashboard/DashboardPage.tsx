@@ -2,6 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
 import { dashboardApi } from '@/api/dashboard'
+import { diagnosisApi } from '@/api/diagnosis'
+import type { DiagnosisSummaryResponse } from '@/types/api'
 import Card from '@/components/common/Card'
 import Button from '@/components/common/Button'
 import RatingDisplay from '@/components/gamification/RatingDisplay'
@@ -147,6 +149,7 @@ const DashboardPage: React.FC = () => {
   const [data, setData] = useState<DashboardData>(MOCK_DASHBOARD)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [diagnosisSummary, setDiagnosisSummary] = useState<DiagnosisSummaryResponse | null>(null)
 
   // Reload dashboard data every time the page becomes visible (returning from game/puzzle/etc)
   const loadDashboard = useCallback(() => {
@@ -167,6 +170,14 @@ const DashboardPage: React.FC = () => {
         setError(err?.message ?? 'Failed to load dashboard')
       })
       .finally(() => setLoading(false))
+
+    // Load diagnosis summary (non-blocking)
+    diagnosisApi.getSummary()
+      .then((res) => {
+        const summary = (res.data as any)?.data ?? res.data
+        if (summary) setDiagnosisSummary(summary)
+      })
+      .catch(() => { /* silently ignore - diagnosis is optional */ })
   }, [])
 
   // Load on mount
@@ -251,7 +262,7 @@ const DashboardPage: React.FC = () => {
                 ? `今日已下${d.todayGamesCount}盘棋，再来一局？`
                 : '和AI角色下一盘棋',
               link: '/play',
-              emoji: '\u265E',
+              emoji: '♞',
             },
             {
               done: false,
@@ -266,7 +277,7 @@ const DashboardPage: React.FC = () => {
               className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-colors hover:bg-[var(--accent-light)]"
             >
               <span className="text-lg shrink-0">
-                {item.done ? '\u2705' : item.emoji}
+                {item.done ? '✅' : item.emoji}
               </span>
               <span
                 className={`text-[var(--text-sm)] flex-1 ${
@@ -275,7 +286,7 @@ const DashboardPage: React.FC = () => {
               >
                 {item.label}
               </span>
-              <span className="text-[var(--text-muted)] text-sm">{'\u203A'}</span>
+              <span className="text-[var(--text-muted)] text-sm">{'›'}</span>
             </div>
           ))}
         </div>
@@ -304,7 +315,7 @@ const DashboardPage: React.FC = () => {
         <Card padding="lg" onClick={() => navigate('/play')}>
           <div className="flex items-center gap-3 mb-3">
             <div className="w-10 h-10 rounded-[var(--radius-sm)] bg-[rgba(16,185,129,0.1)] flex items-center justify-center text-xl">
-              {'\u265E'}
+              {'♞'}
             </div>
             <h3 className="text-[var(--text-md)] font-semibold text-[var(--text)]">快速对弈</h3>
           </div>
@@ -332,6 +343,42 @@ const DashboardPage: React.FC = () => {
           </Button>
         </Card>
       </div>
+
+      {/* ── Weakness Diagnosis Summary ── */}
+      {diagnosisSummary && diagnosisSummary.has_diagnosis && diagnosisSummary.primary_weakness && (
+        <Card padding="lg" onClick={() => navigate('/diagnosis')}>
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-10 h-10 rounded-[var(--radius-sm)] bg-[rgba(239,68,68,0.1)] flex items-center justify-center text-xl">
+              {'\uD83D\uDD0D'}
+            </div>
+            <div className="flex-1">
+              <h3 className="text-[var(--text-md)] font-semibold text-[var(--text)]">{'弱点诊断'}</h3>
+              <p className="text-[var(--text-xs)] text-[var(--text-muted)]">
+                {diagnosisSummary.active_recommendations_count} 个训练建议
+              </p>
+            </div>
+            <span className="text-[var(--text-muted)] text-sm">{'›'}</span>
+          </div>
+          <div className="px-3 py-2.5 rounded-[var(--radius-sm)] bg-[rgba(239,68,68,0.06)] border border-[rgba(239,68,68,0.15)]">
+            <p className="text-[var(--text-sm)] text-[var(--text)]">
+              <span className="font-medium">{diagnosisSummary.primary_weakness.label}</span>
+              <span className="text-[var(--text-muted)]"> — </span>
+              <span className="text-[var(--text-sub)]">{diagnosisSummary.primary_weakness.suggestion}</span>
+            </p>
+            <div className="flex items-center gap-2 mt-2">
+              <div className="flex-1 h-1.5 rounded-full bg-[var(--border)] overflow-hidden">
+                <div
+                  className="h-full rounded-full bg-[var(--danger)]"
+                  style={{ width: `${diagnosisSummary.primary_weakness.score}%` }}
+                />
+              </div>
+              <span className="text-[var(--text-xs)] font-bold text-[var(--danger)]">
+                {diagnosisSummary.primary_weakness.score}分
+              </span>
+            </div>
+          </div>
+        </Card>
+      )}
 
       {/* ── Recent Games ── */}
       <Card padding="lg">
@@ -384,7 +431,7 @@ const DashboardPage: React.FC = () => {
         </h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {[
-            { label: '对局', value: d.weekStats.games, color: 'var(--accent)', emoji: '\u265E' },
+            { label: '对局', value: d.weekStats.games, color: 'var(--accent)', emoji: '♞' },
             { label: '胜率', value: d.weekStats.winRate, color: 'var(--success)', emoji: '\uD83C\uDFC6' },
             { label: '谜题', value: d.weekStats.puzzles, color: 'var(--warning)', emoji: '\uD83E\uDDE9' },
             { label: '学习', value: `${d.weekStats.learnMinutes}分钟`, color: 'var(--info)', emoji: '\uD83D\uDCDA' },
@@ -416,7 +463,7 @@ const DashboardPage: React.FC = () => {
             >
               <span className="text-xl">{rec.emoji}</span>
               <span className="text-[var(--text-sm)] text-[var(--text)] flex-1">{rec.title}</span>
-              <span className="text-[var(--text-muted)] text-sm">{'\u203A'}</span>
+              <span className="text-[var(--text-muted)] text-sm">{'›'}</span>
             </button>
           ))}
         </div>

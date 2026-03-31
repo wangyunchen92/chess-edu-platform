@@ -1,0 +1,98 @@
+{
+  "id": "l2_05",
+  "course_id": "level_2",
+  "unit": "unit_2",
+  "order": 5,
+  "title": "闪击——发现攻击",
+  "description": "学习闪击（Discovered Attack）战术，一个子移开露出后面子力的攻击线",
+  "estimated_minutes": 25,
+  "steps": [
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "闪击（Discovered Attack）是非常巧妙的战术。一个子移开，露出后面的子发起攻击——就像打开一扇门，让门后的大炮开火！"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "surprised",
+      "content": "就是说移开的子和后面的子同时发起攻击？太厉害了！"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "thinking",
+      "content": "对！而且如果后面露出的攻击是将军，那就叫\"闪将\"（Discovered Check），更加致命！因为对手必须先应将，移开的子就可以为所欲为了。"
+    },
+    {
+      "type": "text",
+      "content": "闪击（Discovered Attack）要点：\n\n**基本结构**：A子挡在B子的攻击线上。A子移开后，B子的攻击线打通。\n\n**闪击的类型**：\n1. **普通闪击**：A移开，B攻击某个目标，A同时攻击另一个目标\n2. **闪将**（Discovered Check）：B露出后将军国王，A可以去任何地方\n3. **双将**（Double Check）：A和B同时将军！这是最恐怖的——对手只能移王，不能挡也不能吃\n\n双将是国际象棋中最强大的战术手段之一！"
+    },
+    {
+      "type": "board_demo",
+      "fen": "r1bqk2r/pppp1ppp/2n2n2/2b1p3/2B1P3/3P1N2/PPP2PPP/RNBQK2R w KQkq - 0 4",
+      "description": "闪击的准备：白方的马在f3挡住了d1后对d8的攻击线（经过d-file）。如果白方马移到合适位置，后就能沿线发起攻击。但这个局面暂时不成立，让我们看更清晰的例子。",
+      "highlights": ["f3"]
+    },
+    {
+      "type": "board_demo",
+      "fen": "r1bqr1k1/ppp2ppp/2nb1n2/3Np3/2B1P3/8/PPP2PPP/RNBQR1K1 w - - 0 9",
+      "description": "经典闪击：白马在d5，白车在e1。如果白马Nf6+将军（闪将！），同时白车Re1的攻击线打通，直接瞄准e8的黑车。黑方必须应将，然后白车吃e8车。一步棋赢一个车！",
+      "highlights": ["d5", "e1", "e8"]
+    },
+    {
+      "type": "board_demo",
+      "fen": "rn1qkb1r/ppp1pppp/5n2/3pNb2/3P4/2N5/PPP1PPPP/R1BQKB1R w KQkq - 2 4",
+      "description": "白方的马在e5挡住了象对f5黑象的攻击线。如果马Nxf7......但这里更好的例子是：白方走e4，打通了f1象的斜线，同时攻击d5的兵，这也是一种闪击思想。",
+      "highlights": ["e5"]
+    },
+    {
+      "type": "quiz",
+      "question": "\"双将\"为什么特别恐怖？",
+      "options": ["因为两个子同时攻击", "因为对手只能移王，不能挡也不能吃", "因为一定会将杀", "因为很少出现"],
+      "correct": 1,
+      "explanation": "双将时两个子同时将军国王。挡一个还有一个，吃一个还有一个，所以唯一的办法是移王。这大大限制了对手的选择，经常直接导致将杀！"
+    },
+    {
+      "type": "board_demo",
+      "fen": "r1bqk2r/pppp1ppp/2n2n2/2b1N3/2B1P3/8/PPPP1PPP/RNBQK2R w KQkq - 0 4",
+      "description": "闪击的思维训练：当你在棋盘上看到自己的两个子在同一条线上，中间隔着一个自己的子，想一想——这个中间的子如果移开，会发生什么？这就是发现闪击机会的关键。",
+      "highlights": ["e5", "c4"]
+    },
+    {
+      "type": "quiz",
+      "question": "如何在实战中寻找闪击机会？",
+      "options": ["寻找自己的子挡在另一个子的攻击线上", "只看将军机会", "多走兵", "等对手犯错"],
+      "correct": 0,
+      "explanation": "闪击的核心是\"一个子挡住了另一个子的攻击线\"。每次走棋前想想：我有没有子挡在后/车/象的攻击线上？如果这个子移开同时做另一件事（攻击或将军），就是闪击！"
+    },
+    {
+      "type": "celebration",
+      "character": "douding",
+      "expression": "celebrate",
+      "content": "闪击是最华丽的战术之一！记住要点：移开的子做一件事，露出的子做另一件事。双管齐下，对手顾此失彼！+40经验值！",
+      "xp_earned": 40
+    }
+  ],
+  "exercises": [
+    {
+      "type": "choice",
+      "question": "闪将（Discovered Check）的特点是？",
+      "options": ["移开的子将军", "露出的子将军，移开的子可以去任何地方", "两个子同时将军", "国王发起攻击"],
+      "correct": 1
+    },
+    {
+      "type": "choice",
+      "question": "双将时对手只能做什么？",
+      "options": ["吃掉攻击者", "用棋子阻挡", "移动国王", "以上都可以"],
+      "correct": 2
+    },
+    {
+      "type": "choice",
+      "question": "哪种情况最容易制造闪击？",
+      "options": ["所有子都在第一行", "自己的子排在同一条线上中间隔着另一个子", "对手子力很多", "棋盘上兵很少"],
+      "correct": 1
+    }
+  ]
+}

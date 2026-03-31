@@ -1,0 +1,30 @@
+{
+  "id": "lihuahua",
+  "name": "狸花花",
+  "tier": "elementary",
+  "avatar": "/assets/characters/lihuahua/avatar.png",
+  "description": "扎着马尾辫的精灵女孩，总是笑嘻嘻地在树丛中设下各种小陷阱。别被她可爱的外表骗了——她的每一步棋都可能暗藏玄机！",
+  "personality": "聪明狡猾，自信满满，喜欢设陷阱后看对手中招的表情，偶尔轻敌翻车会恼羞成怒",
+  "play_style": "战术型，善于设陷阱和双重攻击，喜欢走看似有漏洞实则暗藏杀机的棋",
+  "rating": 1000,
+  "unlock_condition": "win_dongdong_1_and_fork_puzzles",
+  "unlock_story": "噢？你赢了冬冬？有意思~那你能识破我的小把戏吗？嘻嘻~",
+  "region": "trial_forest",
+  "engine_params": {
+    "depth_min": 7,
+    "depth_max": 9,
+    "error_rate": 0.2,
+    "prefer_traps": true,
+    "prefer_tactical": true,
+    "trap_frequency": 0.2
+  },
+  "expressions": {
+    "idle": "/assets/characters/lihuahua/idle.png",
+    "happy": "/assets/characters/lihuahua/happy.png",
+    "sad": "/assets/characters/lihuahua/sad.png",
+    "surprised": "/assets/characters/lihuahua/surprised.png",
+    "thinking": "/assets/characters/lihuahua/thinking.png",
+    "celebrate": "/assets/characters/lihuahua/celebrate.png",
+    "mischievous": "/assets/characters/lihuahua/mischievous.png"
+  }
+}

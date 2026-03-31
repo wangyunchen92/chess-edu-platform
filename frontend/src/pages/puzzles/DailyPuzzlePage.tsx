@@ -237,10 +237,20 @@ const DailyPuzzlePage: React.FC = () => {
         // Wrong move
         setFeedback('wrong')
         puzzleStore.resetStreak()
+        // Submit failed attempt so it appears in mistake book (once per puzzle)
+        if (currentPuzzle && !submittedIds.has(currentPuzzle.id)) {
+          setSubmittedIds(prev => new Set(prev).add(currentPuzzle.id))
+          puzzlesApi.submitAttempt(currentPuzzle.id, {
+            user_moves: userMove,
+            is_correct: false,
+            time_spent_ms: 0,
+            source: 'daily',
+          }).catch((err) => console.error('[DailyPuzzlePage] API error:', err))
+        }
         setTimeout(() => setFeedback(null), 1500)
       }
     },
-    [currentPuzzle, currentFen, solutionStep, feedback, currentIdx, puzzleStore],
+    [currentPuzzle, currentFen, solutionStep, feedback, currentIdx, puzzleStore, submittedIds],
   )
 
   const getValidMoves = useCallback(

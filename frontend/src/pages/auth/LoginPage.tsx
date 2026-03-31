@@ -18,7 +18,7 @@ const LoginPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!username.trim() || !password.trim()) {
-      setError('Please enter username and password')
+      setError('请输入用户名和密码')
       return
     }
 
@@ -30,10 +30,10 @@ const LoginPage: React.FC = () => {
       // Backend returns: { code: 0, message: "success", data: { user: {...}, tokens: { access_token, refresh_token, token_type } } }
       const { user, tokens } = res.data.data
       login(tokens.access_token, tokens.refresh_token, user)
-      addToast('success', 'Login successful')
+      addToast('success', '登录成功')
       navigate('/', { replace: true })
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Login failed'
+      const message = err instanceof Error ? err.message : '登录失败'
       setError(message)
     } finally {
       setLoading(false)
@@ -75,8 +75,13 @@ const LoginPage: React.FC = () => {
         {/* Logo + Title */}
         <div className="text-center mb-8">
           <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-[var(--accent)] to-[var(--accent-2)] flex items-center justify-center shadow-[var(--shadow-accent)]">
-            <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-              <path d="M14 3L3 9l11 6 11-6-11-6zM3 19l11 6 11-6M3 14l11 6 11-6" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <svg width="28" height="28" viewBox="0 0 45 45" fill="none">
+              <g fill="#fff" fillRule="evenodd" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M 22,10 C 32.5,11 38.5,18 38,39 L 15,39 C 15,30 25,32.5 23,18" />
+                <path d="M 24,18 C 24.38,20.91 18.45,25.37 16,27 C 13,29 13.18,31.34 11,31 C 9.958,30.06 12.41,27.96 11,28 C 10,28 11.19,29.23 10,30 C 9,30 5.997,31 6,26 C 6,24 12,14 12,14 C 12,14 13.89,12.1 14,10.5 C 13.27,9.506 13.5,8.5 13.5,7.5 C 14.5,6.5 16.5,10 16.5,10 L 18.5,10 C 18.5,10 19.28,8.008 21,7 C 22,7 22,10 22,10" />
+                <path d="M 9.5,25.5 A 0.5,0.5 0 1 1 8.5,25.5 A 0.5,0.5 0 1 1 9.5,25.5 z" fill="#fff" />
+                <path d="M 15,15.5 A 0.5,1.5 0 1 1 14,15.5 A 0.5,1.5 0 1 1 15,15.5 z" fill="#fff" transform="matrix(0.866,0.5,-0.5,0.866,9.693,-5.173)" />
+              </g>
             </svg>
           </div>
           <h1 className="text-[var(--text-3xl)] font-bold gradient-text mb-1">
@@ -98,7 +103,7 @@ const LoginPage: React.FC = () => {
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="Enter your username"
+              placeholder="请输入用户名"
               autoComplete="username"
               className="w-full px-4 py-2.5 rounded-[var(--radius-sm)] text-[var(--text-sm)] text-white placeholder-slate-500 outline-none transition-colors"
               style={{
@@ -123,7 +128,7 @@ const LoginPage: React.FC = () => {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
+              placeholder="请输入密码"
               autoComplete="current-password"
               className="w-full px-4 py-2.5 rounded-[var(--radius-sm)] text-[var(--text-sm)] text-white placeholder-slate-500 outline-none transition-colors"
               style={{

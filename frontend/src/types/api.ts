@@ -214,14 +214,20 @@ export interface CharacterListItem {
   slug: string
   name: string
   tier: string
+  region: string
   avatar_key: string
   play_style: string
+  play_style_params: Record<string, unknown>
   base_rating: number
   rating_range_min: number
   rating_range_max: number
   is_free: boolean
   sort_order: number
   is_unlocked: boolean
+  unlock_condition: Record<string, unknown> | null
+  unlock_story: string | null
+  affinity: number
+  affinity_level: string
   stats: CharacterStats | null
 }
 
@@ -230,9 +236,11 @@ export interface CharacterDetail {
   slug: string
   name: string
   tier: string
+  region: string
   avatar_key: string
   personality: string
   play_style: string
+  play_style_params: Record<string, unknown>
   base_rating: number
   rating_range_min: number
   rating_range_max: number
@@ -242,7 +250,105 @@ export interface CharacterDetail {
   is_free: boolean
   sort_order: number
   is_unlocked: boolean
+  unlock_condition: Record<string, unknown> | null
+  unlock_story: string | null
+  affinity: number
+  affinity_level: string
   stats: CharacterStats | null
+}
+
+// ── Character Unlock ───────────────────────────────────────────
+
+export interface UnlockConditionItem {
+  type: string
+  label: string
+  required: string | number
+  current?: string | number
+  met: boolean
+}
+
+export interface CheckUnlockResponse {
+  character_id: string
+  character_name: string
+  is_unlocked: boolean
+  conditions: UnlockConditionItem[]
+}
+
+export interface UnlockCharacterResponse {
+  character_id: string
+  character_name?: string
+  unlocked: boolean
+  unlock_story?: Array<{ speaker: string; text: string; emotion?: string }>
+  missing_conditions?: Array<{ type: string; required: string | number; current?: string | number }>
+}
+
+// ── Diagnosis ──────────────────────────────────────────────────
+
+export interface DiagnosisScores {
+  opening: number
+  middlegame_tactics: number
+  middlegame_strategy: number
+  endgame: number
+  time_management: number
+}
+
+export interface ThemeScoreItem {
+  score: number
+  correct: number
+  total: number
+}
+
+export interface DiagnosisProfileResponse {
+  user_id?: string
+  confidence: string
+  scores: DiagnosisScores | null
+  theme_scores: Record<string, ThemeScoreItem> | null
+  weakest_dimensions: string[] | null
+  games_analyzed: number
+  puzzles_analyzed: number
+  min_games_required?: number
+  min_puzzles_required?: number
+  last_analyzed_at: string | null
+  message?: string
+}
+
+export interface DiagnosisAnalyzeRequest {
+  force?: boolean
+}
+
+export interface DiagnosisAnalyzeResponse {
+  analyzed: boolean
+  games_analyzed: number
+  puzzles_analyzed: number
+  changes: Array<{
+    dimension: string
+    old_score: number
+    new_score: number
+    trend: string
+  }>
+}
+
+export interface RecommendationItem {
+  id: string
+  weakness_dimension: string
+  recommendation_type: string
+  target_id: string | null
+  target_label: string
+  priority: number
+  status: string
+  reason?: string
+}
+
+export interface DiagnosisSummaryResponse {
+  has_diagnosis: boolean
+  confidence: string
+  primary_weakness: {
+    dimension: string
+    label: string
+    score: number
+    suggestion: string
+  } | null
+  active_recommendations_count: number
 }
 
 export interface CreateGameRequest {
@@ -300,6 +406,8 @@ export interface GameDetail {
   ai_rating_used: number | null
   hints_used: number
   review_data: Record<string, unknown> | null
+  difficulty_mode: string | null
+  adaptive_params: Record<string, unknown> | null
   started_at: string
   ended_at: string | null
   created_at: string

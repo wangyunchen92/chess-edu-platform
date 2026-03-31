@@ -297,7 +297,7 @@ const ProfilePage: React.FC = () => {
           </div>
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-[var(--text-sm)] text-[var(--text-sub)]">Puzzle Rating</span>
+              <span className="text-[var(--text-sm)] text-[var(--text-sub)]">谜题评分</span>
               <span className="text-[var(--text-md)] font-bold tabular-nums" style={{ color: 'var(--warning)' }}>{data.puzzleStats.rating}</span>
             </div>
             <div className="flex items-center justify-between">

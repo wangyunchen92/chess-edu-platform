@@ -1,0 +1,104 @@
+{
+  "id": "l2_04",
+  "course_id": "level_2",
+  "unit": "unit_2",
+  "order": 4,
+  "title": "串击战术",
+  "description": "学习串击（Skewer）战术，攻击一个高价值子迫使其移开，吃掉后面的子",
+  "estimated_minutes": 25,
+  "steps": [
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "小琪，串击（Skewer）和牵制看起来很像，但方向相反！牵制是攻击前面的弱子威胁后面的强子，串击是攻击前面的强子逼它移开，吃掉后面的弱子。"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "thinking",
+      "content": "就像烤肉串一样，把两个目标串在一条线上？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "形容得太好了！而且串击中，前面的子被迫移开，因为它价值更高不能被吃。"
+    },
+    {
+      "type": "text",
+      "content": "串击（Skewer）的核心特征：\n\n1. 攻击者、目标A、目标B在同一条直线或斜线上\n2. 目标A（靠近攻击者）的价值 ≥ 目标B（远离攻击者）的价值\n3. 目标A被迫移开，攻击者吃掉目标B\n\n最经典的串击：用象或车将军国王，王被迫移开后吃掉后面的后或车。\n\n串击 vs 牵制的对比：\n- 牵制：攻击弱子→威胁强子（弱子在前）\n- 串击：攻击强子→吃掉弱子（强子在前）"
+    },
+    {
+      "type": "board_demo",
+      "fen": "6k1/5p1p/6p1/8/8/8/5PPP/1b4K1 b - - 0 30",
+      "description": "经典的象串击：黑方Bb1对角线上，白方的王和......让我们看一个更典型的例子。",
+      "highlights": ["b1"]
+    },
+    {
+      "type": "board_demo",
+      "fen": "4r1k1/5ppp/8/8/8/8/5PPP/4R1K1 b - - 0 25",
+      "description": "车的串击前奏：如果黑车走到e1+将军白王，白王必须移开，然后黑方就能......但这个例子中白方也有车保护。让我们看一个更清晰的。",
+      "highlights": ["e8", "e1"]
+    },
+    {
+      "type": "board_demo",
+      "fen": "2kr4/8/8/8/8/8/8/R3K3 w - - 0 1",
+      "description": "最基本的车串击：白方Ra1-a8+将军黑王，黑王被迫移开（比如Kb7），然后白车Rxd8吃掉黑车。王被迫让路，车就被吃了！",
+      "highlights": ["a1", "c8", "d8"]
+    },
+    {
+      "type": "board_demo",
+      "fen": "6k1/4qp1p/6p1/8/8/4B3/5PPP/6K1 w - - 0 25",
+      "description": "象的串击：白方Be3可以走到a7，沿对角线瞄准。但更常见的情况是：后和王在同一斜线上。比如白象走到b4，攻击e7的后，后移开后可能暴露后面的目标。",
+      "highlights": ["e3"]
+    },
+    {
+      "type": "quiz",
+      "question": "串击和牵制的主要区别是什么？",
+      "options": ["串击只能用车", "串击中高价值目标在前面被迫移开", "串击比牵制弱", "它们完全一样"],
+      "correct": 1,
+      "explanation": "串击中，高价值的目标在前面，被迫移开后暴露出后面价值较低的目标。牵制则相反——低价值子在前，它不敢移开因为会暴露后面的高价值子。"
+    },
+    {
+      "type": "board_demo",
+      "fen": "1k6/1q6/8/8/8/8/8/1R4K1 w - - 0 1",
+      "description": "Rb1-b8+将军！黑王必须移开，然后Rxb7吃后。这是最经典的车串击王和后——实战中出现频率非常高！",
+      "highlights": ["b1", "b8", "b7"]
+    },
+    {
+      "type": "quiz",
+      "question": "实战中如何制造串击机会？",
+      "options": ["让对方的两个重要子在同一条线上", "尽量少走棋", "只用马攻击", "把所有兵推上去"],
+      "correct": 0,
+      "explanation": "串击的前提是对方两个重要棋子在同一条直线或斜线上。你要做的就是寻找这样的排列，然后用远程棋子（象、车、后）来发起串击。"
+    },
+    {
+      "type": "celebration",
+      "character": "douding",
+      "expression": "celebrate",
+      "content": "串击学会了！记住口诀：强子在前被逼走，弱子在后被吃掉。实战中多找对方重要棋子排成一线的机会！+40经验值！",
+      "xp_earned": 40
+    }
+  ],
+  "exercises": [
+    {
+      "type": "choice",
+      "question": "串击中，被攻击的第一个目标通常是？",
+      "options": ["价值较低的子", "价值较高的子", "无保护的兵", "被牵制的子"],
+      "correct": 1
+    },
+    {
+      "type": "choice",
+      "question": "哪种棋子最适合执行串击？",
+      "options": ["马", "兵", "车或象", "只有后"],
+      "correct": 2
+    },
+    {
+      "type": "choice",
+      "question": "为什么\"将军+串击后\"特别致命？",
+      "options": ["因为将军声音大", "因为必须先应将，没时间救后", "因为后不能移动", "因为王很弱"],
+      "correct": 1
+    }
+  ]
+}

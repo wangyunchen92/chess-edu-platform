@@ -354,7 +354,7 @@ const AssessmentPage: React.FC = () => {
             <Card padding="lg" className="inline-block mx-auto">
               <div className="space-y-4 min-w-[280px]">
                 <div>
-                  <div className="text-[var(--text-xs)] text-[var(--text-muted)] mb-1">初始 Rating</div>
+                  <div className="text-[var(--text-xs)] text-[var(--text-muted)] mb-1">初始评分</div>
                   <div className="text-[var(--text-4xl)] font-extrabold text-[var(--accent)]">
                     {result.initial_rating}
                   </div>

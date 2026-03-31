@@ -1,0 +1,103 @@
+{
+  "id": "l3_02",
+  "course_id": "level_3",
+  "unit": "unit_1",
+  "order": 2,
+  "title": "兵结构基础——强兵与弱兵",
+  "description": "学习兵结构的基本概念，识别强兵和弱兵，理解兵结构对中局和残局的深远影响",
+  "estimated_minutes": 30,
+  "steps": [
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "thinking",
+      "content": "小琪，很多初学者觉得兵不重要，但大师说：\"兵是国际象棋的灵魂！\"兵结构决定了整盘棋的性质和计划方向。"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "surprised",
+      "content": "兵是灵魂？不是后和车最重要吗？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "后和车是最强的子，但兵决定了局面的\"骨架\"——哪些线是开放的，哪些格子是弱的，子力应该放在哪里。理解兵结构，你的棋就有了根基。"
+    },
+    {
+      "type": "text",
+      "content": "兵结构的基本概念：\n\n**弱兵类型**：\n1. **孤兵（Isolated Pawn）**：相邻列没有友方兵保护。孤兵只能靠棋子保护，是潜在的攻击目标。\n2. **叠兵（Doubled Pawns）**：同一列上有两个己方的兵。叠兵互相挡路，行动力受限。\n3. **落后兵（Backward Pawn）**：无法被相邻兵保护，前方又有对方兵阻挡。落后兵是最弱的兵型。\n\n**强兵类型**：\n1. **通路兵（Passed Pawn）**：前方没有对方兵阻挡的兵，可以一路升变。\n2. **保护通路兵（Protected Passed Pawn）**：有友方兵保护的通路兵，非常强大。\n3. **兵链（Pawn Chain）**：兵斜线相连形成的链条，互相保护，结构稳固。"
+    },
+    {
+      "type": "board_demo",
+      "fen": "8/pp3ppp/4p3/3pP3/3P4/8/PP3PPP/8 w - - 0 1",
+      "description": "兵结构示例：白方d4-e5是一个兵链。黑方d5是孤兵（c线和e线没有黑兵保护它）。白方的计划：攻击黑方的d5孤兵——它只能靠棋子保护，是一个永久弱点。",
+      "highlights": ["d4", "e5", "d5"]
+    },
+    {
+      "type": "board_demo",
+      "fen": "8/pp3ppp/8/3pp3/3PP3/8/PP3PPP/8 w - - 0 1",
+      "description": "中心兵结构：白方d4+e4对黑方d5+e5形成对称结构。如果白方exd5 exd5，d4和d5成为\"正面对峙\"。双方都可能产生孤兵——兵的交换要谨慎！",
+      "highlights": ["d4", "e4", "d5", "e5"]
+    },
+    {
+      "type": "board_demo",
+      "fen": "8/ppp2ppp/8/4p3/4P3/8/PPPP1PPP/8 w - - 0 1",
+      "description": "叠兵的例子：假设交换后白方在e列有e3和e4两个兵，这就是叠兵。它们互相挡路，无法并排推进。但叠兵也有好处——打开了相邻的文件（比如f列），可以给车使用。",
+      "highlights": ["e4"]
+    },
+    {
+      "type": "text",
+      "content": "兵结构的战略含义：\n\n**孤兵的优劣**：\n- 劣势：需要子力保护，是永久攻击目标\n- 优势：控制的格子更多（没有相邻兵挡路），前面的格子可以放子\n\n**叠兵的优劣**：\n- 劣势：行动力差，一个兵挡住另一个\n- 优势：打开了相邻列，半开放线给车使用\n\n**兵链的战略**：\n- 攻击兵链要攻击底部（base）——最脆弱的那个兵\n- 防守兵链要保护底部\n\n记住：兵结构一旦形成就很难改变（兵不能后退！），所以每次推兵前要想清楚后果。"
+    },
+    {
+      "type": "quiz",
+      "question": "孤兵（Isolated Pawn）是指？",
+      "options": ["在棋盘边上的兵", "相邻列没有友方兵的兵", "在最前面的兵", "被敌方兵包围的兵"],
+      "correct": 1,
+      "explanation": "孤兵是相邻两列都没有己方兵的兵。它不能被其他兵保护，只能依赖棋子来防守，因此是潜在的弱点和攻击目标。"
+    },
+    {
+      "type": "quiz",
+      "question": "攻击兵链应该攻击哪里？",
+      "options": ["链条的前端", "链条的中间", "链条的底部（base）", "链条旁边"],
+      "correct": 2,
+      "explanation": "兵链的底部是最脆弱的——它没有其他兵保护（链条的保护方向是从下到上）。攻击底部就像推倒多米诺骨牌的第一块。"
+    },
+    {
+      "type": "celebration",
+      "character": "douding",
+      "expression": "celebrate",
+      "content": "兵结构基础掌握了！兵是棋盘的骨架——理解兵结构就是理解局面的本质。每次推兵前都要三思！+50经验值！",
+      "xp_earned": 50
+    }
+  ],
+  "exercises": [
+    {
+      "type": "choice",
+      "question": "为什么说\"兵是国际象棋的灵魂\"？",
+      "options": ["因为兵最多", "因为兵结构决定了局面性质和计划方向", "因为兵可以升变", "因为兵最弱"],
+      "correct": 1
+    },
+    {
+      "type": "choice",
+      "question": "落后兵比孤兵更弱的原因是？",
+      "options": ["落后兵价值更低", "落后兵无法被相邻兵保护，且前方有敌兵阻挡，既弱又不能前进", "落后兵数量更多", "落后兵不能吃子"],
+      "correct": 1
+    },
+    {
+      "type": "choice",
+      "question": "叠兵的一个好处是？",
+      "options": ["两个兵在一起更强", "打开了相邻列给车使用", "可以保护对方的兵", "让王更安全"],
+      "correct": 1
+    },
+    {
+      "type": "board_interactive",
+      "fen": "r1bq1rk1/pp2ppbp/2np1np1/2p5/2P1P3/2N1BN2/PP1QBPPP/R4RK1 w - - 0 10",
+      "question": "白方d线没有兵（d2兵已被交换）。这个\"开放的d线\"应该怎么利用？",
+      "options": ["放车占据d线", "忽略d线", "推兵封锁d线", "把象放在d线"],
+      "correct": 0
+    }
+  ]
+}

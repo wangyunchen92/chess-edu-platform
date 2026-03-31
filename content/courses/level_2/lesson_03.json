@@ -1,0 +1,121 @@
+{
+  "id": "l2_03",
+  "course_id": "level_2",
+  "unit": "unit_1",
+  "order": 3,
+  "title": "牵制的威力",
+  "description": "深入学习绝对牵制和相对牵制，以及如何利用和化解牵制",
+  "estimated_minutes": 25,
+  "steps": [
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "thinking",
+      "content": "小琪，今天我们来学一个非常强大的战术——牵制（Pin）。被牵制的棋子就像被\"钉\"在原地一样！"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "thinking",
+      "content": "Level 1提到过牵制，就是一个子不能动，因为动了会暴露后面更重要的子，对吧？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "没错！而且牵制分两种：绝对牵制和相对牵制，威力大不相同。"
+    },
+    {
+      "type": "text",
+      "content": "牵制（Pin）有两种类型：\n\n**绝对牵制（Absolute Pin）**：被牵制的子后面是国王。由于走了会让王被将军，这个子完全不能移动（违反规则）。\n\n**相对牵制（Relative Pin）**：被牵制的子后面是后或车等重要子力。这个子\"可以\"移动，但移动后会损失更多。\n\n制造牵制的子力：象、车、后（能沿直线/斜线远程攻击的棋子）。\n马和兵无法制造牵制！"
+    },
+    {
+      "type": "board_demo",
+      "fen": "r1bqkbnr/pppp1ppp/2n5/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 2 3",
+      "description": "经典开局中的牵制：白方走Bb5后，象牵制了c6的马——马后面是黑王。如果马移开，象就将军。这是绝对牵制的典型例子（西班牙开局）。",
+      "highlights": ["c6"]
+    },
+    {
+      "type": "board_demo",
+      "fen": "rn1qkb1r/ppp2ppp/4pn2/3p2B1/3PP3/2N5/PPP2PPP/R2QKBNR b KQkq - 0 4",
+      "description": "白方Bg5牵制了f6的马。马后面是d8的后——这是相对牵制。黑方的马\"可以\"移开，但会丢后（Bxd8）。所以白方可以安心走e4-e5攻击这个被牵制的马！",
+      "highlights": ["g5", "f6", "d8"]
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "thinking",
+      "content": "那怎么利用牵制来赢子呢？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "thinking",
+      "content": "关键是\"堆积攻击\"——对被牵制的子施加更多压力！因为它不能移开（或移开代价太大），你可以不断增加攻击者。"
+    },
+    {
+      "type": "board_demo",
+      "fen": "r2qkb1r/ppp2ppp/2n1pn2/3p2B1/3PP3/2N2N2/PPP2PPP/R2QKB1R w KQkq - 0 5",
+      "description": "白方Bg5牵制f6马，现在白方走e4-e5进一步攻击被牵制的马。马不能移开（否则丢后），而e5的兵只值1分却攻击着3分的马。黑方陷入困境！",
+      "highlights": ["g5", "f6", "e5"]
+    },
+    {
+      "type": "text",
+      "content": "化解牵制的四种方法：\n\n1. **阻挡**——在牵制线上插入一个子，断开牵制。\n2. **反牵制**——对施加牵制的子发起攻击。\n3. **移走被保护的子**——把王或后移走，让牵制失效。\n4. **反击**——制造更大的威胁，迫使对方无暇维持牵制。"
+    },
+    {
+      "type": "board_demo",
+      "fen": "rn1qkb1r/ppp2ppp/4pn2/3p2B1/3PP3/2N5/PPP2PPP/R2QKBNR b KQkq - 0 4",
+      "description": "面对Bg5牵制f6马，黑方可以走Be7——把象插在f6和d8之间，阻挡牵制线。这是最常见的解牵制方法。",
+      "highlights": ["f6", "e7"]
+    },
+    {
+      "type": "quiz",
+      "question": "绝对牵制和相对牵制的区别是什么？",
+      "options": ["绝对牵制力量更大", "绝对牵制中被牵制子后面是王，完全不能动", "绝对牵制只有象能做到", "没有区别"],
+      "correct": 1,
+      "explanation": "绝对牵制中，被牵制的子后面是国王。根据规则，任何让自己王暴露在将军下的走法都是违规的，所以这个子完全不能移动。"
+    },
+    {
+      "type": "quiz",
+      "question": "以下哪种棋子不能制造牵制？",
+      "options": ["象", "车", "马", "后"],
+      "correct": 2,
+      "explanation": "牵制需要沿直线或斜线远程攻击。马走L形，无法\"穿透\"一个子去攻击它后面的子，所以马不能制造牵制。"
+    },
+    {
+      "type": "celebration",
+      "character": "douding",
+      "expression": "celebrate",
+      "content": "牵制是非常强大的武器！记住：制造牵制→堆积攻击→赢子。化解牵制要果断，不要等到被动！+40经验值！",
+      "xp_earned": 40
+    }
+  ],
+  "exercises": [
+    {
+      "type": "choice",
+      "question": "哪种子力无法制造牵制？",
+      "options": ["后", "车", "兵", "象"],
+      "correct": 2
+    },
+    {
+      "type": "choice",
+      "question": "面对牵制，最常见的化解方法是？",
+      "options": ["投降", "在牵制线上插入一个子阻挡", "忽略不管", "交换所有棋子"],
+      "correct": 1
+    },
+    {
+      "type": "choice",
+      "question": "为什么堆积攻击对被牵制的子特别有效？",
+      "options": ["因为被牵制的子不能移开或移开代价太大", "因为被牵制的子力量变弱了", "因为对手看不到攻击", "因为被牵制的子会自动消失"],
+      "correct": 0
+    },
+    {
+      "type": "board_interactive",
+      "fen": "r1bqkb1r/pppp1ppp/2n2n2/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3",
+      "question": "白方Bb5牵制了c6马。黑方最佳的应对是？",
+      "options": ["a6驱赶象", "Nd4反击", "d6加固中心", "Nxe4吃兵"],
+      "correct": 0
+    }
+  ]
+}

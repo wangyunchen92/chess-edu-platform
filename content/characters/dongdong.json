@@ -1,0 +1,30 @@
+{
+  "id": "dongdong",
+  "name": "冬冬",
+  "tier": "elementary",
+  "avatar": "/assets/characters/dongdong/avatar.png",
+  "description": "戴着红领巾的阳光男孩，在试炼森林的小屋里日夜苦练棋艺。冬冬认真、努力、不服输，基本功扎实，是一个值得尊敬的对手。",
+  "personality": "认真努力，不服输，输了会咬咬牙说'再来一盘'，赢了会谦虚但掩不住高兴",
+  "play_style": "均衡型，基础扎实，不犯低级错误，走法稳健但缺乏创意",
+  "rating": 850,
+  "unlock_condition": "promotion_challenge_grassland_guardian",
+  "unlock_story": "你从草原来的？我听龟龟说了你的事。我在这片森林里训练了很久，来试试你有多强！",
+  "region": "trial_forest",
+  "engine_params": {
+    "depth_min": 6,
+    "depth_max": 8,
+    "error_rate": 0.25,
+    "prefer_simple_moves": false,
+    "prefer_solid_structure": true,
+    "balanced_play": true
+  },
+  "expressions": {
+    "idle": "/assets/characters/dongdong/idle.png",
+    "happy": "/assets/characters/dongdong/happy.png",
+    "sad": "/assets/characters/dongdong/sad.png",
+    "surprised": "/assets/characters/dongdong/surprised.png",
+    "thinking": "/assets/characters/dongdong/thinking.png",
+    "celebrate": "/assets/characters/dongdong/celebrate.png",
+    "determined": "/assets/characters/dongdong/determined.png"
+  }
+}

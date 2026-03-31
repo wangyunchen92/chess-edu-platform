@@ -1,0 +1,89 @@
+{
+  "character_id": "dongdong",
+  "dialogues": {
+    "greeting": [
+      { "text": "你好！我是冬冬，每天都在森林小屋里练棋！今天来跟我过过招吧！", "expression": "happy" },
+      { "text": "嘿，你终于来了！我可是准备了很久，今天一定要好好下一盘！", "expression": "determined" },
+      { "text": "来吧来吧！冬冬最喜欢认真的对手了，我们公平较量！", "expression": "happy" },
+      { "text": "又见面了！冬冬昨晚把开局又复习了一遍，今天有信心！", "expression": "celebrate" },
+      { "text": "准备好了吗？冬冬可不会手下留情哦——开始吧！", "expression": "determined" }
+    ],
+    "good_move": [
+      { "text": "这步走得好！嗯，冬冬要认真应对了。", "expression": "thinking" },
+      { "text": "不错不错，你基本功挺扎实的嘛！冬冬不能大意！", "expression": "surprised" },
+      { "text": "哇，好棋！冬冬得想想怎么应对……", "expression": "thinking" },
+      { "text": "嗯！这步厉害，冬冬要打起精神了！", "expression": "determined" },
+      { "text": "好棋！看来今天遇到对手了，冬冬更要努力！", "expression": "happy" }
+    ],
+    "blunder": [
+      { "text": "啊！冬冬走错了……没关系，咬咬牙，继续！", "expression": "determined" },
+      { "text": "糟糕，失误了！冬冬不能因为这一步就泄气！", "expression": "sad" },
+      { "text": "唉，这步不该这么走的……冬冬振作起来！", "expression": "sad" },
+      { "text": "失误了……但冬冬不会放弃！一步一步追回来！", "expression": "determined" },
+      { "text": "呜，走错了。冬冬回去一定要把这个位置再练练！", "expression": "thinking" }
+    ],
+    "check_given": [
+      { "text": "将军！冬冬练了好久这个套路，终于用上了！", "expression": "celebrate" },
+      { "text": "将！看到了吗？冬冬的基本功可不是白练的！", "expression": "happy" },
+      { "text": "将军！嘿嘿，冬冬也会进攻的！", "expression": "celebrate" },
+      { "text": "将！这步棋冬冬想了很久，走出来了！", "expression": "determined" },
+      { "text": "将军！认真下棋就能找到好机会！", "expression": "happy" }
+    ],
+    "check_received": [
+      { "text": "被将了！冬冬别慌，仔细看看怎么应对……", "expression": "thinking" },
+      { "text": "将军？嗯，冬冬不怕！一定有解法的！", "expression": "determined" },
+      { "text": "啊，被将了。冬冬冷静一下，想想出路。", "expression": "thinking" },
+      { "text": "将军了……没事，冬冬练过很多次应将的！", "expression": "determined" },
+      { "text": "被将了？让冬冬好好想想……不能慌！", "expression": "thinking" }
+    ],
+    "capture_given": [
+      { "text": "吃掉！冬冬抓住机会了！继续保持！", "expression": "happy" },
+      { "text": "拿下！这颗棋子冬冬盯了好几步了！", "expression": "celebrate" },
+      { "text": "吃子！一步一步积累优势，这是冬冬的风格！", "expression": "determined" },
+      { "text": "嘿，吃掉你一个！冬冬的努力没白费！", "expression": "happy" },
+      { "text": "拿下了！认真看棋盘果然能发现好机会！", "expression": "celebrate" }
+    ],
+    "capture_received": [
+      { "text": "啊，被吃了一个……冬冬下次要更小心！", "expression": "sad" },
+      { "text": "丢子了……但冬冬不能因此乱了节奏！", "expression": "determined" },
+      { "text": "唉，失去一颗棋子了。冬冬要更认真地防守！", "expression": "thinking" },
+      { "text": "被吃了……没关系，冬冬还能战斗！调整一下！", "expression": "determined" },
+      { "text": "少了一颗棋子，冬冬得重新想想布局了。", "expression": "thinking" }
+    ],
+    "advantage": [
+      { "text": "形势不错！但冬冬不能骄傲，继续认真下！", "expression": "happy" },
+      { "text": "冬冬领先了！稳住稳住，一步步来！", "expression": "determined" },
+      { "text": "嗯，优势在冬冬这边！但下棋最忌大意！", "expression": "thinking" },
+      { "text": "领先了！冬冬的练习有回报了！继续保持！", "expression": "celebrate" },
+      { "text": "形势对冬冬有利，但绝不能放松警惕！", "expression": "determined" }
+    ],
+    "disadvantage": [
+      { "text": "落后了……但冬冬不会认输！咬牙坚持！", "expression": "determined" },
+      { "text": "形势不太好，冬冬要更努力地想办法追回来！", "expression": "thinking" },
+      { "text": "差了一些，但冬冬绝不放弃！一步一步来！", "expression": "determined" },
+      { "text": "不利了……冬冬深呼吸，认真看看有没有翻盘的机会。", "expression": "thinking" },
+      { "text": "落后了？没关系！冬冬越是困难越要努力！", "expression": "determined" }
+    ],
+    "win": [
+      { "text": "赢了！冬冬的努力有回报了！太开心了！", "expression": "celebrate" },
+      { "text": "赢啦！嘿嘿，冬冬又进步了！谢谢你陪我下棋！", "expression": "happy" },
+      { "text": "冬冬赢了！每天练习果然有用！下次再来比试吧！", "expression": "celebrate" },
+      { "text": "赢了赢了！但冬冬知道还有很多要学的，不能骄傲！", "expression": "happy" },
+      { "text": "冬冬胜利！你下得也很好，我们都要继续加油！", "expression": "celebrate" }
+    ],
+    "lose": [
+      { "text": "输了……但冬冬不会气馁！回去再练，下次一定赢你！", "expression": "determined" },
+      { "text": "唉，输了。你真厉害！冬冬回去要好好复盘这盘棋！", "expression": "sad" },
+      { "text": "冬冬认输！你走得真好……冬冬要加倍努力了！", "expression": "sad" },
+      { "text": "输了……哼，冬冬才不会就这样算了！再来一盘！", "expression": "determined" },
+      { "text": "这次输了，但冬冬学到了很多。下次见面，冬冬会更强的！", "expression": "thinking" }
+    ],
+    "draw": [
+      { "text": "平局！嗯，我们实力相当！冬冬下次要争取赢！", "expression": "determined" },
+      { "text": "平了！势均力敌的感觉真过瘾！再来一盘？", "expression": "happy" },
+      { "text": "平局啊……冬冬差一点就赢了！下次一定要下得更好！", "expression": "thinking" },
+      { "text": "平了，好棋好棋！冬冬佩服你的实力！", "expression": "happy" },
+      { "text": "和棋！我们旗鼓相当嘛！冬冬很享受这盘棋！", "expression": "celebrate" }
+    ]
+  }
+}

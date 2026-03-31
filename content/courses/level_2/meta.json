@@ -1,0 +1,49 @@
+{
+  "id": "level_2",
+  "title": "基础战术",
+  "description": "深入学习国际象棋基础战术，掌握双重攻击、牵制、串击、闪击等核心战术技巧",
+  "level": 2,
+  "prerequisite": "level_1",
+  "total_lessons": 15,
+  "estimated_hours": 8,
+  "target_rating": "800-1200",
+  "units": [
+    {
+      "id": "unit_1",
+      "title": "战术基础",
+      "lessons": [1, 2, 3]
+    },
+    {
+      "id": "unit_2",
+      "title": "经典战术",
+      "lessons": [4, 5, 6, 7]
+    },
+    {
+      "id": "unit_3",
+      "title": "高级战术",
+      "lessons": [8, 9, 10, 11]
+    },
+    {
+      "id": "unit_4",
+      "title": "战术应用",
+      "lessons": [12, 13, 14, 15]
+    }
+  ],
+  "lessons": [
+    { "id": "l2_01", "title": "战术眼——如何发现战术机会", "order": 1, "unit": "unit_1" },
+    { "id": "l2_02", "title": "双重攻击进阶", "order": 2, "unit": "unit_1" },
+    { "id": "l2_03", "title": "牵制的威力", "order": 3, "unit": "unit_1" },
+    { "id": "l2_04", "title": "串击战术", "order": 4, "unit": "unit_2" },
+    { "id": "l2_05", "title": "闪击——发现攻击", "order": 5, "unit": "unit_2" },
+    { "id": "l2_06", "title": "引离战术", "order": 6, "unit": "unit_2" },
+    { "id": "l2_07", "title": "引入战术", "order": 7, "unit": "unit_2" },
+    { "id": "l2_08", "title": "消除保护", "order": 8, "unit": "unit_3" },
+    { "id": "l2_09", "title": "过载——一子多任", "order": 9, "unit": "unit_3" },
+    { "id": "l2_10", "title": "截断——切断联系", "order": 10, "unit": "unit_3" },
+    { "id": "l2_11", "title": "X光攻击", "order": 11, "unit": "unit_3" },
+    { "id": "l2_12", "title": "兵的战术", "order": 12, "unit": "unit_4" },
+    { "id": "l2_13", "title": "组合战术——连续杀", "order": 13, "unit": "unit_4" },
+    { "id": "l2_14", "title": "战术防守——化解对手的威胁", "order": 14, "unit": "unit_4" },
+    { "id": "l2_15", "title": "战术综合训练", "order": 15, "unit": "unit_4" }
+  ]
+}

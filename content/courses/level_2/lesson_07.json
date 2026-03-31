@@ -1,0 +1,98 @@
+{
+  "id": "l2_07",
+  "course_id": "level_2",
+  "unit": "unit_2",
+  "order": 7,
+  "title": "引入战术",
+  "description": "学习引入（Decoy/Luring）战术，将对方子力引到不利位置",
+  "estimated_minutes": 25,
+  "steps": [
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "上节课学了引离——把防守子拉走。今天学引入（Decoy）——把对方的子引到一个不利的位置！"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "thinking",
+      "content": "引入是给对手设陷阱吗？看起来是好处，其实是个坑？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "正是如此！最经典的引入就是弃后引王——送一个大礼给国王，国王贪心去吃，结果走到了被将杀的位置！"
+    },
+    {
+      "type": "text",
+      "content": "引入战术（Decoy / Luring）要点：\n\n**核心思想**：牺牲一个子，迫使对方的子移动到你想让它去的位置。\n\n**常见引入类型**：\n1. **引王入网**：弃子引王到暴露位置，然后将杀\n2. **引子入叉**：引一个子到特定格，让你的马/后捉双\n3. **引子入牵制线**：引一个子到被牵制的位置\n4. **引子阻挡**：引对方的子阻挡自己同伴的退路\n\n引入往往需要牺牲子力——这需要精确的计算！"
+    },
+    {
+      "type": "board_demo",
+      "fen": "r1b2r1k/ppppq1pp/2n2p2/8/2B5/2N1Q3/PPP2PPP/R4RK1 w - - 0 12",
+      "description": "引王入网的经典例子：如果白方Qe6? 不行，让我们看一个更清晰的引入。想象白方Bxf7+将军，黑王Kxf7后，王从h8来到了f7的开阔地带——接下来白方可以用马叉或其他战术攻击暴露的王。",
+      "highlights": ["c4", "f7"]
+    },
+    {
+      "type": "board_demo",
+      "fen": "r3k2r/ppp2ppp/2n5/3qN3/3P4/8/PPP2PPP/R2QK2R w KQkq - 0 10",
+      "description": "引入实例：白方Nxf7! 引黑王到f7（Kxf7），然后Qh5+将军，黑王被迫回到不利位置。如果黑方不吃马（Kg8），白方Nxd8吃后。这就是引入的\"两难选择\"——吃也不好，不吃也不好。",
+      "highlights": ["e5", "f7"]
+    },
+    {
+      "type": "board_demo",
+      "fen": "6k1/5ppp/8/8/8/3Q4/5PPP/6K1 w - - 0 30",
+      "description": "引子入叉的思路：白后Qd5攻击f7，如果黑方走f6保护，白后Qd8吃某个子。白方不断引诱黑方的子到弱格。引入不一定是大牺牲，有时候一步安静的走子也能把对方引入陷阱。",
+      "highlights": ["d3", "f7"]
+    },
+    {
+      "type": "quiz",
+      "question": "引入战术最经典的形式是？",
+      "options": ["弃兵引走车", "弃后引王到暴露位置然后将杀", "用马引象", "用车引后"],
+      "correct": 1,
+      "explanation": "弃后引王是引入战术的代表作——送出最大价值的子，但将杀的价值更大。这种牺牲叫\"目的性牺牲\"，不是白送，而是有明确计算后的投资。"
+    },
+    {
+      "type": "board_demo",
+      "fen": "r1bq1rk1/pppp1ppp/2n2n2/2b1p2Q/2B1P3/3P1N2/PPP2PPP/RNB1K2R w KQ - 0 6",
+      "description": "引入的逻辑思维：白Qh5瞄准f7，如果Qxf7+ Rxf7，Bxf7+又将军，引王到f7。每一步牺牲都是为了引对方到不利位置。引入需要计算力——看到2-3步以后的局面。",
+      "highlights": ["h5", "f7"]
+    },
+    {
+      "type": "quiz",
+      "question": "引入战术为什么需要精确计算？",
+      "options": ["因为需要很多步棋", "因为要牺牲子力，必须确认能得到回报", "因为对手可能不上当", "因为引入很复杂"],
+      "correct": 1,
+      "explanation": "引入往往需要送出一个子甚至更多。如果计算不准确，白送了子却没有后续杀招，那就亏大了。所以引入前一定要把变化算清楚。"
+    },
+    {
+      "type": "celebration",
+      "character": "douding",
+      "expression": "celebrate",
+      "content": "引入战术掌握！请君入瓮——用牺牲引诱对方走到你精心设计的陷阱中。计算力是关键！+40经验值！",
+      "xp_earned": 40
+    }
+  ],
+  "exercises": [
+    {
+      "type": "choice",
+      "question": "引入战术的本质是？",
+      "options": ["逼对方投降", "用牺牲迫使对方的子到不利位置", "封锁对方的子", "让对方走自己想走的棋"],
+      "correct": 1
+    },
+    {
+      "type": "choice",
+      "question": "引入和引离的关系是？",
+      "options": ["完全相反", "引离是拉走，引入是拉来，都是控制对方子力位置", "引入更难", "引离更实用"],
+      "correct": 1
+    },
+    {
+      "type": "choice",
+      "question": "以下哪种不是常见的引入类型？",
+      "options": ["引王入网", "引子入叉", "引子入安全位置", "引子入牵制线"],
+      "correct": 2
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "id": "tiedundun",
+  "name": "铁墩墩",
+  "tier": "elementary",
+  "avatar": "/assets/characters/tiedundun/avatar.png",
+  "description": "圆滚滚的小机器人，是试炼森林大门的忠实守护者。铁墩墩憨厚可爱，但一旦进入防守模式就坚不可摧，想要突破他的防线可不容易！",
+  "personality": "憨厚老实，说话带机器人腔调，战斗时会切换'防御模式'，被攻破时会显示'系统错误'",
+  "play_style": "防守反击型，优先巩固阵地，等待对手犯错后精准反击，擅长封闭局面",
+  "rating": 1100,
+  "unlock_condition": "win_lihuahua_1_and_level2_unit1",
+  "unlock_story": "侵入者检测...战斗力评估中...评估结果：值得一战。启动对弈模式。",
+  "region": "trial_forest",
+  "engine_params": {
+    "depth_min": 8,
+    "depth_max": 10,
+    "error_rate": 0.15,
+    "defensive_bias": 0.8,
+    "prefer_solid_structure": true,
+    "prefer_closed_positions": true,
+    "counterattack_threshold": 0.6
+  },
+  "expressions": {
+    "idle": "/assets/characters/tiedundun/idle.png",
+    "happy": "/assets/characters/tiedundun/happy.png",
+    "sad": "/assets/characters/tiedundun/sad.png",
+    "surprised": "/assets/characters/tiedundun/surprised.png",
+    "thinking": "/assets/characters/tiedundun/thinking.png",
+    "celebrate": "/assets/characters/tiedundun/celebrate.png",
+    "defense_mode": "/assets/characters/tiedundun/defense_mode.png"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "id": "yunduoshifu",
+  "name": "云朵师父",
+  "tier": "intermediate",
+  "avatar": "/assets/characters/yunduoshifu/avatar.png",
+  "description": "隐居在风暴高原山顶的东方禅师，终日在云海中冥想棋道。云朵师父淡定从容，棋风无迹可寻，仿佛每一步都顺应自然之势。",
+  "personality": "淡定从容，说话充满禅意，喜欢用比喻和哲理启发对手，从不急躁也从不轻视任何人",
+  "play_style": "全能型，没有明显弱点，根据局面灵活切换攻防，重视位置优势和长远布局",
+  "rating": 1550,
+  "unlock_condition": "win_gulu_1_and_level3_unit2_and_30day_streak",
+  "unlock_story": "...你来了。我在云上等你很久了。让我看看，你的棋，能走多远。",
+  "region": "storm_plateau",
+  "engine_params": {
+    "depth_min": 12,
+    "depth_max": 14,
+    "error_rate": 0.05,
+    "positional_bias": 0.8,
+    "balanced_play": true,
+    "adaptive_style": true,
+    "endgame_strength": 0.9,
+    "opening_repertoire": "varied"
+  },
+  "expressions": {
+    "idle": "/assets/characters/yunduoshifu/idle.png",
+    "happy": "/assets/characters/yunduoshifu/happy.png",
+    "sad": "/assets/characters/yunduoshifu/sad.png",
+    "surprised": "/assets/characters/yunduoshifu/surprised.png",
+    "thinking": "/assets/characters/yunduoshifu/thinking.png",
+    "celebrate": "/assets/characters/yunduoshifu/celebrate.png",
+    "serene": "/assets/characters/yunduoshifu/serene.png"
+  }
+}

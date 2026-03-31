@@ -1,0 +1,92 @@
+{
+  "id": "l2_10",
+  "course_id": "level_2",
+  "unit": "unit_3",
+  "order": 10,
+  "title": "截断——切断联系",
+  "description": "学习截断（Interference/Cutting off）战术，切断对方棋子之间的协防联系",
+  "estimated_minutes": 25,
+  "steps": [
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "小琪，过载是利用一个子的多重任务。截断更有趣——直接在对方两个协防子之间插一个障碍物，切断它们的联系！"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "thinking",
+      "content": "就像在两个人中间插一面墙？他们就互相看不到了？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "形容得非常到位！截断（Interference）就是在对方两个互相保护/配合的子之间放一个子，让它们失去联系。"
+    },
+    {
+      "type": "text",
+      "content": "截断（Interference）战术要点：\n\n**原理**：对方的两个子沿同一条线互相保护。在它们之间放一个子，就切断了保护线。\n\n**截断的形式**：\n1. **线性截断**：在车与车、后与车之间的直线上放子\n2. **斜线截断**：在象的对角线上插入障碍\n3. **牺牲截断**：送一个子到关键格，即使被吃，也打断了保护线\n\n**与消除保护的关系**：消除保护是\"消灭\"防守者，截断是\"隔断\"防守线。效果类似，手段不同。"
+    },
+    {
+      "type": "board_demo",
+      "fen": "1r3rk1/p4ppp/8/3B4/8/8/P4PPP/1R3RK1 w - - 0 20",
+      "description": "截断的思路：黑方b8和f8两个车互相呼应。如果白方能在d8或e8放一个子（比如Bd5-e6或其他手段），就切断了两车的联系。被截断后，每个车都变成了孤立的目标。",
+      "highlights": ["b8", "f8"]
+    },
+    {
+      "type": "board_demo",
+      "fen": "2r2rk1/pp3ppp/3q4/3B4/8/6Q1/PP3PPP/4R1K1 w - - 0 22",
+      "description": "截断实例：白方Bd5切入d-线，截断了d6后和c8车的联系。现在黑后和黑车各自为战——白方可以分别对付它们。Qg3对f-线施压，Re1控制e-线，形成攻势。",
+      "highlights": ["d5", "d6", "c8"]
+    },
+    {
+      "type": "board_demo",
+      "fen": "r4rk1/pp2bppp/2p1bn2/3q4/3P4/2N1BN2/PPQ2PPP/R4RK1 w - - 0 12",
+      "description": "截断在攻王中的应用：黑方e6象和e7象保护着王翼。如果白方能在e5或f5放一个子，可能截断e6象和王翼的联系。d4-d5推兵也可能截断e6象和d5方向的联系。",
+      "highlights": ["e6", "e7"]
+    },
+    {
+      "type": "quiz",
+      "question": "截断战术的核心是？",
+      "options": ["吃掉对方的子", "在对方互相保护的子之间插入障碍", "推兵开线", "将军逼王"],
+      "correct": 1,
+      "explanation": "截断的核心是在对方互相保护或配合的棋子之间插入障碍物，切断它们的联系。这样每个子都变成了孤立的目标。"
+    },
+    {
+      "type": "quiz",
+      "question": "截断和消除保护的区别是？",
+      "options": ["截断是隔断保护线，消除保护是消灭保护者", "没有区别", "截断更常见", "消除保护更高级"],
+      "correct": 0,
+      "explanation": "消除保护是直接消灭（吃掉或引走）防守者。截断是在防守者和被保护子之间放障碍物，隔断保护线。目的相同（让目标失去保护），手段不同。"
+    },
+    {
+      "type": "celebration",
+      "character": "douding",
+      "expression": "celebrate",
+      "content": "截断战术学会了！切断对方子力的联系，让它们变成孤立的个体——各个击破！+40经验值！",
+      "xp_earned": 40
+    }
+  ],
+  "exercises": [
+    {
+      "type": "choice",
+      "question": "截断战术的目的是？",
+      "options": ["让对方子力失去互相保护的能力", "吃掉最多的子", "将杀对方", "推兵到底线"],
+      "correct": 0
+    },
+    {
+      "type": "choice",
+      "question": "以下哪种情况最适合使用截断？",
+      "options": ["对方两个子在同一条线上互相保护", "对方的子很分散", "对方的王很安全", "棋盘上子力很少"],
+      "correct": 0
+    },
+    {
+      "type": "choice",
+      "question": "牺牲截断是指？",
+      "options": ["送一个子到关键格切断对方保护线，即使被吃也值", "牺牲国王", "用后换车", "弃掉所有兵"],
+      "correct": 0
+    }
+  ]
+}

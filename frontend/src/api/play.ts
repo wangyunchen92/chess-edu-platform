@@ -10,6 +10,8 @@ import type {
   GameListItem,
   GameDetail,
   GameReviewResponse,
+  CheckUnlockResponse,
+  UnlockCharacterResponse,
 } from '@/types/api'
 
 export const playApi = {
@@ -18,6 +20,12 @@ export const playApi = {
 
   getCharacterDetail: (id: string) =>
     apiClient.get<APIResponse<CharacterDetail>>(`/play/characters/${id}`),
+
+  checkUnlock: (characterId: string) =>
+    apiClient.post<APIResponse<CheckUnlockResponse>>(`/play/characters/${characterId}/check-unlock`),
+
+  unlockCharacter: (characterId: string) =>
+    apiClient.post<APIResponse<UnlockCharacterResponse>>(`/play/characters/${characterId}/unlock`),
 
   createGame: (data: CreateGameRequest) =>
     apiClient.post<APIResponse<CreateGameResponse>>('/play/games', data),

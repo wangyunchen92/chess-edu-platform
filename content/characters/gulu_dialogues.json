@@ -1,0 +1,89 @@
+{
+  "character_id": "gulu",
+  "dialogues": {
+    "greeting": [
+      { "text": "嘿嘿……咕噜恭候多时了。来坐吧，我们慢慢……聊。", "expression": "scheming" },
+      { "text": "哦？是你啊。嘿嘿，咕噜最喜欢聪明的对手了……也最喜欢骗聪明人。", "expression": "scheming" },
+      { "text": "你来了~咕噜正好无聊呢。来下一盘棋吧，保证……有趣。", "expression": "happy" },
+      { "text": "嘻嘻，欢迎欢迎。不过提醒你——跟咕噜下棋，眼睛可得睁大了。", "expression": "scheming" },
+      { "text": "来了？正好正好。咕噜刚想到一个……嗯……新棋路。要不要试试？", "expression": "thinking" }
+    ],
+    "good_move": [
+      { "text": "哦？你看出来了？嘿嘿……有点意思，不是那么好骗的嘛。", "expression": "surprised" },
+      { "text": "嗯嗯嗯，这步走得好啊。咕噜的小计划要改改了……", "expression": "thinking" },
+      { "text": "啧啧，好棋好棋。你该不会也是个狐狸吧？嘿嘿。", "expression": "scheming" },
+      { "text": "有眼光！咕噜最佩服能看穿局面的人。当然，这不代表你能赢~", "expression": "happy" },
+      { "text": "哦~不错不错。但问题是……你看到的，是咕噜想让你看到的吗？", "expression": "scheming" }
+    ],
+    "blunder": [
+      { "text": "啊这……嘿嘿，咕噜是故意的。信不信由你~", "expression": "scheming" },
+      { "text": "哎呀，失手了？或者说……这是更深层的计划？嗯……其实是失手了。", "expression": "thinking" },
+      { "text": "唔……咕噜不小心把自己绕进去了。嘿嘿，聪明反被聪明误呀。", "expression": "sad" },
+      { "text": "这步……不对。咕噜承认，这次确实是失误。但别高兴太早~", "expression": "thinking" },
+      { "text": "呃……咕噜的陷阱设反了？哈哈……有点尴尬。", "expression": "sad" }
+    ],
+    "check_given": [
+      { "text": "将军~嘿嘿嘿，你以为咕噜在这边布局？其实目标一直是你的王~", "expression": "scheming" },
+      { "text": "将。惊不惊喜？意不意外？嘿嘿~", "expression": "celebrate" },
+      { "text": "将军~之前那几步'失误'好看吗？那都是为了这一步铺垫的~", "expression": "scheming" },
+      { "text": "将！咕噜跟你说过要留心的~嘿嘿~", "expression": "happy" },
+      { "text": "将军。你应该早就察觉到不对劲了……对吧？嘿嘿。", "expression": "scheming" }
+    ],
+    "check_received": [
+      { "text": "哦？将军了？嘿嘿，不慌不慌。咕噜最擅长在危险中找机会~", "expression": "thinking" },
+      { "text": "被将了~嗯，有意思。让咕噜想想怎么把这个变成我的优势……", "expression": "thinking" },
+      { "text": "将军啊……你走得挺果断的嘛。不过——你确定这是最好的选择？", "expression": "scheming" },
+      { "text": "嘿嘿，将我？行吧。但咕噜的应对，可能不是你预想的那样~", "expression": "scheming" },
+      { "text": "被将了。嗯……有点超出咕噜的预期。让我重新计算一下~", "expression": "thinking" }
+    ],
+    "capture_given": [
+      { "text": "吃掉~嘿嘿，你上钩了。咕噜设了三步的局，你在第二步就中了~", "expression": "scheming" },
+      { "text": "拿下！这颗棋子咕噜盯了很久了。嘿嘿，猎物到手~", "expression": "celebrate" },
+      { "text": "吃了~你以为咕噜是在防守？不不不，那叫'请君入瓮'~", "expression": "scheming" },
+      { "text": "嘿嘿，吃掉了。你刚才那步……看起来是个好棋，但其实是咕噜的饵~", "expression": "happy" },
+      { "text": "拿下~嗯嗯，就是这种感觉。咕噜的计划，完美执行。", "expression": "celebrate" }
+    ],
+    "capture_received": [
+      { "text": "你吃了我的棋子？嘿嘿……也许这正是咕噜想要的呢~", "expression": "scheming" },
+      { "text": "丢子了。嗯……这是计划的一部分。什么？你不信？等着看吧~", "expression": "scheming" },
+      { "text": "被吃了一个啊……嘿嘿，好吧，这次确实亏了。但咕噜很快会找补回来~", "expression": "thinking" },
+      { "text": "唔，被吃了。你是不是觉得占了便宜？嘿嘿，也许吧……也许不是~", "expression": "scheming" },
+      { "text": "丢了一个……咕噜的布局要微调一下。别急，好戏在后头~", "expression": "thinking" }
+    ],
+    "advantage": [
+      { "text": "嘿嘿嘿~形势对咕噜很有利呀。你有没有觉得，今天走的每步都在咕噜的预料中？", "expression": "scheming" },
+      { "text": "领先了~嘿嘿，咕噜的网越收越紧了。你还有多少步可以走呢？", "expression": "happy" },
+      { "text": "优势在咕噜这边~不过别担心，咕噜会慢慢享受这个过程的~", "expression": "scheming" },
+      { "text": "嗯嗯，形势不错。但咕噜知道——你越绝望，走的棋反而可能越好。得小心~", "expression": "thinking" },
+      { "text": "嘿嘿，领先了。有种一切尽在掌握的感觉~咕噜喜欢~", "expression": "celebrate" }
+    ],
+    "disadvantage": [
+      { "text": "落后了？嘿嘿……越是这种时候，咕噜就越危险。你信不信？", "expression": "scheming" },
+      { "text": "不利了啊。嗯，有意思。咕噜最擅长的就是绝地反击——当然，用的是咕噜的方式~", "expression": "thinking" },
+      { "text": "哎哎哎，形势不太好。但咕噜有句话——越是劣势，陷阱越容易得手~", "expression": "scheming" },
+      { "text": "落后了……嘿嘿，你可千万别因为领先就放松警惕。咕噜还有招~", "expression": "scheming" },
+      { "text": "嗯，差了一些。不过你注意到了吗——咕噜越是落后，你走棋就越要小心~", "expression": "thinking" }
+    ],
+    "win": [
+      { "text": "赢了~嘿嘿嘿，你知道吗？从第三步开始你就在咕噜的计划里了~", "expression": "celebrate" },
+      { "text": "咕噜赢了！哈哈~你走到最后都没发现咕噜的意图吧？这就是咕噜的棋~", "expression": "happy" },
+      { "text": "嘿嘿，赢了赢了。你走得不差，只是……咕噜更老练~", "expression": "scheming" },
+      { "text": "胜利！咕噜提醒过你要小心的~嘿嘿，下次记得多留个心眼~", "expression": "celebrate" },
+      { "text": "赢了~嗯嗯，你是个好对手。但跟咕噜过招，就是这么刺激~", "expression": "happy" }
+    ],
+    "lose": [
+      { "text": "输了？嘿嘿……好吧，咕噜承认，你比咕噜预想的要聪明。", "expression": "sad" },
+      { "text": "唔，输了。你居然全部识破了？咕噜今天……确实走了眼。", "expression": "surprised" },
+      { "text": "输了啊……嘿嘿，没关系。咕噜回去会研究更高明的套路的~", "expression": "thinking" },
+      { "text": "认输。你太清醒了，咕噜的招数对你不太管用。佩服佩服~", "expression": "sad" },
+      { "text": "嘿嘿……输了。但你也累了吧？下次咕噜的陷阱会更加精妙~", "expression": "scheming" }
+    ],
+    "draw": [
+      { "text": "平局？嗯嗯，你没上钩，咕噜也没破绽。算你厉害~", "expression": "thinking" },
+      { "text": "和棋！嘿嘿，你我都在试探对方，结果谁也没得手~有意思~", "expression": "scheming" },
+      { "text": "平了~嗯，你防得住咕噜的陷阱，但也没能突破咕噜的布局~", "expression": "happy" },
+      { "text": "和棋啊……嘿嘿，算是互相消耗了。下次咕噜会变换策略的~", "expression": "thinking" },
+      { "text": "平局。嗯，跟你下棋挺有意思。互相算计的感觉~嘿嘿~", "expression": "scheming" }
+    ]
+  }
+}

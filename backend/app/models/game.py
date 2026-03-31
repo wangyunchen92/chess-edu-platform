@@ -39,6 +39,8 @@ class Game(Base):
     user_rating_after: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     rating_change: Mapped[Optional[int]] = mapped_column(Integer, default=0, nullable=True)
     ai_rating_used: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    difficulty_mode: Mapped[Optional[str]] = mapped_column(String(20), nullable=True, default="normal")
+    adaptive_params: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True)
     hints_used: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     review_data: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True)
     started_at: Mapped[datetime] = mapped_column(
@@ -77,6 +79,8 @@ class GameMove(Base):
     is_best_move: Mapped[Optional[bool]] = mapped_column(Boolean, nullable=True)
     is_mistake: Mapped[bool] = mapped_column(Boolean, default=False, nullable=True)
     is_blunder: Mapped[bool] = mapped_column(Boolean, default=False, nullable=True)
+    move_classification: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
+    game_phase: Mapped[Optional[str]] = mapped_column(String(10), nullable=True)
     is_key_moment: Mapped[bool] = mapped_column(Boolean, default=False, nullable=True)
     time_spent_ms: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     created_at: Mapped[datetime] = mapped_column(

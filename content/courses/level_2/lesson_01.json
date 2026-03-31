@@ -1,0 +1,117 @@
+{
+  "id": "l2_01",
+  "course_id": "level_2",
+  "unit": "unit_1",
+  "order": 1,
+  "title": "战术眼——如何发现战术机会",
+  "description": "培养战术敏锐度，学会在复杂局面中发现战术机会的信号",
+  "estimated_minutes": 25,
+  "steps": [
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "小琪，恭喜你完成了Level 1！从今天起，我们要进入战术训练了。战术是实战中赢棋的核心武器！"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "thinking",
+      "content": "豆丁老师，我知道一些基本战术，但是实战中总是发现不了机会，怎么办呢？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "thinking",
+      "content": "好问题！这就是我们今天要学的——\"战术眼\"。战术高手不是每步都在算，而是能快速识别出\"这个局面里有战术机会\"的信号。"
+    },
+    {
+      "type": "text",
+      "content": "战术机会通常出现在以下情况：\n\n1. **无保护的棋子**（Undefended Piece）——对方某个棋子没有其他子力保护\n2. **国王暴露**——对方国王缺少兵的保护，或者位于开放线上\n3. **过载的防守子**——一个棋子同时承担多个防守任务\n4. **同一条线上的重要棋子**——车和王在同一条直线/斜线上\n5. **位置不佳的棋子**——被困在角落或边线的棋子\n\n记住口诀：无保护、王暴露、子过载、同线排、位置差——五大战术信号！"
+    },
+    {
+      "type": "board_demo",
+      "fen": "r1bqk2r/pppp1ppp/2n2n2/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4",
+      "description": "这是意大利开局的常见局面。让我们用\"战术眼\"扫描：黑方f7兵只有国王保护，而且白方的象已经瞄准了f7——这就是一个潜在的战术目标！f7/f2是开局中最脆弱的点。",
+      "highlights": ["c4", "f7"]
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "surprised",
+      "content": "原来要这样扫描棋盘！那我每步棋都要检查这五个信号吗？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "对！每当轮到你走棋时，先花几秒钟用\"战术眼\"扫描：对手有没有无保护的子？有没有子力排在同一条线上？练多了就会变成本能反应。"
+    },
+    {
+      "type": "board_demo",
+      "fen": "r2qkb1r/ppp2ppp/2n1bn2/3pp3/4P3/1B3N2/PPPP1PPP/RNBQ1RK1 w kq - 2 6",
+      "description": "战术眼练习：扫描这个局面。白方Bb3瞄准了d5的兵，d5兵被e6的象保护。但注意——如果白方走exd5，黑方Nxd5后，白方的象就直接瞄准了f7！连锁反应才是战术的精髓。",
+      "highlights": ["b3", "d5", "f7"]
+    },
+    {
+      "type": "quiz",
+      "question": "以下哪个不是典型的战术信号？",
+      "options": ["无保护的棋子", "国王暴露", "兵链完整紧密", "同一条线上排列的重要棋子"],
+      "correct": 2,
+      "explanation": "兵链完整紧密恰恰说明防守很好，不容易出战术。无保护棋子、国王暴露、重要棋子排在同一线上才是战术信号。"
+    },
+    {
+      "type": "board_demo",
+      "fen": "r1b1k2r/ppppqppp/2n2n2/4p1B1/2B1P3/3P1N2/PPP2PPP/RN1QK2R b KQkq - 5 5",
+      "description": "再来一个练习：白方的象在g5牵制了f6的马（因为马后面是e7的后）。同时白方Bc4瞄准f7。黑方有两个战术弱点被同时施压——这就是战术组合的前兆！",
+      "highlights": ["g5", "f6", "e7", "c4", "f7"]
+    },
+    {
+      "type": "quiz",
+      "question": "\"战术眼\"扫描时，f7/f2为什么是开局中最脆弱的点？",
+      "options": ["因为它们在棋盘边上", "因为开局时只有国王一个子保护", "因为它们是兵", "因为对方的后可以直接到达"],
+      "correct": 1,
+      "explanation": "f7和f2在开局时只有国王这一个棋子保护，是最薄弱的环节。很多开局战术都围绕攻击f7/f2展开。"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "encourage",
+      "content": "记住，发现战术机会是第一步，接下来的课程我们将逐一深入学习每种战术的具体执行方法！"
+    },
+    {
+      "type": "celebration",
+      "character": "douding",
+      "expression": "celebrate",
+      "content": "太棒了！你已经掌握了\"战术眼\"的五大信号。以后每盘棋你都要用它来扫描棋盘！+40经验值！",
+      "xp_earned": 40
+    }
+  ],
+  "exercises": [
+    {
+      "type": "choice",
+      "question": "以下哪个是最常见的战术信号？",
+      "options": ["棋子数量多", "无保护的棋子", "开局走了很多步", "双方子力相等"],
+      "correct": 1
+    },
+    {
+      "type": "choice",
+      "question": "为什么\"过载\"是战术信号？",
+      "options": ["因为过载的子很强大", "因为一个子承担太多任务，无法面面俱到", "因为过载的子可以吃掉对方", "因为过载意味着有很多子力"],
+      "correct": 1
+    },
+    {
+      "type": "choice",
+      "question": "发现战术机会后，正确的做法是？",
+      "options": ["立即走棋", "先计算变化线再行动", "等对手犯错", "跳过不理"],
+      "correct": 1
+    },
+    {
+      "type": "board_interactive",
+      "fen": "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+      "question": "白方后在h5，象在c4。白方可以利用什么战术目标？",
+      "options": ["攻击f7", "攻击e5", "攻击c6", "攻击a7"],
+      "correct": 0
+    }
+  ]
+}

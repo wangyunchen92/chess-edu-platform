@@ -7,6 +7,7 @@ from app.routers.adventure import router as adventure_router
 from app.routers.assessment import router as assessment_router
 from app.routers.auth import router as auth_router
 from app.routers.dashboard import router as dashboard_router
+from app.routers.diagnosis import router as diagnosis_router
 from app.routers.gamification import router as gamification_router
 from app.routers.learn import router as learn_router
 from app.routers.notifications import router as notifications_router
@@ -29,3 +30,4 @@ router.include_router(gamification_router, prefix="/gamification", tags=["Gamifi
 router.include_router(dashboard_router, prefix="/dashboard", tags=["Dashboard"])
 router.include_router(notifications_router, prefix="/notifications", tags=["Notifications"])
 router.include_router(adventure_router, prefix="/adventure", tags=["Adventure"])
+router.include_router(diagnosis_router, prefix="/diagnosis", tags=["Diagnosis"])

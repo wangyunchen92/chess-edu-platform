@@ -1,0 +1,89 @@
+{
+  "character_id": "yunduoshifu",
+  "dialogues": {
+    "greeting": [
+      { "text": "……你来了。坐吧。棋盘已经摆好，天地之间，万物皆有其位。", "expression": "serene" },
+      { "text": "风起了。今日的棋局，也如同风一般，自然而来。开始吧。", "expression": "idle" },
+      { "text": "云朵师父在此等候。不急，深吸一口气……然后，落下第一子。", "expression": "serene" },
+      { "text": "欢迎来到云端。在这里，我们不求胜负，只求每一步都走出道理。", "expression": "serene" },
+      { "text": "嗯……你的眼神比上次来时更坚定了。很好。让我看看你的棋。", "expression": "thinking" }
+    ],
+    "good_move": [
+      { "text": "嗯……这步棋，有道理。你开始懂得顺势而为了。", "expression": "serene" },
+      { "text": "好。这一步不急不躁，恰到好处。棋如其人，不错。", "expression": "happy" },
+      { "text": "嗯嗯，妙啊。你这步棋暗含深意——你自己察觉到了吗？", "expression": "thinking" },
+      { "text": "好棋。水往低处流，棋往对的方向走。你做到了。", "expression": "serene" },
+      { "text": "这步……让云朵师父想起了一位老友的走法。很好，很自然。", "expression": "happy" }
+    ],
+    "blunder": [
+      { "text": "嗯……失误了。没关系，云也有散的时候，重新聚起来就好。", "expression": "serene" },
+      { "text": "这步棋走偏了。不过，偏路上也能看到不同的风景。", "expression": "thinking" },
+      { "text": "唔……云朵师父也有走错的时候。棋道漫漫，不必苛求完美。", "expression": "sad" },
+      { "text": "走错了。嗯……但错误也是修行的一部分。师父不为此烦恼。", "expression": "serene" },
+      { "text": "失误了啊……看来师父今日心还不够静。需要再沉淀一下。", "expression": "thinking" }
+    ],
+    "check_given": [
+      { "text": "将军。……水到渠成，不必用力。", "expression": "serene" },
+      { "text": "将。这步棋不是进攻，是自然的延伸。你感受到了吗？", "expression": "serene" },
+      { "text": "将军。嗯……如风吹云动，顺其自然而已。", "expression": "idle" },
+      { "text": "将。不急着解，先看清局面的全貌。", "expression": "thinking" },
+      { "text": "将军。这一步，早在五步前就已种下了种子。", "expression": "serene" }
+    ],
+    "check_received": [
+      { "text": "将军？嗯……让师父静下来看看。一切都有解。", "expression": "thinking" },
+      { "text": "被将了。好。风暴来了，云不躲避，而是与之共舞。", "expression": "serene" },
+      { "text": "将军……不慌。棋盘上的危险，也是转机的开始。", "expression": "thinking" },
+      { "text": "嗯，将了。你的攻势很果决。让师父想想……", "expression": "thinking" },
+      { "text": "被将了啊。有时候被推着走，反而能到达新的地方。", "expression": "serene" }
+    ],
+    "capture_given": [
+      { "text": "取子。……不是贪心，是局面需要。师父只取该取之物。", "expression": "serene" },
+      { "text": "吃掉了。嗯……就像摘果子，时机到了，自然会落。", "expression": "idle" },
+      { "text": "拿下。棋盘上的得失，如云聚云散，不必执着。", "expression": "serene" },
+      { "text": "取了一子。你的布阵有个缝隙——像风穿过山谷。", "expression": "thinking" },
+      { "text": "吃子。嗯……但师父更在意的是全局的平衡。", "expression": "thinking" }
+    ],
+    "capture_received": [
+      { "text": "丢子了。嗯……无妨。少一颗棋子，局面反而更清晰了。", "expression": "serene" },
+      { "text": "被吃了啊。放下执着，也是一种修行。师父不为此动心。", "expression": "serene" },
+      { "text": "失了一子。嗯……有时候舍，是为了更大的得。", "expression": "thinking" },
+      { "text": "被拿走了。没关系，棋盘上真正重要的不是棋子的多少。", "expression": "idle" },
+      { "text": "丢子了……嗯，师父需要重新感受一下局面的走向。", "expression": "thinking" }
+    ],
+    "advantage": [
+      { "text": "形势有利了。但师父知道——水满则溢，越是顺利越要谨慎。", "expression": "thinking" },
+      { "text": "嗯，局面向好。如同山顶的风，清爽但也要站稳脚跟。", "expression": "serene" },
+      { "text": "领先了。但棋局如人生，翻盘往往在一念之间。师父不敢大意。", "expression": "thinking" },
+      { "text": "优势在握。嗯……师父不会急于求成，顺势而为就好。", "expression": "serene" },
+      { "text": "形势不错。但好的棋手在领先时反而走得更慢——因为看得更远。", "expression": "thinking" }
+    ],
+    "disadvantage": [
+      { "text": "落后了。嗯……但暴风雨之后，总有彩虹。师父不急。", "expression": "serene" },
+      { "text": "形势不利啊。不过，困境才是真正考验修为的地方。", "expression": "thinking" },
+      { "text": "劣势中……嗯，没关系。师父见过太多次乌云后面的阳光了。", "expression": "serene" },
+      { "text": "落后了。但对手越强，师父反而越平静。因为这盘棋值得认真对待。", "expression": "thinking" },
+      { "text": "不利了……嗯。这种时候，最重要的不是找到妙招，而是不走错棋。", "expression": "serene" }
+    ],
+    "win": [
+      { "text": "赢了。嗯……但胜利不是目的。你在这盘棋中学到了什么？这才重要。", "expression": "serene" },
+      { "text": "师父赢了这一局。你走得很好，只是……还差一点'静'。慢慢来。", "expression": "happy" },
+      { "text": "胜了。但你不必沮丧——能走到云端与师父对弈，本身就是了不起的修行。", "expression": "serene" },
+      { "text": "赢了。嗯，这盘棋让师父很享受。你的棋在成长，继续走下去。", "expression": "happy" },
+      { "text": "师父胜了。但记住——输赢只是暂时的，棋道的修行没有终点。", "expression": "serene" }
+    ],
+    "lose": [
+      { "text": "师父输了。……嗯，好。你比师父预想的更强。去吧，更高的山在前方。", "expression": "serene" },
+      { "text": "输了。嗯嗯……师父今天确实不如你。这是一盘好棋。谢谢你。", "expression": "happy" },
+      { "text": "败了啊。嗯……师父修行多年，今日又学到了新东西。这不是坏事。", "expression": "serene" },
+      { "text": "师父认输。你的棋已经有了自己的道——很好。继续走下去。", "expression": "thinking" },
+      { "text": "输了。……风吹云散，但云总会重新聚起。下次再弈。", "expression": "serene" }
+    ],
+    "draw": [
+      { "text": "平局。嗯……有时候和棋就是最好的结果。你我各有所得。", "expression": "serene" },
+      { "text": "和棋了。你的棋与师父的棋交汇在一起，形成了一种平衡。很美。", "expression": "happy" },
+      { "text": "平了。嗯，这盘棋就像两朵云彼此碰触——没有输赢，只有交融。", "expression": "serene" },
+      { "text": "和棋。师父不觉得遗憾。棋盘上最难得的是势均力敌的对手。", "expression": "thinking" },
+      { "text": "平局了。嗯……你我之间的这盘棋，还没有下完。下次再续。", "expression": "serene" }
+    ]
+  }
+}

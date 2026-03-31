@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { puzzlesApi } from '@/api/puzzles'
+import { usePuzzleStore } from '@/stores/puzzleStore'
 import Card from '@/components/common/Card'
 import Button from '@/components/common/Button'
 import Badge from '@/components/common/Badge'
@@ -16,8 +17,14 @@ interface MistakePuzzle {
 
 const MistakeBookPage: React.FC = () => {
   const navigate = useNavigate()
+  const setPuzzleList = usePuzzleStore((s: any) => s.setPuzzleList)
   const [mistakes, setMistakes] = useState<MistakePuzzle[]>([])
   const [loading, setLoading] = useState(true)
+
+  const goToPuzzle = (puzzleId: string) => {
+    setPuzzleList(mistakes.map((m) => m.id))
+    navigate(`/puzzles/solve/${puzzleId}`)
+  }
 
   useEffect(() => {
     setLoading(true)
@@ -26,21 +33,17 @@ const MistakeBookPage: React.FC = () => {
         const payload = res.data?.data ?? res.data
         const list = payload?.mistakes ?? (Array.isArray(payload) ? payload : [])
         setMistakes(list.map((m: any) => ({
-          id: m.attempt_id ?? m.id ?? '',
+          id: m.puzzle?.id ?? m.puzzle?.puzzle_code ?? m.puzzle_id ?? m.id ?? '',
           fen: m.puzzle?.fen ?? m.fen ?? '',
           theme: m.puzzle?.themes ?? m.theme ?? '',
-          difficulty: m.puzzle?.difficulty_level ? `Level ${m.puzzle.difficulty_level}` : (m.difficulty ?? ''),
+          difficulty: m.puzzle?.difficulty_level ? `第${m.puzzle.difficulty_level}级` : (m.difficulty ?? ''),
           date: m.attempted_at ?? m.date ?? '',
           retried: m.retried ?? false,
         })))
       })
       .catch((err) => {
         console.error('[MistakeBookPage] Failed to load mistakes:', err)
-        setMistakes([
-          { id: 'err-1', fen: 'r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4', theme: '将杀', difficulty: '入门', date: '2026-03-28', retried: false },
-          { id: 'err-2', fen: 'rnbqkbnr/pppp1ppp/8/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2', theme: '战术', difficulty: '初级', date: '2026-03-27', retried: true },
-          { id: 'err-3', fen: '6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1', theme: '残局', difficulty: '入门', date: '2026-03-26', retried: false },
-        ])
+        setMistakes([])
       })
       .finally(() => setLoading(false))
   }, [])
@@ -81,7 +84,7 @@ const MistakeBookPage: React.FC = () => {
       ) : (
         <div className="space-y-3">
           {mistakes.map((m) => (
-            <Card key={m.id} padding="md" onClick={() => navigate(`/puzzles/solve/${m.id}`)}>
+            <Card key={m.id} padding="md" onClick={() => goToPuzzle(m.id)}>
               <div className="flex items-center gap-4">
                 {/* Mini board preview (simplified) */}
                 <div
@@ -106,7 +109,7 @@ const MistakeBookPage: React.FC = () => {
                     {m.date}
                   </p>
                 </div>
-                <Button variant="secondary" size="sm" onClick={(e) => { e.stopPropagation(); navigate(`/puzzles/solve/${m.id}`) }}>
+                <Button variant="secondary" size="sm" onClick={(e) => { e.stopPropagation(); goToPuzzle(m.id) }}>
                   重做
                 </Button>
               </div>

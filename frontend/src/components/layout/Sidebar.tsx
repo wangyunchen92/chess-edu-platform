@@ -49,6 +49,17 @@ const navItems: NavItem[] = [
     ),
   },
   {
+    path: '/diagnosis',
+    label: '弱点诊断',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <circle cx="10" cy="10" r="7" stroke="currentColor" strokeWidth="1.8" />
+        <path d="M10 6v4l2.5 2.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        <circle cx="10" cy="10" r="1.5" fill="currentColor" />
+      </svg>
+    ),
+  },
+  {
     path: '/profile',
     label: '我的',
     icon: (

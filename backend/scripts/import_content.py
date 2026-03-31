@@ -27,6 +27,83 @@ CONTENT_DIR = os.path.join(
 )
 
 
+def _build_unlock_condition(raw: str) -> dict:
+    """Convert a raw unlock_condition string into a structured JSON condition.
+
+    Maps known content-file condition strings to the structured format
+    defined in the architecture doc.
+    """
+    if raw == "default" or not raw:
+        return {"type": "default"}
+
+    # Known condition mappings
+    condition_map = {
+        # Phase 1 characters
+        "win_douding": {
+            "type": "multi",
+            "conditions": [
+                {"type": "games_played", "min_count": 1},
+            ],
+        },
+        "win_mianhuatang": {
+            "type": "multi",
+            "conditions": [
+                {"type": "course_lessons", "course_slug": "level_0", "min_lessons": 3},
+                {"type": "games_played", "min_count": 1},
+            ],
+        },
+        # Phase 2a characters
+        "promotion_challenge_grassland_guardian": {
+            "type": "multi",
+            "conditions": [
+                {"type": "promotion_challenge", "challenge_type": "grassland_guardian"},
+                {"type": "rating", "min_rating": 800},
+            ],
+        },
+        "promotion_challenge_forest_heart": {
+            "type": "multi",
+            "conditions": [
+                {"type": "promotion_challenge", "challenge_type": "forest_heart"},
+                {"type": "rating", "min_rating": 1200},
+            ],
+        },
+        "win_dongdong_1_and_fork_puzzles": {
+            "type": "multi",
+            "conditions": [
+                {"type": "promotion_challenge", "challenge_type": "grassland_guardian"},
+                {"type": "rating", "min_rating": 900},
+            ],
+        },
+        "win_lihuahua_1_and_level2_unit1": {
+            "type": "multi",
+            "conditions": [
+                {"type": "promotion_challenge", "challenge_type": "grassland_guardian"},
+                {"type": "rating", "min_rating": 1000},
+            ],
+        },
+        "win_yinzong_2_and_200_puzzles": {
+            "type": "multi",
+            "conditions": [
+                {"type": "promotion_challenge", "challenge_type": "forest_heart"},
+                {"type": "rating", "min_rating": 1350},
+            ],
+        },
+        "win_gulu_1_and_level3_unit2_and_30day_streak": {
+            "type": "multi",
+            "conditions": [
+                {"type": "promotion_challenge", "challenge_type": "forest_heart"},
+                {"type": "rating", "min_rating": 1500},
+            ],
+        },
+    }
+
+    if raw in condition_map:
+        return condition_map[raw]
+
+    # Fallback: simple type wrapper
+    return {"type": raw}
+
+
 def _table_has_rows(db: Session, model) -> bool:
     """Check if a table already has data."""
     return db.execute(select(model.id).limit(1)).first() is not None
@@ -58,7 +135,35 @@ def import_characters(db: Session) -> int:
 
         slug = data["id"]
         engine = data.get("engine_params", {})
-        is_free = data.get("unlock_condition") == "default"
+        is_free = data.get("tier") == "beginner"
+
+        # Build unlock_condition JSON from raw string
+        unlock_cond = _build_unlock_condition(data.get("unlock_condition", "default"))
+
+        # Build play_style_params from engine_params (non-depth/error fields)
+        play_style_params = {}
+        style_keys = [
+            "prefer_traps", "defensive_bias", "aggressive_bias",
+            "positional_bias", "trap_frequency", "prefer_simple_moves",
+            "avoid_long_sequences", "prefer_solid_structure", "balanced_play",
+            "prefer_tactical", "prefer_closed_positions", "counterattack_threshold",
+            "prefer_open_positions", "prefer_piece_activity", "kingside_attack_weight",
+            "positional_play", "sacrifice_willingness", "poison_pawn_tendency",
+            "adaptive_style", "endgame_strength", "opening_repertoire",
+            "prefer_defensive", "prefer_aggressive", "prefer_center_control",
+            "avoid_long_endgames",
+        ]
+        for key in style_keys:
+            if key in engine:
+                play_style_params[key] = engine[key]
+
+        # Map region from content JSON to DB region code
+        region_map = {
+            "trial_forest": "forest",
+            "storm_plateau": "plateau",
+        }
+        raw_region = data.get("region", "")
+        region = region_map.get(raw_region, "meadow")
 
         char = Character(
             id=slug,
@@ -74,7 +179,10 @@ def import_characters(db: Session) -> int:
             engine_depth_min=engine.get("depth_min", 3),
             engine_depth_max=engine.get("depth_max", 5),
             mistake_rate=engine.get("error_rate", 0.3),
-            unlock_condition={"type": data.get("unlock_condition", "default")},
+            play_style_params=play_style_params,
+            unlock_condition=unlock_cond,
+            unlock_story=data.get("unlock_story"),
+            region=region,
             is_free=is_free,
             sort_order=sort_order,
         )
@@ -359,9 +467,50 @@ def import_courses(db: Session) -> int:
     return count
 
 
+def seed_users(db: Session) -> int:
+    """Create default test accounts if they don't exist."""
+    from app.models.user import User
+    from app.models.gamification import UserRating
+    from app.utils.security import hash_password
+
+    count = 0
+    defaults = [
+        {"username": "admin", "password": "admin123", "role": "admin", "nickname": "管理员"},
+        {"username": "student", "password": "123456", "role": "student", "nickname": "小棋手"},
+    ]
+    for u in defaults:
+        existing = db.execute(
+            select(User).where(User.username == u["username"])
+        ).scalar_one_or_none()
+        if existing:
+            continue
+        user = User(
+            username=u["username"],
+            password_hash=hash_password(u["password"]),
+            role=u["role"],
+            nickname=u["nickname"],
+            status="active",
+            membership_tier="free",
+        )
+        db.add(user)
+        db.flush()
+        # Create initial rating
+        rating = UserRating(
+            user_id=str(user.id),
+            game_rating=400,
+            puzzle_rating=300,
+            rank_title="beginner_1",
+        )
+        db.add(rating)
+        count += 1
+        logger.info("Seeded user: %s (%s)", u["username"], u["role"])
+    return count
+
+
 def import_all(db: Session) -> dict:
     """Run all content imports. Returns counts of imported items."""
     results = {}
+    results["users"] = seed_users(db)
     results["characters"] = import_characters(db)
     results["puzzles"] = import_puzzles(db)
     results["achievements"] = import_achievements(db)

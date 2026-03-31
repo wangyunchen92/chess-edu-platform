@@ -1,9 +1,11 @@
 """SQLAlchemy ORM models package."""
 
 from app.models.achievement import Achievement, UserAchievement
+from app.models.adaptive import AdaptiveDifficultyConfig
 from app.models.adventure import PromotionChallenge
 from app.models.character import Character, CharacterDialogue, UserCharacterRelation
 from app.models.course import Course, Exercise, ExerciseAttempt, Lesson, LessonProgress
+from app.models.diagnosis import UserWeaknessProfile, WeaknessRecommendation
 from app.models.game import Game, GameMove
 from app.models.gamification import RatingHistory, UserRating, UserStreak
 from app.models.membership import MembershipPlan, UserDailyQuota
@@ -50,4 +52,9 @@ __all__ = [
     "Notification",
     # Adventure
     "PromotionChallenge",
+    # Diagnosis
+    "UserWeaknessProfile",
+    "WeaknessRecommendation",
+    # Adaptive
+    "AdaptiveDifficultyConfig",
 ]

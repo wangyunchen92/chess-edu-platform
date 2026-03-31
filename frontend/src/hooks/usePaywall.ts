@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { useAuthStore } from '@/stores/authStore'
 
 interface PaywallResult {
   blocked: boolean
@@ -34,16 +35,29 @@ function incrementUsage(feature: string): void {
 
 /**
  * usePaywall - checks free-tier quota for a given feature.
+ * Admin users and paid members are never blocked.
  * Returns { blocked, message, remaining, checkAndBlock }.
  * Call checkAndBlock() before performing the action - it returns true if blocked.
  */
 export function usePaywall(feature: string): PaywallResult {
+  const user = useAuthStore((s) => s.user)
+  const isUnlimited = user?.role === 'admin' || (user?.membership_tier && user.membership_tier !== 'free')
+
   const limit = DAILY_LIMITS[feature] ?? 5
   const [count, setCount] = useState(() => getUsageCount(feature))
 
   useEffect(() => {
     setCount(getUsageCount(feature))
   }, [feature])
+
+  if (isUnlimited) {
+    return {
+      blocked: false,
+      message: '',
+      remaining: Infinity,
+      checkAndBlock: () => false,
+    }
+  }
 
   const remaining = Math.max(0, limit - count)
   const blocked = remaining <= 0

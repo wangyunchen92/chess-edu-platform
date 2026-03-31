@@ -1,0 +1,49 @@
+{
+  "id": "level_3",
+  "title": "中级战略",
+  "description": "学习中局战略思维，掌握兵结构、开放线控制、好象坏象、前哨站等核心战略概念",
+  "level": 3,
+  "prerequisite": "level_2",
+  "total_lessons": 15,
+  "estimated_hours": 10,
+  "target_rating": "1200-1600",
+  "units": [
+    {
+      "id": "unit_1",
+      "title": "战略基础",
+      "lessons": [1, 2, 3]
+    },
+    {
+      "id": "unit_2",
+      "title": "子力与局面",
+      "lessons": [4, 5]
+    },
+    {
+      "id": "unit_3",
+      "title": "进阶战略（即将上线）",
+      "lessons": [6, 7, 8, 9, 10]
+    },
+    {
+      "id": "unit_4",
+      "title": "残局与综合（即将上线）",
+      "lessons": [11, 12, 13, 14, 15]
+    }
+  ],
+  "lessons": [
+    { "id": "l3_01", "title": "中局计划——如何制定计划", "order": 1, "unit": "unit_1", "status": "published" },
+    { "id": "l3_02", "title": "兵结构基础——强兵与弱兵", "order": 2, "unit": "unit_1", "status": "published" },
+    { "id": "l3_03", "title": "开放线与半开放线的控制", "order": 3, "unit": "unit_1", "status": "published" },
+    { "id": "l3_04", "title": "好象与坏象", "order": 4, "unit": "unit_2", "status": "published" },
+    { "id": "l3_05", "title": "前哨站与弱格利用", "order": 5, "unit": "unit_2", "status": "published" },
+    { "id": "l3_06", "title": "子力协调", "order": 6, "unit": "unit_3", "status": "coming_soon" },
+    { "id": "l3_07", "title": "空间优势", "order": 7, "unit": "unit_3", "status": "coming_soon" },
+    { "id": "l3_08", "title": "王的安全", "order": 8, "unit": "unit_3", "status": "coming_soon" },
+    { "id": "l3_09", "title": "兵的突破", "order": 9, "unit": "unit_3", "status": "coming_soon" },
+    { "id": "l3_10", "title": "残局入门", "order": 10, "unit": "unit_3", "status": "coming_soon" },
+    { "id": "l3_11", "title": "车兵残局", "order": 11, "unit": "unit_4", "status": "coming_soon" },
+    { "id": "l3_12", "title": "王兵残局", "order": 12, "unit": "unit_4", "status": "coming_soon" },
+    { "id": "l3_13", "title": "开局原则复习", "order": 13, "unit": "unit_4", "status": "coming_soon" },
+    { "id": "l3_14", "title": "中局过渡到残局", "order": 14, "unit": "unit_4", "status": "coming_soon" },
+    { "id": "l3_15", "title": "战略综合训练", "order": 15, "unit": "unit_4", "status": "coming_soon" }
+  ]
+}

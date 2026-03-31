@@ -11,9 +11,11 @@ from app.database import Base
 
 if TYPE_CHECKING:
     from app.models.achievement import UserAchievement
+    from app.models.adaptive import AdaptiveDifficultyConfig
     from app.models.adventure import PromotionChallenge
     from app.models.character import UserCharacterRelation
     from app.models.course import ExerciseAttempt, LessonProgress
+    from app.models.diagnosis import UserWeaknessProfile, WeaknessRecommendation
     from app.models.game import Game
     from app.models.gamification import RatingHistory, UserRating, UserStreak
     from app.models.membership import UserDailyQuota
@@ -97,6 +99,15 @@ class User(Base):
     )
     promotion_challenges: Mapped[list["PromotionChallenge"]] = relationship(
         "PromotionChallenge", back_populates="user", lazy="noload"
+    )
+    weakness_profile: Mapped[Optional["UserWeaknessProfile"]] = relationship(
+        "UserWeaknessProfile", back_populates="user", uselist=False, lazy="noload"
+    )
+    weakness_recommendations: Mapped[list["WeaknessRecommendation"]] = relationship(
+        "WeaknessRecommendation", back_populates="user", lazy="noload"
+    )
+    adaptive_configs: Mapped[list["AdaptiveDifficultyConfig"]] = relationship(
+        "AdaptiveDifficultyConfig", back_populates="user", lazy="noload"
     )
 
 

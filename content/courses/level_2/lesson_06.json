@@ -1,0 +1,92 @@
+{
+  "id": "l2_06",
+  "course_id": "level_2",
+  "unit": "unit_2",
+  "order": 6,
+  "title": "引离战术",
+  "description": "学习引离（Deflection）战术，将防守子力从关键位置引开",
+  "estimated_minutes": 25,
+  "steps": [
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "小琪，有时候对手的防守很严密，但其中某个子承担着关键防守任务。如果我们能把它\"引走\"，防线就崩溃了！"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "thinking",
+      "content": "就像声东击西？用一个诱饵把守卫引开？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "完全正确！引离（Deflection）就是强迫对方的防守子力离开它的岗位，让它无法继续保护关键目标。"
+    },
+    {
+      "type": "text",
+      "content": "引离战术（Deflection）的核心逻辑：\n\n1. 找到对方的关键防守子——它在保护什么？\n2. 用牺牲或攻击迫使它离开岗位\n3. 防守子一走，原来被保护的目标就暴露了\n\n引离常用手段：\n- **将军引离**：用将军迫使王或其他子移到不利位置\n- **吃子引离**：送一个子给防守子吃，迫使它离开防线\n- **威胁引离**：攻击防守子本身，迫使它逃跑\n\n引离和引入是一对\"兄弟\"战术——引离是把子拉走，引入是把子拉来。"
+    },
+    {
+      "type": "board_demo",
+      "fen": "r4rk1/ppp2ppp/2n5/3q4/8/2N2Q2/PPP2PPP/R4RK1 w - - 0 15",
+      "description": "白方Qf3想攻击a8的车，但d5的黑后保护着a8方向。如果白方能引离黑后——比如Nd5攻击后，后被迫移动，白方就能执行原计划。引离的关键是发现\"谁在保护什么\"。",
+      "highlights": ["f3", "d5", "a8"]
+    },
+    {
+      "type": "board_demo",
+      "fen": "r1b2rk1/pp3ppp/2p1pn2/q7/3P4/2NB1Q2/PPP2PPP/R4RK1 w - - 0 12",
+      "description": "经典引离：白方想在h7将杀（Qxh7# 或 Bxh7+再Qh5），但f6的马保护着h7。白方Qxf6! 吃马！如果gxf6，h7的保护没了。如果不吃后，白后留在f6也很危险。",
+      "highlights": ["f3", "f6", "h7"]
+    },
+    {
+      "type": "board_demo",
+      "fen": "2r3k1/5ppp/8/8/8/6Q1/5PPP/1q3RK1 w - - 0 30",
+      "description": "引离实例：黑后在b1要吃f1车。白方Qd6！攻击c8的黑车。如果黑车移开保护后路，白方就有机会反击。引离不一定要送子，威胁也是有效手段。",
+      "highlights": ["g3", "c8"]
+    },
+    {
+      "type": "quiz",
+      "question": "引离战术的第一步是？",
+      "options": ["先送后", "先找到对方的关键防守子", "先推兵", "先将军"],
+      "correct": 1,
+      "explanation": "引离的第一步一定是找到对方的关键防守子——它在保护什么？它走了会怎样？找到这个关键子后，再想办法把它引走。"
+    },
+    {
+      "type": "quiz",
+      "question": "以下哪种情况最适合引离战术？",
+      "options": ["双方子力相当，局面平静", "对方的一个子同时保护两个重要目标", "对方所有子都很活跃", "自己的子很少"],
+      "correct": 1,
+      "explanation": "当对方一个子同时保护两个重要目标时，引离最有效——把它从一个目标引走，另一个就暴露了。这和\"过载\"概念紧密相关。"
+    },
+    {
+      "type": "celebration",
+      "character": "douding",
+      "expression": "celebrate",
+      "content": "引离战术掌握！声东击西，调虎离山——把对手的守卫引走，进攻就畅通无阻了！+40经验值！",
+      "xp_earned": 40
+    }
+  ],
+  "exercises": [
+    {
+      "type": "choice",
+      "question": "引离战术的本质是？",
+      "options": ["增加自己的攻击子", "迫使对方的防守子离开关键位置", "封锁对方的棋子", "交换所有轻子"],
+      "correct": 1
+    },
+    {
+      "type": "choice",
+      "question": "引离最常用的手段包括？",
+      "options": ["将军、吃子、威胁", "推兵、交换、等待", "封锁、困子、弃后", "只有送后一种"],
+      "correct": 0
+    },
+    {
+      "type": "choice",
+      "question": "引离和引入的区别是？",
+      "options": ["引离把子拉走，引入把子拉来", "引离更强", "引入更难", "没有区别"],
+      "correct": 0
+    }
+  ]
+}

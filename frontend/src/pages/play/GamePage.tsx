@@ -3,6 +3,7 @@ import { useParams, useSearchParams, useNavigate } from 'react-router-dom'
 import { useChessGame } from '@/hooks/useChessGame'
 import { useAuthStore } from '@/stores/authStore'
 import type { CharacterConfig } from '@/engine/CharacterEngine'
+import { buildCharacterConfigFromJSON } from '@/engine/CharacterEngine'
 import Chessboard from '@/components/chess/Chessboard'
 import MoveList from '@/components/chess/MoveList'
 import GameTimer from '@/components/chess/GameTimer'
@@ -18,24 +19,117 @@ import { gamificationApi } from '@/api/gamification'
 // Character presets (matches CharacterHallPage ids)
 // ---------------------------------------------------------------------------
 
+/**
+ * 9 个角色的引擎配置预设
+ *
+ * 每个角色通过 buildCharacterConfigFromJSON 从 engine_params 构建完整配置，
+ * 包含棋风参数 playStyleParams，用于 PlayStyleController 差异化走法选择。
+ *
+ * 入门段（meadow）：豆丁(500) / 棉花糖(650) / 龟龟(750)
+ * 初级段（forest）：冬冬(850) / 狸花花(1000) / 铁墩墩(1100)
+ * 中级段（plateau）：银鬃(1300) / 咕噜(1450) / 云朵师父(1550)
+ */
 const CHARACTER_PRESETS: Record<string, CharacterConfig & { emoji: string }> = {
+  // ── 入门段 ─────────────────────────────────────────
   douding: {
-    id: 'douding', name: '豆丁', emoji: '🐰',
-    rating: 500, depthMin: 1, depthMax: 3, errorRate: 0.5,
-    styleWeights: { attack: 0.3, defense: 0.2, tactics: 0.2, positional: 0.3 },
-    thinkTimeMinMs: 500, thinkTimeMaxMs: 2000,
+    ...buildCharacterConfigFromJSON({
+      id: 'douding', name: '豆丁', rating: 500,
+      engine_params: {
+        depth_min: 3, depth_max: 5, error_rate: 0.3,
+        prefer_simple_moves: true, avoid_long_sequences: true,
+      },
+    }),
+    emoji: '🐰',
   },
   mianhuatang: {
-    id: 'mianhuatang', name: '棉花糖', emoji: '🧁',
-    rating: 650, depthMin: 2, depthMax: 5, errorRate: 0.35,
-    styleWeights: { attack: 0.2, defense: 0.4, tactics: 0.2, positional: 0.2 },
-    thinkTimeMinMs: 800, thinkTimeMaxMs: 3000,
+    ...buildCharacterConfigFromJSON({
+      id: 'mianhuatang', name: '棉花糖', rating: 650,
+      engine_params: {
+        depth_min: 4, depth_max: 6, error_rate: 0.28,
+        prefer_aggressive: true, prefer_center_control: true,
+        avoid_long_endgames: true,
+      },
+    }),
+    emoji: '🧁',
   },
   guigui: {
-    id: 'guigui', name: '龟龟', emoji: '🐢',
-    rating: 750, depthMin: 3, depthMax: 7, errorRate: 0.25,
-    styleWeights: { attack: 0.1, defense: 0.5, tactics: 0.1, positional: 0.3 },
-    thinkTimeMinMs: 1500, thinkTimeMaxMs: 5000,
+    ...buildCharacterConfigFromJSON({
+      id: 'guigui', name: '龟龟', rating: 750,
+      engine_params: {
+        depth_min: 5, depth_max: 7, error_rate: 0.25,
+        prefer_defensive: true, prefer_solid_structure: true,
+        endgame_strength: 0.85,
+      },
+    }),
+    emoji: '🐢',
+  },
+  // ── 初级段 ─────────────────────────────────────────
+  dongdong: {
+    ...buildCharacterConfigFromJSON({
+      id: 'dongdong', name: '冬冬', rating: 850,
+      engine_params: {
+        depth_min: 6, depth_max: 8, error_rate: 0.25,
+        balanced_play: true, prefer_solid_structure: true,
+      },
+    }),
+    emoji: '👦',
+  },
+  lihuahua: {
+    ...buildCharacterConfigFromJSON({
+      id: 'lihuahua', name: '狸花花', rating: 1000,
+      engine_params: {
+        depth_min: 7, depth_max: 9, error_rate: 0.2,
+        prefer_traps: true, prefer_tactical: true,
+        trap_frequency: 0.2,
+      },
+    }),
+    emoji: '🐱',
+  },
+  tiedundun: {
+    ...buildCharacterConfigFromJSON({
+      id: 'tiedundun', name: '铁墩墩', rating: 1100,
+      engine_params: {
+        depth_min: 8, depth_max: 10, error_rate: 0.15,
+        defensive_bias: 0.8, prefer_solid_structure: true,
+        prefer_closed_positions: true, counterattack_threshold: 0.6,
+      },
+    }),
+    emoji: '🤖',
+  },
+  // ── 中级段 ─────────────────────────────────────────
+  yinzong: {
+    ...buildCharacterConfigFromJSON({
+      id: 'yinzong', name: '银鬃', rating: 1300,
+      engine_params: {
+        depth_min: 10, depth_max: 12, error_rate: 0.1,
+        aggressive_bias: 0.7, prefer_open_positions: true,
+        prefer_piece_activity: true, kingside_attack_weight: 0.6,
+      },
+    }),
+    emoji: '⚔️',
+  },
+  gulu: {
+    ...buildCharacterConfigFromJSON({
+      id: 'gulu', name: '咕噜', rating: 1450,
+      engine_params: {
+        depth_min: 11, depth_max: 13, error_rate: 0.08,
+        prefer_traps: true, positional_play: true,
+        trap_frequency: 0.3, sacrifice_willingness: 0.4,
+        poison_pawn_tendency: 0.25,
+      },
+    }),
+    emoji: '🦊',
+  },
+  yunduoshifu: {
+    ...buildCharacterConfigFromJSON({
+      id: 'yunduoshifu', name: '云朵师父', rating: 1550,
+      engine_params: {
+        depth_min: 12, depth_max: 14, error_rate: 0.05,
+        positional_bias: 0.8, balanced_play: true,
+        adaptive_style: true, endgame_strength: 0.9,
+      },
+    }),
+    emoji: '☁️',
   },
 }
 
@@ -74,6 +168,66 @@ const DIALOGUE_MAP: Record<string, Record<string, string>> = {
     advantage: '......形势不错。',
     disadvantage: '......需要更稳。',
   },
+  dongdong: {
+    good_move: '不错！你基本功挺扎实的！',
+    blunder: '啊...我怎么走了这步！再来！',
+    check_given: '将军！我练了好久这招！',
+    check_received: '被将了！没关系，冬冬不认输！',
+    capture_given: '吃掉！冬冬的努力没白费！',
+    capture_received: '唔...被吃了，但我会扳回来的！',
+    advantage: '嘿嘿，冬冬占优了！',
+    disadvantage: '形势不太好...但冬冬绝不放弃！',
+  },
+  lihuahua: {
+    good_move: '哼~你还挺机灵的嘛！',
+    blunder: '呀！花花怎么会犯这种错！',
+    check_given: '嘻嘻~将军！看到了吗？',
+    check_received: '哎呀！你识破了我的计划！',
+    capture_given: '中计啦~吃掉你的棋子！',
+    capture_received: '哼...你很狡猾嘛！',
+    advantage: '嘻嘻~一切都在花花的计划中~',
+    disadvantage: '哼哼...别得意，花花还有后手！',
+  },
+  tiedundun: {
+    good_move: '检测到...优质走法。值得学习。',
+    blunder: '系统错误...铁墩墩需要修复...',
+    check_given: '防御模式：反击！将军！',
+    check_received: '警告：王城受到威胁！启动加固程序！',
+    capture_given: '目标捕获成功。',
+    capture_received: '损失可控...防线依然稳固。',
+    advantage: '优势确立...继续巩固阵地。',
+    disadvantage: '切换防御模式...重建防线中...',
+  },
+  yinzong: {
+    good_move: '好剑法！你是个值得尊敬的对手！',
+    blunder: '失误了...骑士不该犯这种错！',
+    check_given: '银鬃之剑，将军！',
+    check_received: '好攻势！但骑士不会退缩！',
+    capture_given: '堂堂正正，夺下此子！',
+    capture_received: '好一招...但战斗才刚开始！',
+    advantage: '银鬃的旗帜高高飘扬！',
+    disadvantage: '形势严峻...但骑士永不言败！',
+  },
+  gulu: {
+    good_move: '嘿嘿...你没那么好骗嘛~',
+    blunder: '嗯？这步不太优雅...当我没走~',
+    check_given: '将军~这步，你没想到吧？',
+    check_received: '哦？有点意思...你看到了什么？',
+    capture_given: '这颗子...就收下了~',
+    capture_received: '这是我故意的...你信吗？嘿嘿~',
+    advantage: '一切尽在掌握之中~',
+    disadvantage: '有趣...局势越乱，咕噜越开心~',
+  },
+  yunduoshifu: {
+    good_move: '善。此步...颇有悟性。',
+    blunder: '...风吹动了不该动的棋子。',
+    check_given: '将军。水到渠成，如是而已。',
+    check_received: '嗯...你的棋有锋芒。很好。',
+    capture_given: '一子落，如叶归根。',
+    capture_received: '舍得...方能得。',
+    advantage: '山高处，风自来。',
+    disadvantage: '低谷处...恰是修行时。',
+  },
 }
 
 // ---------------------------------------------------------------------------
@@ -88,9 +242,19 @@ const GamePage: React.FC = () => {
 
   const characterId = searchParams.get('character') ?? 'douding'
   const timeControl = parseInt(searchParams.get('time') ?? '600', 10)
+  const difficultyMode = searchParams.get('difficulty') ?? 'adaptive'
 
   const charPreset = CHARACTER_PRESETS[characterId] ?? CHARACTER_PRESETS.douding
   const dialogueLines = DIALOGUE_MAP[characterId] ?? DIALOGUE_MAP.douding
+
+  const DIFFICULTY_LABELS: Record<string, { label: string; color: string }> = {
+    adaptive: { label: '自适应', color: '#a78bfa' },
+    easy: { label: '轻松', color: '#34d399' },
+    normal: { label: '正常', color: '#fbbf24' },
+    hard: { label: '挑战', color: '#f87171' },
+    fixed: { label: '固定', color: '#94a3b8' },
+  }
+  const diffLabel = DIFFICULTY_LABELS[difficultyMode] ?? DIFFICULTY_LABELS.adaptive
 
   const {
     gameState,
@@ -274,25 +438,67 @@ const GamePage: React.FC = () => {
     setTimeout(() => {
       const replies: Record<string, string[]> = {
         douding: [
-          '嘿嘿，我也不太确定呢~一起加油吧！🐰',
+          '嘿嘿，我也不太确定呢~一起加油吧！',
           '你问我？我还在学习中哦~',
           '哇，好问题！不过我只会下棋啦~',
           '嗯嗯，我觉得你下得很棒！',
           '别担心，我们都在进步呢！',
         ],
         mianhuatang: [
-          '哼哼，你是在套我的路数吗？🧁',
+          '哼哼，你是在套我的路数吗？',
           '别说话了，专心下棋！我要赢你！',
           '你要是再这么厉害，我就不跟你玩了~',
           '嘻嘻，你在夸我吗？谢谢！',
           '认真下棋啦，别想分散我注意力！',
         ],
         guigui: [
-          '慢慢来，年轻人...不急不急~🐢',
+          '慢慢来，年轻人...不急不急~',
           '老龟我下了一辈子棋，这局面嘛...有趣有趣',
           '耐心是棋手最好的朋友，记住了吗？',
           '嗯...你说的有道理，但棋盘上见真章',
           '每盘棋都是一次修行，享受过程吧~',
+        ],
+        dongdong: [
+          '嗯！我也在想这步！一起研究研究！',
+          '冬冬每天都在练习，你也要加油哦！',
+          '说得好！不过我们还是用棋盘来说话吧！',
+          '再来一盘！冬冬一定能做得更好！',
+          '下棋就是要认真！冬冬绝不偷懒！',
+        ],
+        lihuahua: [
+          '嘻嘻~你想知道我下一步怎么走？才不告诉你~',
+          '哼~别想用聊天分散花花的注意力！',
+          '你有没有注意到那个格子？噢，没有吗？嘻嘻~',
+          '花花最喜欢看到对手中计时的表情了~',
+          '别小看我哦，花花可是有很多小把戏的！',
+        ],
+        tiedundun: [
+          '对话功能...在线。有何指令？',
+          '铁墩墩不理解人类情感...但会认真下棋。',
+          '建议：减少对话，增加思考。效率提升32%。',
+          '铁墩墩的防御算法正在运行中...请勿干扰。',
+          '系统提示：和铁墩墩做朋友...感觉不错。',
+        ],
+        yinzong: [
+          '骑士之道，在于磊落。你有话直说便是！',
+          '切磋棋艺，互相敬重，这才是正道！',
+          '银鬃从不走捷径，每一步都堂堂正正！',
+          '你的棋道还需磨练，但勇气可嘉！',
+          '在高原上，只有实力说了算！加油！',
+        ],
+        gulu: [
+          '嘿嘿~你在试探我？咕噜什么都不会说哦~',
+          '你觉得我会在这里暴露自己的策略吗？',
+          '有趣有趣...你越紧张，就越容易犯错哦~',
+          '咕噜的每句话...都可能是陷阱~你确定要听？',
+          '别信我说的任何话...或者...该不该信呢？',
+        ],
+        yunduoshifu: [
+          '棋如人生，不在快慢，在于方向。',
+          '你心中有疑惑？把它放在棋盘上，答案自现。',
+          '万法归一，一亦归无。慢慢体悟吧。',
+          '风来了，就让它吹。棋子动了，就让它走。',
+          '师父不教棋...师父只是在旁边看着你成长。',
         ],
       }
       const charReplies = replies[characterId] ?? replies.douding
@@ -354,7 +560,19 @@ const GamePage: React.FC = () => {
             >
               {charPreset.name}
             </h3>
-            <span className="text-[10px] text-white/40">Rating {charPreset.rating}</span>
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] text-white/40">评分 {charPreset.rating}</span>
+              <span
+                className="text-[9px] px-1.5 py-0.5 rounded-full font-medium"
+                style={{
+                  backgroundColor: `${diffLabel.color}20`,
+                  color: diffLabel.color,
+                  border: `1px solid ${diffLabel.color}40`,
+                }}
+              >
+                {diffLabel.label}
+              </span>
+            </div>
           </div>
           {isAiThinking && (
             <div className="flex gap-1 ml-auto">
@@ -462,14 +680,14 @@ const GamePage: React.FC = () => {
             <div className="rounded-lg overflow-hidden" style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)' }}>
               <GameTimer seconds={timer.white} active={gameState.turn === 'white' && !gameResult} />
             </div>
-            <span className="text-[10px] text-white/50">{user?.nickname ?? '\u4F60'}</span>
+            <span className="text-[10px] text-white/50">{user?.nickname ?? '你'}</span>
             <CapturedPieces pieces={gameState.capturedPieces.black} color="black" />
           </div>
 
           {/* Player info bar + controls (mobile only) */}
           <div className="flex md:hidden items-center gap-2 w-full justify-between px-2">
             <div className="flex items-center gap-2">
-              <span className="text-xs text-white/60">{user?.nickname ?? '\u4F60'}</span>
+              <span className="text-xs text-white/60">{user?.nickname ?? '你'}</span>
             </div>
             <div className="rounded-lg overflow-hidden" style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)' }}>
               <GameTimer seconds={timer.white} active={gameState.turn === 'white' && !gameResult} />
@@ -500,7 +718,7 @@ const GamePage: React.FC = () => {
               onClick={() => requestTakeback()}
               disabled={!isPlayerTurn || moveHistory.length < 2}
             >
-              {'\u21A9\uFE0F'} 悔棋
+              {'↩️'} 悔棋
             </button>
             <button
               className="flex-1 py-2 rounded-full text-xs font-medium disabled:opacity-40"
@@ -512,7 +730,7 @@ const GamePage: React.FC = () => {
               onClick={resign}
               disabled={!!gameResult}
             >
-              {'\uD83C\uDFF3\uFE0F'} 认输
+              {'\uD83C\uDFF3️'} 认输
             </button>
             <button
               className="py-2 px-3 rounded-full text-xs font-medium"

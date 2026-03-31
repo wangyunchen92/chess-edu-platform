@@ -1,0 +1,103 @@
+{
+  "id": "l2_13",
+  "course_id": "level_2",
+  "unit": "unit_4",
+  "order": 13,
+  "title": "组合战术——连续杀",
+  "description": "学习如何将多种战术组合起来形成连续杀（Combination），实现将杀",
+  "estimated_minutes": 30,
+  "steps": [
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "小琪，前面我们学了很多单独的战术。但真正的高手是把这些战术组合在一起使用——这就叫\"组合战术\"（Combination）！"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "thinking",
+      "content": "就像把不同的招式连起来变成连招？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "没错！而且最华丽的组合战术往往以将杀结束——连续几步强制走法，每步都是将军或致命威胁，直到将杀！这就叫\"连续杀\"。"
+    },
+    {
+      "type": "text",
+      "content": "组合战术（Combination）的特征：\n\n1. **强制性**——每步棋都是将军、吃子或致命威胁，对手没有选择余地\n2. **连续性**——不是一步棋的战术，而是2-5步（甚至更多）的连续操作\n3. **目的性**——最终目标明确：将杀、赢后、赢大子\n4. **牺牲性**——往往需要送出子力来启动组合\n\n组合战术的思维：\n- 先看到最终目标（比如某个将杀图案）\n- 然后往回推算需要什么前提条件\n- 最后找到启动组合的第一步（往往是一个牺牲）"
+    },
+    {
+      "type": "board_demo",
+      "fen": "r1bq2rk/pp3pBp/2p2Q2/8/3P4/2N5/PPP3PP/R4RK1 w - - 0 18",
+      "description": "经典连续杀：白方Qf6已经威胁着Qg7#将杀。黑方g8车保护g7。白方Qxf7! 准备Qg7#。如果Rxg7，Qf8#底线杀！如果不吃，Qg7#。这就是组合——引离+底线杀的结合。",
+      "highlights": ["f6", "g7", "f7"]
+    },
+    {
+      "type": "board_demo",
+      "fen": "r1b2rk1/2q2ppp/p1p5/2b1N3/4n3/1B6/PPP2QPP/R1B2RK1 w - - 0 16",
+      "description": "组合的逆向思维：如果白方能在g7将杀就好了......Qf2→Qf6→Qg7#？但需要时间。换个思路：Nxf7! 叉王车。如果Rxf7, Bxf7+ Kxf7（引王入网），Qf6+......连续将军赢回子力甚至将杀。",
+      "highlights": ["e5", "f7", "b3"]
+    },
+    {
+      "type": "board_demo",
+      "fen": "r2qr1k1/ppp2ppp/2n2n2/3p4/1b1P4/2NB1N2/PPP2PPP/R1BQR1K1 w - - 0 10",
+      "description": "组合的思维训练：看到Bxh7+引王出来的可能吗？Bxh7+ Kxh7, Ng5+ Kg8（或Kg6）, Qh5......这是经典的\"希腊献祭\"（Greek Gift Sacrifice），象马后联合攻王的组合！",
+      "highlights": ["d3", "h7", "f3"]
+    },
+    {
+      "type": "text",
+      "content": "经典将杀组合模式：\n\n1. **希腊献祭**：Bxh7+ Kxh7, Ng5+ Kg8, Qh5 （象马后配合攻h-线）\n2. **底线杀组合**：消除保护→车冲底线→将杀\n3. **闷杀组合**：牺牲引王到角落→马将杀\n4. **双象将杀**：两个象配合后形成对角线将杀\n\n记住：先看到将杀图案，再往回计算怎么达到那个局面！"
+    },
+    {
+      "type": "quiz",
+      "question": "组合战术的思维顺序是？",
+      "options": ["先走第一步看看", "先看到最终目标，然后往回推算", "先计算所有可能", "先交换子力"],
+      "correct": 1,
+      "explanation": "组合战术的思维是\"逆向思维\"——先在脑海中看到最终目标（比如一个将杀局面），然后问：到达这个局面需要什么条件？这些条件怎么创造？从目标往回推算。"
+    },
+    {
+      "type": "quiz",
+      "question": "为什么组合战术往往需要牺牲子力？",
+      "options": ["因为送子好玩", "因为牺牲能打破对方防线，创造强制走法序列", "因为子力太多了", "因为对手会害怕"],
+      "correct": 1,
+      "explanation": "组合中的牺牲不是白送——每个牺牲都有目的：打开线路、消除防守、引入/引离关键子、创造将军。通过牺牲，你获得了\"节奏\"（连续将军/威胁），对手被迫按你的剧本走。"
+    },
+    {
+      "type": "celebration",
+      "character": "douding",
+      "expression": "celebrate",
+      "content": "组合战术是国际象棋最华丽的艺术！从现在开始，每盘棋都要寻找组合机会——先看将杀图案，再往回计算！+50经验值！",
+      "xp_earned": 50
+    }
+  ],
+  "exercises": [
+    {
+      "type": "choice",
+      "question": "组合战术最重要的特征是？",
+      "options": ["每步棋都有选择", "强制性——每步都是将军或致命威胁", "需要很多子力", "很慢"],
+      "correct": 1
+    },
+    {
+      "type": "choice",
+      "question": "\"希腊献祭\"的典型开头是？",
+      "options": ["Qxh7+", "Bxh7+ Kxh7, Ng5+", "Rxh7", "Nxh7"],
+      "correct": 1
+    },
+    {
+      "type": "choice",
+      "question": "组合战术中\"逆向思维\"是指？",
+      "options": ["倒着下棋", "先想到最终目标，再往回推算怎么到达", "让对手先走", "从第一步开始算"],
+      "correct": 1
+    },
+    {
+      "type": "board_interactive",
+      "fen": "r1bq1rk1/pppp1ppp/2n2n2/2b1p3/2B1P3/3P1N2/PPP2PPP/RNBQ1RK1 w - - 0 6",
+      "question": "白方想攻击f7弱点。第一步应该？",
+      "options": ["Bxf7+引王出来", "Ng5攻击f7", "Qb3双重攻击b7和f7", "d4开中心"],
+      "correct": 2
+    }
+  ]
+}

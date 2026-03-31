@@ -20,6 +20,44 @@ interface Course {
   lessons: Lesson[]
   progress: number
   locked: boolean
+  total_lessons: number
+  completed_lessons: number
+  prerequisite_id: string | null
+}
+
+// Level metadata
+const LEVEL_CONFIG: Record<number, { emoji: string; icon: string; title: string; description: string }> = {
+  0: {
+    emoji: '\uD83C\uDF1F',
+    icon: '\uD83C\uDF31',
+    title: 'Level 0: 入门基础',
+    description: '认识棋盘和棋子，学会基本规则',
+  },
+  1: {
+    emoji: '\uD83D\uDCDA',
+    icon: '⚔️',
+    title: 'Level 1: 进阶提高',
+    description: '掌握棋子价值与基本战术',
+  },
+  2: {
+    emoji: '⚔️',
+    icon: '\uD83D\uDCA5',
+    title: 'Level 2: 基础战术',
+    description: '双重攻击、牵制、闪击、串击等战术主题',
+  },
+  3: {
+    emoji: '\uD83D\uDC51',
+    icon: '\uD83C\uDFAF',
+    title: 'Level 3: 中级战略',
+    description: '中局计划、兵结构、开放线控制、弱格利用',
+  },
+}
+
+// Determine lock reason based on prerequisite
+function getLockReason(level: number): string {
+  if (level === 2) return '完成 Level 1 全部课程后解锁'
+  if (level === 3) return '完成 Level 2 全部课程后解锁'
+  return '未解锁'
 }
 
 const CourseListPage: React.FC = () => {
@@ -32,17 +70,14 @@ const CourseListPage: React.FC = () => {
     setLoading(true)
     learnApi.getCourses()
       .then(async (res) => {
-        // Handle nested API response: {code, message, data: [...]}
         const raw = res?.data as any
         const data = raw?.data ?? raw?.courses ?? raw
         if (Array.isArray(data) && data.length > 0) {
           // Fetch course details in parallel to get lessons for each course
-          const LEVEL_EMOJI: Record<number, string> = { 0: '🌟', 1: '📚', 2: '⚔️', 3: '👑' }
           const detailResults = await Promise.allSettled(
             data.map((c: any) => learnApi.getCourseDetail(c.id ?? c.slug))
           )
           const normalized: Course[] = data.map((c: any, i: number) => {
-            // Try to get lessons from detail response
             let lessons: Lesson[] = []
             const detailResult = detailResults[i]
             if (detailResult.status === 'fulfilled') {
@@ -61,17 +96,17 @@ const CourseListPage: React.FC = () => {
               title: c.title ?? '',
               description: c.description ?? '',
               level: c.level ?? 0,
-              emoji: c.emoji ?? LEVEL_EMOJI[c.level] ?? '📖',
+              emoji: LEVEL_CONFIG[c.level]?.emoji ?? '\uD83D\uDCD6',
               lessons,
               progress: c.progress_pct ?? c.progress ?? 0,
               locked: c.locked ?? false,
-              total_lessons: c.total_lessons ?? (c.lessons?.length ?? 0),
+              total_lessons: c.total_lessons ?? lessons.length,
               completed_lessons: c.completed_lessons ?? 0,
+              prerequisite_id: c.prerequisite_id ?? null,
             }
           })
           setCourses(normalized)
         }
-        // If not array or empty, keep empty state
       })
       .catch((err) => {
         console.error('[CourseListPage] Failed to load courses:', err)
@@ -82,8 +117,14 @@ const CourseListPage: React.FC = () => {
   }, [])
 
   const courseList = Array.isArray(courses) ? courses : []
-  const level0 = courseList.filter((c) => c.level === 0)
-  const level1 = courseList.filter((c) => c.level === 1)
+
+  // Group courses by level
+  const groupedByLevel: Record<number, Course[]> = {}
+  for (const c of courseList) {
+    if (!groupedByLevel[c.level]) groupedByLevel[c.level] = []
+    groupedByLevel[c.level].push(c)
+  }
+  const levels = Object.keys(groupedByLevel).map(Number).sort((a, b) => a - b)
 
   const renderCourseCard = (course: Course) => (
     <Card
@@ -102,22 +143,36 @@ const CourseListPage: React.FC = () => {
           {course.locked ? '\uD83D\uDD12' : course.emoji}
         </div>
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <h3 className="text-[var(--text-md)] font-semibold text-[var(--text)]">
               {course.title}
             </h3>
-            {course.locked && <Badge color="neutral">未解锁</Badge>}
-            {course.progress === 100 && <Badge color="success">{'\u2705'} 已完成</Badge>}
+            {course.locked && <Badge color="neutral">{'未解锁'}</Badge>}
+            {course.progress === 100 && <Badge color="success">{'✅ 已完成'}</Badge>}
           </div>
           <p className="text-[var(--text-xs)] text-[var(--text-muted)] mt-1">
             {course.description}
           </p>
+
+          {/* Lock reason for locked courses */}
+          {course.locked && (
+            <div className="mt-2 px-3 py-2 rounded-[var(--radius-xs)] bg-slate-50 border border-[var(--border)]">
+              <p className="text-[var(--text-xs)] text-[var(--text-muted)] flex items-center gap-1.5">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="shrink-0">
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
+                  <path d="M12 8v4M12 16h.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                </svg>
+                {getLockReason(course.level)}
+              </p>
+            </div>
+          )}
+
           {!course.locked && (
             <div className="mt-3">
               <ProgressBar value={course.progress} max={100} height={4} />
               <div className="flex justify-between mt-1">
                 <span className="text-[var(--text-xs)] text-[var(--text-muted)]">
-                  {(course as any).completed_lessons ?? course.lessons?.filter((l) => l.completed).length ?? 0}/{(course as any).total_lessons ?? course.lessons?.length ?? 0} 课时
+                  {course.completed_lessons}/{course.total_lessons} 课时
                 </span>
                 <span className="text-[var(--text-xs)] text-[var(--text-muted)]">
                   {course.progress}%
@@ -125,8 +180,9 @@ const CourseListPage: React.FC = () => {
               </div>
             </div>
           )}
-          {/* Lesson list */}
-          {!course.locked && (
+
+          {/* Lesson list for unlocked courses */}
+          {!course.locked && course.lessons.length > 0 && (
             <div className="mt-3 space-y-1">
               {course.lessons.map((lesson, i) => (
                 <button
@@ -141,7 +197,7 @@ const CourseListPage: React.FC = () => {
                       color: lesson.completed ? '#fff' : 'var(--text-muted)',
                     }}
                   >
-                    {lesson.completed ? '\u2713' : i + 1}
+                    {lesson.completed ? '✓' : i + 1}
                   </span>
                   <span className="text-[var(--text-sm)] text-[var(--text-sub)]">{lesson.title}</span>
                 </button>
@@ -194,25 +250,23 @@ const CourseListPage: React.FC = () => {
         </p>
       </div>
 
-      {/* Level 0 */}
-      <div>
-        <h2 className="text-[var(--text-lg)] font-bold text-[var(--text)] mb-3 flex items-center gap-2">
-          <span className="text-lg">{'\uD83C\uDF31'}</span> Level 0: 入门基础
-        </h2>
-        <div className="space-y-3">
-          {level0.map(renderCourseCard)}
-        </div>
-      </div>
-
-      {/* Level 1 */}
-      <div>
-        <h2 className="text-[var(--text-lg)] font-bold text-[var(--text)] mb-3 flex items-center gap-2">
-          <span className="text-lg">{'\u2694\uFE0F'}</span> Level 1: 进阶提高
-        </h2>
-        <div className="space-y-3">
-          {level1.map(renderCourseCard)}
-        </div>
-      </div>
+      {levels.map((level) => {
+        const config = LEVEL_CONFIG[level]
+        const coursesInLevel = groupedByLevel[level]
+        return (
+          <div key={level}>
+            <h2 className="text-[var(--text-lg)] font-bold text-[var(--text)] mb-1 flex items-center gap-2">
+              <span className="text-lg">{config?.icon ?? '\uD83D\uDCD6'}</span> {config?.title ?? `Level ${level}`}
+            </h2>
+            {config?.description && (
+              <p className="text-[var(--text-xs)] text-[var(--text-muted)] mb-3">{config.description}</p>
+            )}
+            <div className="space-y-3">
+              {coursesInLevel.map(renderCourseCard)}
+            </div>
+          </div>
+        )
+      })}
     </div>
   )
 }

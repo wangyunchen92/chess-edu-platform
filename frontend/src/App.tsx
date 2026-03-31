@@ -34,8 +34,12 @@ const LessonPage = React.lazy(() => import('@/pages/learn/LessonPage'))
 const InteractiveTeachPage = React.lazy(() => import('@/pages/learn/InteractiveTeachPage'))
 const ExercisePage = React.lazy(() => import('@/pages/learn/ExercisePage'))
 
+// Diagnosis
+const DiagnosisPage = React.lazy(() => import('@/pages/diagnosis/DiagnosisPage'))
+
 // Adventure
 const AdventureMapPage = React.lazy(() => import('@/pages/adventure/AdventureMapPage'))
+const PromotionChallengePage = React.lazy(() => import('@/pages/adventure/PromotionChallengePage'))
 
 // Train
 const DailyPlanPage = React.lazy(() => import('@/pages/train/DailyPlanPage'))
@@ -140,8 +144,12 @@ function App() {
             <Route path="/learn/ai-teach/:id" element={<SuspenseWrapper><InteractiveTeachPage /></SuspenseWrapper>} />
             <Route path="/learn/exercise/:id" element={<SuspenseWrapper><ExercisePage /></SuspenseWrapper>} />
 
+            {/* Diagnosis */}
+            <Route path="/diagnosis" element={<SuspenseWrapper><DiagnosisPage /></SuspenseWrapper>} />
+
             {/* Adventure */}
             <Route path="/adventure" element={<SuspenseWrapper><AdventureMapPage /></SuspenseWrapper>} />
+            <Route path="/adventure/challenge/:id" element={<SuspenseWrapper><PromotionChallengePage /></SuspenseWrapper>} />
 
             {/* Train */}
             <Route path="/train" element={<SuspenseWrapper><DailyPlanPage /></SuspenseWrapper>} />

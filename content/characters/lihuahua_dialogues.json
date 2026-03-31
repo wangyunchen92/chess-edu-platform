@@ -1,0 +1,89 @@
+{
+  "character_id": "lihuahua",
+  "dialogues": {
+    "greeting": [
+      { "text": "嘻嘻，你来啦~狸花花早就在这儿等着了，准备好中招了吗？", "expression": "mischievous" },
+      { "text": "哦？新的挑战者？有意思~让狸花花看看你有多机灵！", "expression": "happy" },
+      { "text": "来了来了！今天狸花花准备了新陷阱哦~小心点~", "expression": "mischievous" },
+      { "text": "嘻嘻嘻~你又来找狸花花下棋了？这次可别再被骗了哦~", "expression": "happy" },
+      { "text": "准备好接受狸花花的考验了吗？可不是谁都能看穿我的哦~", "expression": "mischievous" }
+    ],
+    "good_move": [
+      { "text": "哎？你居然看破了！嗯……有点意思嘛~", "expression": "surprised" },
+      { "text": "这步棋不简单呐！看来你不是好骗的类型~", "expression": "thinking" },
+      { "text": "啊呀，走得好！狸花花的计划要调整一下了~", "expression": "surprised" },
+      { "text": "嗯嗯嗯？你怎么发现那里的？狸花花小看你了！", "expression": "surprised" },
+      { "text": "好棋！看来跟你下棋得更用心设计才行~", "expression": "thinking" }
+    ],
+    "blunder": [
+      { "text": "啊呀！狸花花太得意忘形了……哼，下次不会了！", "expression": "sad" },
+      { "text": "呜……狸花花的陷阱反倒把自己套进去了！好丢人！", "expression": "sad" },
+      { "text": "失误了！哼，都怪狸花花想得太复杂了……", "expression": "sad" },
+      { "text": "啊——走错了！不准笑！狸花花只是一时大意！", "expression": "sad" },
+      { "text": "糟糕，这步不对！嘻嘻……没关系，狸花花还有后手~", "expression": "mischievous" }
+    ],
+    "check_given": [
+      { "text": "将军~嘻嘻，你没想到吧？这就是狸花花的厉害之处！", "expression": "celebrate" },
+      { "text": "将！看到了吗？这步棋三步前就开始布局了~", "expression": "mischievous" },
+      { "text": "将军哦~狸花花的陷阱，你中招了！", "expression": "celebrate" },
+      { "text": "嘻嘻，将~你以为那步是失误？那是狸花花故意的！", "expression": "mischievous" },
+      { "text": "将军！哈哈，狸花花最喜欢这种出其不意的感觉了！", "expression": "happy" }
+    ],
+    "check_received": [
+      { "text": "哎呀，被将了！嗯……让狸花花想想怎么脱身~", "expression": "thinking" },
+      { "text": "将军？哼，别得意，狸花花自有办法！", "expression": "thinking" },
+      { "text": "被将了呢……不过这可能正是狸花花想要的局面~也许哦~", "expression": "mischievous" },
+      { "text": "啊，将军了！等等，让狸花花看看有没有反击的机会~", "expression": "thinking" },
+      { "text": "将军？嘻嘻，你以为你赢了？小心狸花花的反手一击！", "expression": "mischievous" }
+    ],
+    "capture_given": [
+      { "text": "吃掉~嘻嘻，上钩了上钩了！", "expression": "mischievous" },
+      { "text": "拿下！这颗棋子是狸花花精心引诱你走过来的~", "expression": "celebrate" },
+      { "text": "吃！你以为狸花花在防守？其实是在设陷阱哦~", "expression": "mischievous" },
+      { "text": "嘻嘻，吃掉你一个~就像猫抓到了鱼~", "expression": "happy" },
+      { "text": "拿下了！计划通！狸花花的圈套成功了~", "expression": "celebrate" }
+    ],
+    "capture_received": [
+      { "text": "啊！被吃了！哼……你等着，狸花花会报仇的！", "expression": "sad" },
+      { "text": "呜，丢子了……也许……也许这是狸花花的苦肉计？", "expression": "mischievous" },
+      { "text": "被吃了一个！嗯嗯，没关系，狸花花有更大的计划！", "expression": "thinking" },
+      { "text": "哎呀呀，我的棋子！哼，不过狸花花的好戏还在后头~", "expression": "mischievous" },
+      { "text": "丢子了……好吧好吧，狸花花这次失算了。", "expression": "sad" }
+    ],
+    "advantage": [
+      { "text": "嘻嘻嘻~形势对狸花花很有利！你是不是中了我好几个圈套了？", "expression": "mischievous" },
+      { "text": "领先了~但狸花花不会掉以轻心，说不定你也在设陷阱呢~", "expression": "thinking" },
+      { "text": "哈哈，优势在狸花花这边！今天的陷阱布得不错吧~", "expression": "celebrate" },
+      { "text": "形势很好！嘻嘻，狸花花的计划进行得很顺利~", "expression": "happy" },
+      { "text": "领先了哦~不过越是这种时候，越要多设几个陷阱~", "expression": "mischievous" }
+    ],
+    "disadvantage": [
+      { "text": "哼，落后了……但狸花花最擅长逆转了！你给我等着！", "expression": "thinking" },
+      { "text": "不利了？嘻嘻，这时候才是狸花花最危险的时候哦~", "expression": "mischievous" },
+      { "text": "差了一些……但狸花花还有秘密武器没用呢！", "expression": "thinking" },
+      { "text": "落后了啊……嗯，得想个更狡猾的办法才行~", "expression": "thinking" },
+      { "text": "形势不好？那就更要设陷阱了！绝望中的反击最可怕~", "expression": "mischievous" }
+    ],
+    "win": [
+      { "text": "赢啦！嘻嘻嘻~你看，中了狸花花多少个圈套？", "expression": "celebrate" },
+      { "text": "狸花花赢了！哈哈，下棋就是要这样动脑筋才有趣！", "expression": "happy" },
+      { "text": "赢了赢了~嘻嘻，有没有觉得狸花花特别聪明？", "expression": "celebrate" },
+      { "text": "胜利！狸花花的陷阱大获成功！下次你要更小心哦~", "expression": "mischievous" },
+      { "text": "赢啦~你走得也不错，只是……嘻嘻，还是被我骗到了~", "expression": "happy" }
+    ],
+    "lose": [
+      { "text": "哼！居然输了！你怎么全都看破了啦！", "expression": "sad" },
+      { "text": "输了……不可能！狸花花的陷阱居然全没用？！", "expression": "surprised" },
+      { "text": "呜……输了。你真的好厉害，狸花花得回去研究新套路了！", "expression": "sad" },
+      { "text": "哼哼哼，这次算你赢！下次狸花花会设计更厉害的陷阱！", "expression": "thinking" },
+      { "text": "输了啊……好吧好吧，是狸花花太轻敌了！下次绝不会了！", "expression": "sad" }
+    ],
+    "draw": [
+      { "text": "平局？嗯……狸花花的陷阱没全中，但你也没赢我~", "expression": "thinking" },
+      { "text": "平了！哼，好吧，算你厉害。但下次狸花花可不会打平！", "expression": "mischievous" },
+      { "text": "和棋啊~嘻嘻，说明你有点聪明，但还不够聪明哦~", "expression": "mischievous" },
+      { "text": "平局呢！你挺机灵的嘛~差一点就中招了！", "expression": "happy" },
+      { "text": "平了？嗯，狸花花不太满意~再来一盘，这次一定赢你！", "expression": "thinking" }
+    ]
+  }
+}

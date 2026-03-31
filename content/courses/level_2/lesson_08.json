@@ -1,0 +1,92 @@
+{
+  "id": "l2_08",
+  "course_id": "level_2",
+  "unit": "unit_3",
+  "order": 8,
+  "title": "消除保护",
+  "description": "学习消除保护（Removing the Defender）战术，吃掉或引走保护关键棋子的防守者",
+  "estimated_minutes": 25,
+  "steps": [
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "小琪，有时候你发现了一个好目标，但它被保护着。怎么办？直接把保护它的子消灭掉！"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "surprised",
+      "content": "直接吃掉保护者？这么简单粗暴？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "thinking",
+      "content": "有时候最直接的方法就是最好的方法！消除保护（Removing the Defender）是最实用的战术之一——在实战中出现频率非常高。"
+    },
+    {
+      "type": "text",
+      "content": "消除保护（Removing the Defender）的三种方式：\n\n1. **吃掉防守者**——最直接！直接吃掉保护目标的那个子。\n2. **引离防守者**——用其他威胁引走防守者（上节课的引离就是这个）。\n3. **干扰防守者**——在防守者和被保护子之间放一个子，切断保护线。\n\n思维模式：\n- 第一步：找到你想攻击的目标\n- 第二步：看这个目标被谁保护\n- 第三步：想办法消除这个保护\n- 第四步：攻击暴露的目标"
+    },
+    {
+      "type": "board_demo",
+      "fen": "r2q1rk1/ppp2ppp/2nb1n2/3pp3/2B1P1b1/2NP1N2/PPP2PPP/R1BQ1RK1 w - - 0 8",
+      "description": "消除保护的例子：白方想吃d5的兵，但d5被c6马和d6象保护。如果白方Bxc6! 吃掉马（消除一个保护者），bxc6后d5只有象一个保护了。接下来exd5 Bxd5, Bxd5 cxd5。保护被逐步消除！",
+      "highlights": ["c4", "c6", "d5"]
+    },
+    {
+      "type": "board_demo",
+      "fen": "r1bq1rk1/ppp2ppp/2n2n2/3pp3/1bB1P3/2NP1N2/PPP2PPP/R1BQ1RK1 w - - 0 6",
+      "description": "另一个例子：黑方b4的象保护着c3的攻击点。如果白方想保住c3的马不被攻击，可以走a3驱赶象。但反过来——如果黑方的c6马保护着e5的兵，白方Bxc6吃马就消除了e5兵的保护。",
+      "highlights": ["b4", "c6"]
+    },
+    {
+      "type": "board_demo",
+      "fen": "r2qk2r/ppp1bppp/2n1bn2/3p4/3P4/2NBBN2/PPP2PPP/R2QK2R w KQkq - 0 7",
+      "description": "消除保护常出现在攻王局面：假设黑方王在e8，f6的马保护着h7。如果白方能消除f6马（比如Bxf6），那h7就没保护了。Bxf6 Bxf6（被迫用象吃回），现在白方可以进攻h7。",
+      "highlights": ["e3", "f6", "h7"]
+    },
+    {
+      "type": "quiz",
+      "question": "消除保护的三种方式是？",
+      "options": ["吃掉、引离、干扰", "吃掉、封锁、围困", "引离、引入、牵制", "将军、弃子、逃跑"],
+      "correct": 0,
+      "explanation": "消除保护的三种方式：吃掉防守者（最直接）、引离防守者（引走它）、干扰防守者（在保护线上插入障碍）。"
+    },
+    {
+      "type": "quiz",
+      "question": "为什么消除保护在实战中出现频率很高？",
+      "options": ["因为很多棋子都有保护者，消除保护是突破防线的基本手段", "因为对手总是犯错", "因为消除保护不需要计算", "因为只有高手才用"],
+      "correct": 0,
+      "explanation": "几乎每盘棋的中局都会出现防守和攻击的对抗。消除保护是最基本的突破手段——找到防守弱点，消灭防守者，攻击暴露目标。"
+    },
+    {
+      "type": "celebration",
+      "character": "douding",
+      "expression": "celebrate",
+      "content": "消除保护——釜底抽薪！在实战中，每当你发现一个好目标被保护时，想想能不能消灭那个保护者。+40经验值！",
+      "xp_earned": 40
+    }
+  ],
+  "exercises": [
+    {
+      "type": "choice",
+      "question": "消除保护的第一步是？",
+      "options": ["直接攻击国王", "找到你想攻击的目标", "推兵开线", "将军"],
+      "correct": 1
+    },
+    {
+      "type": "choice",
+      "question": "以下哪种不是消除保护的方式？",
+      "options": ["吃掉防守者", "引离防守者", "增加自己的攻击者", "干扰防守者"],
+      "correct": 2
+    },
+    {
+      "type": "choice",
+      "question": "为什么在攻王时消除保护特别重要？",
+      "options": ["因为国王很弱", "因为王周围的防守子被消除后，将杀威胁就出现了", "因为王不能移动", "因为消除保护不需要子力"],
+      "correct": 1
+    }
+  ]
+}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { puzzlesApi } from '@/api/puzzles'
+import { usePuzzleStore } from '@/stores/puzzleStore'
 import { translateTheme } from '@/utils/puzzleTheme'
 import Card from '@/components/common/Card'
 import Button from '@/components/common/Button'
@@ -64,6 +65,13 @@ const PuzzleChallengePage: React.FC = () => {
       .finally(() => setLoading(false))
   }, [level, info.label])
 
+  const setPuzzleList = usePuzzleStore((s: any) => s.setPuzzleList)
+
+  const goToPuzzle = (puzzleId: string) => {
+    setPuzzleList(puzzles.map((p) => p.id))
+    navigate(`/puzzles/solve/${puzzleId}`)
+  }
+
   const solvedCount = puzzles.filter((p) => p.solved).length
   const nextUnsolved = puzzles.find((p) => !p.solved)
 
@@ -100,7 +108,7 @@ const PuzzleChallengePage: React.FC = () => {
           variant="primary"
           size="lg"
           className="w-full"
-          onClick={() => navigate(`/puzzles/solve/${nextUnsolved.id}`)}
+          onClick={() => goToPuzzle(nextUnsolved.id)}
         >
           {'\u25B6'} 继续挑战
         </Button>
@@ -138,7 +146,7 @@ const PuzzleChallengePage: React.FC = () => {
               key={puzzle.id}
               padding="md"
               onClick={puzzle.solved || puzzle.id === nextUnsolved?.id || i === 0
-                ? () => navigate(`/puzzles/solve/${puzzle.id}`)
+                ? () => goToPuzzle(puzzle.id)
                 : undefined}
             >
               <div className="text-center space-y-2">

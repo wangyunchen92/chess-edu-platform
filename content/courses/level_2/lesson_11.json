@@ -1,0 +1,92 @@
+{
+  "id": "l2_11",
+  "course_id": "level_2",
+  "unit": "unit_3",
+  "order": 11,
+  "title": "X光攻击",
+  "description": "学习X光攻击（X-ray Attack）战术，利用远程子力穿透对方棋子的能力",
+  "estimated_minutes": 25,
+  "steps": [
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "小琪，你知道X光能穿透人体看到骨头吧？在国际象棋里，有一种战术就叫X光攻击——远程棋子能\"穿透\"前面的子产生威胁！"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "surprised",
+      "content": "穿透？棋子不是挡在前面就走不过去吗？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "thinking",
+      "content": "物理上是走不过去，但从控制力的角度——如果前面的子移开了呢？后面的远程子其实一直在\"瞄准\"着目标。这种潜在的穿透力就是X光攻击。"
+    },
+    {
+      "type": "text",
+      "content": "X光攻击（X-ray Attack）要点：\n\n**定义**：一个远程子力（后、车、象）穿过中间的棋子，对后方的目标产生潜在的攻击或防守作用。\n\n**X光攻击的两种形式**：\n1. **X光攻击**：你的远程子穿透对方的子瞄准后面的目标。中间的子一旦移开，攻击就实现了。\n2. **X光防守**：你的远程子穿透前面的友军保护后方的子。\n\n**与串击的关系**：X光攻击是串击的\"隐形版\"——串击中对方的强子在前面被迫移开，X光中中间可能是任何子，关键是那个\"穿透\"效果。\n\n实战中，X光攻击经常是其他战术组合的隐藏前提。"
+    },
+    {
+      "type": "board_demo",
+      "fen": "4r1k1/ppp2ppp/8/3r4/3R4/8/PPP2PPP/4R1K1 w - - 0 20",
+      "description": "X光攻击基础：白方Rd4和Re1在d-线和e-线。白Rd4攻击d5黑车，如果Rxd5 Rxd5，白方的e1车X光穿透，下一步可以到e8形成底线威胁。远程子力的穿透力不可忽视！",
+      "highlights": ["d4", "d5", "e1"]
+    },
+    {
+      "type": "board_demo",
+      "fen": "r3r1k1/ppp2ppp/8/3q4/3Q4/8/PPP2PPP/R3R1K1 w - - 0 20",
+      "description": "X光攻击的经典场景：白后Qd4和黑后Qd5对峙。表面上看似互相阻挡，但白方Re1穿透白后和黑后瞄准着e8——如果后交换Qxd5 Qxd5（假设），e-线就打开了，Re1→Re8+将杀威胁成立。",
+      "highlights": ["d4", "d5", "e1", "e8"]
+    },
+    {
+      "type": "board_demo",
+      "fen": "6k1/ppp2ppp/8/8/3qQ3/8/PPP2PPP/6K1 w - - 0 25",
+      "description": "X光防守的例子：白后Qe4和黑后Qd4对峙。如果黑后吃Qxe4，但假设后面有白车......X光防守意味着即使前面的子被吃，后面的子可以接替任务。在规划交换时要考虑X光效果。",
+      "highlights": ["e4", "d4"]
+    },
+    {
+      "type": "quiz",
+      "question": "X光攻击和串击的主要区别是？",
+      "options": ["X光是潜在的穿透威胁，串击是直接的迫使移开", "没有区别", "X光只能用后", "串击更高级"],
+      "correct": 0,
+      "explanation": "串击是直接攻击前面的高价值子迫使其移开，然后吃后面的子。X光攻击是一种潜在的穿透力——中间的子未必会移开，但你要意识到这个穿透效果并利用它来规划。"
+    },
+    {
+      "type": "quiz",
+      "question": "以下哪种子不能产生X光效果？",
+      "options": ["后", "车", "马", "象"],
+      "correct": 2,
+      "explanation": "X光需要远程直线/斜线攻击的能力。马走L形，没有穿透效果。只有后、车、象这三种远程子力能产生X光攻击。"
+    },
+    {
+      "type": "celebration",
+      "character": "douding",
+      "expression": "celebrate",
+      "content": "X光攻击掌握！记住要有\"穿透视角\"——看到棋盘上的远程子力时，想想它们穿过中间棋子后瞄准的是什么。+40经验值！",
+      "xp_earned": 40
+    }
+  ],
+  "exercises": [
+    {
+      "type": "choice",
+      "question": "X光攻击需要什么类型的棋子？",
+      "options": ["任何棋子", "只有后", "远程子力（后、车、象）", "只有车"],
+      "correct": 2
+    },
+    {
+      "type": "choice",
+      "question": "X光防守是指？",
+      "options": ["远程子穿透友军保护后方的子", "用盾牌挡住攻击", "让王躲到角落", "交换所有子力"],
+      "correct": 0
+    },
+    {
+      "type": "choice",
+      "question": "为什么在规划子力交换时要考虑X光效果？",
+      "options": ["因为交换后远程子的攻击线可能打开", "因为交换总是好的", "因为X光会让子力消失", "因为对手会投降"],
+      "correct": 0
+    }
+  ]
+}

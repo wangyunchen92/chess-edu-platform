@@ -9,6 +9,8 @@ export interface PuzzleState {
   hintsUsed: number
   streak: number
   dailyCompleted: boolean
+  /** Ordered list of puzzle IDs for "next puzzle" navigation */
+  puzzleList: string[]
 
   setPuzzle: (id: string, fen: string, solution: string[]) => void
   advanceStep: () => void
@@ -18,6 +20,8 @@ export interface PuzzleState {
   resetStreak: () => void
   setDailyCompleted: (completed: boolean) => void
   resetPuzzle: () => void
+  setPuzzleList: (ids: string[]) => void
+  getNextPuzzleId: () => string | null
 }
 
 const initialState = {
@@ -29,6 +33,7 @@ const initialState = {
   hintsUsed: 0,
   streak: 0,
   dailyCompleted: false,
+  puzzleList: [] as string[],
 }
 
 export const usePuzzleStore = create<PuzzleState>((set) => ({
@@ -53,4 +58,15 @@ export const usePuzzleStore = create<PuzzleState>((set) => ({
   setDailyCompleted: (completed) => set({ dailyCompleted: completed }),
 
   resetPuzzle: () => set(initialState),
+
+  setPuzzleList: (ids) => set({ puzzleList: ids }),
+
+  getNextPuzzleId: (): string | null => {
+    const state = usePuzzleStore.getState() as PuzzleState
+    const { currentPuzzleId, puzzleList } = state
+    if (!currentPuzzleId || puzzleList.length === 0) return null
+    const idx = puzzleList.indexOf(currentPuzzleId)
+    if (idx === -1 || idx >= puzzleList.length - 1) return null
+    return puzzleList[idx + 1]
+  },
 }))

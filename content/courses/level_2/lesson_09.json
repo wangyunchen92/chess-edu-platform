@@ -1,0 +1,92 @@
+{
+  "id": "l2_09",
+  "course_id": "level_2",
+  "unit": "unit_3",
+  "order": 9,
+  "title": "过载——一子多任",
+  "description": "学习过载（Overloaded Piece）战术，利用承担过多任务的棋子的弱点",
+  "estimated_minutes": 25,
+  "steps": [
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "thinking",
+      "content": "小琪，想象一下：你让一个人同时看两扇门。突然两扇门同时有人敲——他只能去开一扇，另一扇就没人管了！"
+    },
+    {
+      "type": "dialogue",
+      "character": "xiaoqi",
+      "expression": "surprised",
+      "content": "哦！这就是过载？一个棋子要干的事情太多了？"
+    },
+    {
+      "type": "dialogue",
+      "character": "douding",
+      "expression": "happy",
+      "content": "完全正确！过载（Overloaded Piece）就是一个子同时承担了太多任务——保护这个，防守那个。当你对它施加第二个压力时，它就顾此失彼了！"
+    },
+    {
+      "type": "text",
+      "content": "过载（Overloaded Piece）要点：\n\n**识别过载**：找一个对方的子，看它同时在做几件事？\n- 保护一个子？\n- 防守一个格子？\n- 阻挡一条线？\n- 维持一个牵制？\n\n如果一个子同时做2件以上的事，它就可能是过载的！\n\n**利用过载**：对过载子的多个任务同时施压，迫使它\"二选一\"。它去做任务A，你就攻击任务B的目标。\n\n过载是很多高级战术组合的基础！"
+    },
+    {
+      "type": "board_demo",
+      "fen": "3r2k1/5ppp/8/8/8/8/2r2PPP/3RR1K1 b - - 0 25",
+      "description": "过载的经典例子：白方e1的车同时保护d1的车和e-线。黑方Rc1! 吃掉d1车（Rxd1），然后白e1车吃回（Rxd1），但现在e-线没有保护了。如果黑方还有子在e-线......就赢了。白e1车被\"过载\"了。",
+      "highlights": ["e1", "d1"]
+    },
+    {
+      "type": "board_demo",
+      "fen": "r4rk1/pp2qppp/2p5/3pN3/3Pn3/4P3/PP3PPP/R2Q1RK1 w - - 0 15",
+      "description": "更复杂的过载：黑方e7的后同时保护着e4的马和f7/f8方向。如果白方能对这两个任务同时施压——比如f3攻击e4马，同时Nxf7威胁——后就不能兼顾两边了。",
+      "highlights": ["e7", "e4", "f7"]
+    },
+    {
+      "type": "board_demo",
+      "fen": "2rq1rk1/pp3ppp/2p1b3/4N3/3P4/6Q1/PP3PPP/R4RK1 w - - 0 18",
+      "description": "过载的思维训练：黑方d8后保护c8车和f8车。Qg3在g3线待命。白方Ne5-f7叉车和后？不对。但思路是对的——找到黑后的双重防守任务，然后对两个目标同时施压。",
+      "highlights": ["d8", "c8", "f8"]
+    },
+    {
+      "type": "quiz",
+      "question": "如何判断一个子是否过载？",
+      "options": ["看它是否在中心", "数它同时承担的任务数——保护、防守、阻挡等", "看它的价值", "看它周围有没有友军"],
+      "correct": 1,
+      "explanation": "判断过载的方法：分析一个子同时在做几件事。如果它保护A的同时还防守B，就可能是过载的。你只需要同时威胁A和B，它就会顾此失彼。"
+    },
+    {
+      "type": "quiz",
+      "question": "以下哪种情况的子最容易过载？",
+      "options": ["中心的马", "保护两个弱兵的车", "进攻中的后", "被牵制的象"],
+      "correct": 1,
+      "explanation": "一个车同时保护两个弱兵时最容易过载——因为车只能在一条线上，保护一个就保护不了另一个。当对手同时攻击这两个兵时，车就必须二选一。"
+    },
+    {
+      "type": "celebration",
+      "character": "douding",
+      "expression": "celebrate",
+      "content": "过载战术掌握了！记住：找到对手身兼多职的棋子，让它分身乏术。一子不能两用，是战术的永恒法则！+40经验值！",
+      "xp_earned": 40
+    }
+  ],
+  "exercises": [
+    {
+      "type": "choice",
+      "question": "过载的本质是？",
+      "options": ["棋子太多", "一个子承担了太多任务无法兼顾", "子力不够", "位置太差"],
+      "correct": 1
+    },
+    {
+      "type": "choice",
+      "question": "利用过载的方法是？",
+      "options": ["只攻击过载的子本身", "同时对过载子的多个任务施压", "等过载消失", "用兵围困"],
+      "correct": 1
+    },
+    {
+      "type": "choice",
+      "question": "以下哪种子力最容易成为过载的受害者？",
+      "options": ["什么也没保护的子", "只有一个任务的子", "同时保护多个目标的子", "在角落的子"],
+      "correct": 2
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "character_id": "yinzong",
+  "dialogues": {
+    "greeting": [
+      { "text": "你来了。以骑士之名，银鬃在此恭候——让我们堂堂正正地一决胜负！", "expression": "salute" },
+      { "text": "拔剑吧，棋士！在风暴高原，只有正面交锋才配称为对手！", "expression": "idle" },
+      { "text": "银鬃向你致意。棋盘就是战场，让我们以荣誉之名开始这场战斗！", "expression": "salute" },
+      { "text": "欢迎来到高原。银鬃不设陷阱，不玩花招——来，光明正大地比试！", "expression": "idle" },
+      { "text": "很好，又是一位勇敢的挑战者！银鬃最欣赏有勇气的棋士！", "expression": "happy" }
+    ],
+    "good_move": [
+      { "text": "好剑法！不，好棋！银鬃向你这步棋致敬！", "expression": "salute" },
+      { "text": "不错！堂堂正正的一步好棋，这才是棋士该有的风范！", "expression": "happy" },
+      { "text": "嗯！这步走得光明磊落，银鬃很欣赏这样的棋路！", "expression": "salute" },
+      { "text": "好棋！看来你是一个配得上正面交锋的对手！", "expression": "happy" },
+      { "text": "精彩！这步棋就像一记漂亮的冲锋——银鬃必须认真应对了！", "expression": "thinking" }
+    ],
+    "blunder": [
+      { "text": "唔……银鬃失手了。但骑士不找借口，是我大意了！", "expression": "sad" },
+      { "text": "这步棋有辱骑士之名……银鬃需要冷静一下。", "expression": "sad" },
+      { "text": "失误了！哼，银鬃对自己很失望……但战斗还没结束！", "expression": "thinking" },
+      { "text": "走错了……银鬃一时冲动。骑士也有判断失误的时候。", "expression": "sad" },
+      { "text": "不好！银鬃的进攻太急了……冷静，冷静，重新组织！", "expression": "thinking" }
+    ],
+    "check_given": [
+      { "text": "将军！这就是银鬃的骑士冲锋——正面突破！", "expression": "celebrate" },
+      { "text": "将！以荣誉之剑，银鬃向你的王发起冲击！", "expression": "salute" },
+      { "text": "将军！堂堂正正的一击，你应接招！", "expression": "celebrate" },
+      { "text": "将！银鬃的进攻不会拐弯抹角——就是这么直接！", "expression": "happy" },
+      { "text": "将军！感受到了吗？这就是骑士的攻击力！", "expression": "celebrate" }
+    ],
+    "check_received": [
+      { "text": "将军？嗯，好棋。银鬃立刻组织防御——骑士不会慌张！", "expression": "thinking" },
+      { "text": "被将了。不错的一击！但银鬃的铠甲不是摆设！", "expression": "thinking" },
+      { "text": "将军……银鬃必须冷静应对。好的骑士不仅会进攻，也会防守！", "expression": "thinking" },
+      { "text": "哼，将我？银鬃接受这个挑战——让我看看怎么化解！", "expression": "idle" },
+      { "text": "被将了！好，这是一次光明正大的威胁，银鬃正面回应！", "expression": "salute" }
+    ],
+    "capture_given": [
+      { "text": "拿下！银鬃的长枪不会放过任何暴露的目标！", "expression": "celebrate" },
+      { "text": "吃子！正面交锋，银鬃的攻击力不是吹的！", "expression": "happy" },
+      { "text": "斩落！战场上犹豫就会被银鬃的冲锋扫倒！", "expression": "celebrate" },
+      { "text": "拿下了！堂堂正正的一次得子，银鬃很满意！", "expression": "salute" },
+      { "text": "吃掉！银鬃的进攻就像骑士冲锋——势不可挡！", "expression": "happy" }
+    ],
+    "capture_received": [
+      { "text": "失去了一个战友……但银鬃不会退缩！战斗继续！", "expression": "sad" },
+      { "text": "丢子了……嗯，银鬃的阵型需要调整，但绝不后退！", "expression": "thinking" },
+      { "text": "被吃了一个……银鬃承认这步你走得好。但战事未了！", "expression": "sad" },
+      { "text": "失子了！骑士倒下一人，但银鬃的士气不会动摇！", "expression": "thinking" },
+      { "text": "唔，被拿下一个。没关系，银鬃还有足够的兵力发起冲锋！", "expression": "idle" }
+    ],
+    "advantage": [
+      { "text": "形势有利！银鬃的冲锋取得了效果！但不可大意！", "expression": "happy" },
+      { "text": "银鬃领先了！这就是正面进攻的力量——堂堂正正就是最强的！", "expression": "celebrate" },
+      { "text": "优势在我！银鬃要乘胜追击——骑士的字典里没有'犹豫'！", "expression": "salute" },
+      { "text": "形势不错！但好的骑士知道——优势时更要保持冷静！", "expression": "thinking" },
+      { "text": "领先了！银鬃的攻势正在奏效，继续保持冲锋节奏！", "expression": "happy" }
+    ],
+    "disadvantage": [
+      { "text": "落后了……但骑士永远不会投降！银鬃寻找反击的机会！", "expression": "thinking" },
+      { "text": "形势不利……银鬃被压制了。但越是困境，骑士越要勇敢！", "expression": "idle" },
+      { "text": "劣势中……哼，银鬃不会低头。只要还有一颗棋子，就要战斗到底！", "expression": "thinking" },
+      { "text": "不好……银鬃的进攻被挡住了。但骑士从不认输！重新冲锋！", "expression": "sad" },
+      { "text": "落后了？那又怎样！银鬃见过更险的战场——扭转乾坤！", "expression": "idle" }
+    ],
+    "win": [
+      { "text": "胜利！银鬃以骑士之名赢得了这场战斗！向你致敬，勇敢的对手！", "expression": "salute" },
+      { "text": "银鬃获胜！一场精彩的对决——你是值得尊敬的棋士！", "expression": "celebrate" },
+      { "text": "赢了！正面进攻，堂堂正正——这就是银鬃的骑士之道！", "expression": "celebrate" },
+      { "text": "胜利属于银鬃！但你的表现也配得上'骑士'的称号！", "expression": "salute" },
+      { "text": "银鬃赢了这一局！好棋好棋！期待与你再次交锋！", "expression": "happy" }
+    ],
+    "lose": [
+      { "text": "银鬃认输。你赢了——这是一场光荣的失败，银鬃向你致敬。", "expression": "salute" },
+      { "text": "输了……银鬃的攻势被你化解了。你比银鬃更强，银鬃认。", "expression": "sad" },
+      { "text": "败了。骑士输了也要有风度——你走得好，银鬃输得心服口服。", "expression": "salute" },
+      { "text": "银鬃这次失败了。但银鬃不会气馁——下次会带着更强的剑法回来！", "expression": "thinking" },
+      { "text": "输了……哼，但银鬃的骑士精神没有输。下次再战！", "expression": "sad" }
+    ],
+    "draw": [
+      { "text": "平局！我们旗鼓相当——银鬃向你致以骑士的敬意！", "expression": "salute" },
+      { "text": "和棋！好一场势均力敌的对决！你是银鬃遇到的好对手！", "expression": "happy" },
+      { "text": "平局啊……银鬃的攻势没有打穿你的防线。可敬可敬！", "expression": "thinking" },
+      { "text": "平了！没有输赢，但这场棋的精彩程度不输任何一场战斗！", "expression": "celebrate" },
+      { "text": "和棋！银鬃差一点就突破了……下次一定一较高下！", "expression": "idle" }
+    ]
+  }
+}

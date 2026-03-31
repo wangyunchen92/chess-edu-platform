@@ -1,7 +1,7 @@
 """Play module schemas."""
 
 from datetime import datetime
-from typing import Optional
+from typing import Any, Optional
 
 from pydantic import BaseModel, Field
 
@@ -25,14 +25,19 @@ class CharacterListItem(BaseModel):
     slug: str
     name: str
     tier: str
+    region: str = "meadow"
     avatar_key: str
     play_style: str
     base_rating: int
     rating_range_min: int
     rating_range_max: int
+    play_style_params: dict = Field(default_factory=dict)
     is_free: bool
     sort_order: int
     is_unlocked: bool = False
+    unlock_story: Optional[str] = None
+    affinity: int = 0
+    affinity_level: str = "stranger"
     stats: Optional[CharacterStats] = None
 
     model_config = {"from_attributes": True}
@@ -45,6 +50,7 @@ class CharacterDetail(BaseModel):
     slug: str
     name: str
     tier: str
+    region: str = "meadow"
     avatar_key: str
     personality: str
     play_style: str
@@ -54,12 +60,82 @@ class CharacterDetail(BaseModel):
     engine_depth_min: int
     engine_depth_max: int
     mistake_rate: float
+    play_style_params: dict = Field(default_factory=dict)
+    unlock_condition: dict = Field(default_factory=dict)
     is_free: bool
     sort_order: int
     is_unlocked: bool = False
+    unlock_story: Optional[str] = None
+    affinity: int = 0
+    affinity_level: str = "stranger"
     stats: Optional[CharacterStats] = None
+    dialogues: dict[str, list[str]] = Field(default_factory=dict)
 
     model_config = {"from_attributes": True}
+
+
+# ── Unlock Schemas ───────────────────────────────────────────────
+
+
+class UnlockConditionItem(BaseModel):
+    """Single unlock condition status."""
+
+    type: str
+    label: str = ""
+    required: Any = None
+    current: Any = None
+    met: bool = False
+
+
+class CheckUnlockResponse(BaseModel):
+    """Response for check-unlock endpoint."""
+
+    character_id: str
+    character_name: str
+    is_unlocked: bool
+    conditions: list[UnlockConditionItem] = Field(default_factory=list)
+
+
+class UnlockStoryLine(BaseModel):
+    """A single line in the unlock story."""
+
+    speaker: str
+    text: str
+    emotion: Optional[str] = None
+
+
+class UnlockResponse(BaseModel):
+    """Response for unlock endpoint."""
+
+    character_id: str
+    character_name: Optional[str] = None
+    unlocked: bool
+    unlock_story: Optional[list[UnlockStoryLine]] = None
+    missing_conditions: Optional[list[UnlockConditionItem]] = None
+
+
+# ── Adaptive Difficulty Schemas ──────────────────────────────────
+
+
+class AdaptiveAdjustmentDetail(BaseModel):
+    """Adjustment details for adaptive difficulty."""
+
+    rating_offset: int = 0
+    depth_adjustment: int = 0
+    mistake_rate_adjustment: float = 0.0
+
+
+class AdaptiveDifficultyResponse(BaseModel):
+    """Response for adaptive difficulty status."""
+
+    character_id: str
+    character_name: str
+    base_rating: int
+    effective_rating: int
+    difficulty_mode: str = "normal"
+    recent_win_rate: float = 0.50
+    recent_results: list[str] = Field(default_factory=list)
+    adjustment_detail: AdaptiveAdjustmentDetail = Field(default_factory=AdaptiveAdjustmentDetail)
 
 
 # ── Game Schemas ──────────────────────────────────────────────────

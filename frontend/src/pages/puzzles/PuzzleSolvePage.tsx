@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react'
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { puzzlesApi } from '@/api/puzzles'
 import { usePuzzleStore } from '@/stores/puzzleStore'
@@ -58,7 +58,7 @@ const PuzzleSolvePage: React.FC = () => {
   const [attempts, setAttempts] = useState(0)
   const [showHint, setShowHint] = useState(false)
   const [showExplanation, setShowExplanation] = useState(false)
-  const [startTime] = useState(Date.now())
+  const startTimeRef = useRef(Date.now())
 
   useEffect(() => {
     if (!id) return
@@ -68,6 +68,14 @@ const PuzzleSolvePage: React.FC = () => {
       return
     }
 
+    // Reset all state when puzzle id changes
+    setSolutionStep(0)
+    setFeedback(null)
+    setSolved(false)
+    setAttempts(0)
+    setShowHint(false)
+    setShowExplanation(false)
+    startTimeRef.current = Date.now()
     setLoading(true)
     puzzlesApi.getPuzzle(id)
       .then((res) => {
@@ -105,12 +113,12 @@ const PuzzleSolvePage: React.FC = () => {
       .finally(() => setLoading(false))
   }, [id]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Determine whose turn it is from FEN
+  // Determine player color from the INITIAL FEN (not current — otherwise board flips on every move)
   const playerColor = useMemo(() => {
-    if (!currentFen) return 'white'
-    const parts = currentFen.split(' ')
+    if (!puzzle?.fen) return 'white'
+    const parts = puzzle.fen.split(' ')
     return parts[1] === 'w' ? 'white' : 'black'
-  }, [currentFen])
+  }, [puzzle?.fen])
 
   const handleMove = useCallback(
     (from: string, to: string, promotion?: string) => {
@@ -139,7 +147,7 @@ const PuzzleSolvePage: React.FC = () => {
             puzzlesApi.submitAttempt(puzzle.id, {
               user_moves: puzzle.solution.join(','),
               is_correct: true,
-              time_spent_ms: Date.now() - startTime,
+              time_spent_ms: Date.now() - startTimeRef.current,
               source: 'challenge',
             }).catch((err) => console.error('[PuzzleSolvePage] API error:', err))
           } else {
@@ -167,12 +175,24 @@ const PuzzleSolvePage: React.FC = () => {
       } else {
         // Wrong
         setFeedback('wrong')
-        setAttempts((a) => a + 1)
+        setAttempts((a) => {
+          const newAttempts = a + 1
+          // Submit a failed attempt on first wrong move so it shows in mistake book
+          if (a === 0) {
+            puzzlesApi.submitAttempt(puzzle.id, {
+              user_moves: userMove,
+              is_correct: false,
+              time_spent_ms: Date.now() - startTimeRef.current,
+              source: 'challenge',
+            }).catch((err) => console.error('[PuzzleSolvePage] API error:', err))
+          }
+          return newAttempts
+        })
         puzzleStore.resetStreak()
         setTimeout(() => setFeedback(null), 1200)
       }
     },
-    [puzzle, currentFen, solutionStep, solved, puzzleStore, startTime],
+    [puzzle, currentFen, solutionStep, solved, puzzleStore],
   )
 
   const getValidMoves = useCallback(
@@ -244,11 +264,9 @@ const PuzzleSolvePage: React.FC = () => {
           <div
             className="w-full max-w-[min(100vw-32px,480px)] lg:w-auto lg:max-w-none"
             style={{
-              animation: feedback === 'correct' && solved
-                ? 'puzzle-correct 0.6s ease'
-                : feedback === 'wrong'
-                  ? 'puzzle-wrong 0.4s ease'
-                  : 'none',
+              animation: feedback === 'wrong'
+                ? 'puzzle-wrong 0.4s ease'
+                : 'none',
             }}
           >
             <Chessboard
@@ -332,8 +350,15 @@ const PuzzleSolvePage: React.FC = () => {
                   </div>
                 )}
 
-                <Button variant="primary" className="w-full" onClick={() => navigate(-1)}>
-                  下一题
+                <Button variant="primary" className="w-full" onClick={() => {
+                  const nextId = puzzleStore.getNextPuzzleId()
+                  if (nextId) {
+                    navigate(`/puzzles/solve/${nextId}`, { replace: true })
+                  } else {
+                    navigate(-1)
+                  }
+                }}>
+                  {puzzleStore.getNextPuzzleId() ? '下一题' : '返回列表'}
                 </Button>
               </div>
             </Card>
@@ -370,11 +395,6 @@ const PuzzleSolvePage: React.FC = () => {
       </div>
 
       <style>{`
-        @keyframes puzzle-correct {
-          0%, 100% { transform: scale(1); }
-          30% { transform: scale(1.03); }
-          60% { transform: scale(0.98); }
-        }
         @keyframes puzzle-wrong {
           0%, 100% { transform: translateX(0); }
           20% { transform: translateX(-8px); }
