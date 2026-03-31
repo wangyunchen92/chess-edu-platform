@@ -46,8 +46,9 @@ function clearAuthAndRedirect() {
   localStorage.removeItem('token')
   localStorage.removeItem('refresh_token')
   localStorage.removeItem('user')
-  if (window.location.pathname !== '/login') {
-    window.location.href = '/login'
+  const loginPath = `${base}login`
+  if (!window.location.pathname.endsWith('/login')) {
+    window.location.href = loginPath
   }
 }
 
@@ -83,7 +84,7 @@ apiClient.interceptors.response.use(
 
         try {
           const res = await axios.post<APIResponse<TokenRefreshResponse>>(
-            '/api/v1/auth/token/refresh',
+            `${apiBase}/auth/token/refresh`,
             { refresh_token: refreshToken }
           )
           const data = res.data.data
