@@ -80,7 +80,39 @@ const ExercisesOverview: React.FC = () => {
     learnApi.getExercisesOverview()
       .then((res) => {
         const payload = (res.data as any)?.data ?? res.data
-        if (payload) setData(payload)
+        // Backend returns array of courses; transform to { summary, lessons }
+        if (Array.isArray(payload)) {
+          const allLessons: ExerciseOverviewLesson[] = []
+          for (const course of payload) {
+            for (const l of (course.lessons ?? [])) {
+              allLessons.push({
+                lesson_id: l.lesson_id,
+                lesson_title: l.lesson_title,
+                course_id: course.course_id,
+                course_title: course.course_title,
+                level: course.course_level,
+                total_exercises: l.exercise_count ?? l.total ?? 0,
+                completed_exercises: l.completed_count ?? 0,
+                correct_count: l.score ?? 0,
+                status: l.status ?? 'not_started',
+                lesson_learned: l.lesson_learned ?? false,
+              })
+            }
+          }
+          const total = allLessons.reduce((s, l) => s + l.total_exercises, 0)
+          const completed = allLessons.reduce((s, l) => s + l.completed_exercises, 0)
+          const correct = allLessons.reduce((s, l) => s + l.correct_count, 0)
+          setData({
+            summary: {
+              total_exercises: total,
+              completed_exercises: completed,
+              accuracy_pct: completed > 0 ? Math.round((correct / completed) * 100) : 0,
+            },
+            lessons: allLessons,
+          })
+        } else if (payload) {
+          setData(payload)
+        }
       })
       .catch((err) => {
         console.error('[ExercisesOverview] Failed to load:', err)
