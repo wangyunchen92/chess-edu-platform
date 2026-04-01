@@ -50,8 +50,8 @@ const MISTAKE_THRESHOLD = 100
 const BLUNDER_THRESHOLD = 200
 const BRILLIANT_THRESHOLD = 50
 
-/** Analysis depth */
-const ANALYSIS_DEPTH = 12
+/** Default analysis depth (纯JS引擎建议8，WASM引擎可用12+) */
+const DEFAULT_ANALYSIS_DEPTH = 8
 
 // ---------------------------------------------------------------------------
 // Helpers: child-friendly evaluation text
@@ -179,6 +179,8 @@ const ReviewPage: React.FC = () => {
   const [analysisProgress, setAnalysisProgress] = useState(0)
   const [analysisDone, setAnalysisDone] = useState(false)
   const [analysisError, setAnalysisError] = useState<string | null>(null)
+  const [selectedDepth, setSelectedDepth] = useState(DEFAULT_ANALYSIS_DEPTH)
+  const depthRef = useRef(DEFAULT_ANALYSIS_DEPTH)
   const analysisCancelledRef = useRef(false)
 
   // ---------------------------------------------------------------------------
@@ -272,7 +274,7 @@ const ReviewPage: React.FC = () => {
       const analyzedMoves: ReviewMove[] = [...review.moves]
 
       // Evaluate the initial position
-      let prevEval = await engine.evaluatePosition(INITIAL_FEN, ANALYSIS_DEPTH)
+      let prevEval = await engine.evaluatePosition(INITIAL_FEN, depthRef.current)
 
       for (let i = 0; i < totalMoves; i++) {
         if (analysisCancelledRef.current) break
@@ -280,11 +282,11 @@ const ReviewPage: React.FC = () => {
         const move = analyzedMoves[i]
 
         // Evaluate position after this move
-        const evalAfter = await engine.evaluatePosition(move.fen, ANALYSIS_DEPTH)
+        const evalAfter = await engine.evaluatePosition(move.fen, depthRef.current)
 
         // Get best move for the position BEFORE this move
         const fenBefore = i === 0 ? INITIAL_FEN : analyzedMoves[i - 1].fen
-        const bestMoveUci = await engine.getBestMove(fenBefore, ANALYSIS_DEPTH)
+        const bestMoveUci = await engine.getBestMove(fenBefore, depthRef.current)
 
         // Convert best move UCI to SAN
         let bestMoveSan: string | undefined
@@ -475,13 +477,24 @@ const ReviewPage: React.FC = () => {
         <div className="flex items-center gap-2">
           {/* Analysis button */}
           {!analysisDone && !isAnalyzing && review.moves.length > 0 && (
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={startAnalysis}
-            >
-              {'\uD83D\uDD2C'} 分析对局
-            </Button>
+            <div className="flex items-center gap-2">
+              <select
+                value={selectedDepth}
+                onChange={(e) => { const v = Number(e.target.value); setSelectedDepth(v); depthRef.current = v }}
+                className="px-2 py-1 rounded-[var(--radius-sm)] text-[var(--text-xs)] text-[var(--text)] bg-[var(--card-bg)] border border-[var(--border)]"
+              >
+                <option value={6}>快速(深度6)</option>
+                <option value={8}>标准(深度8)</option>
+                <option value={12}>精确(深度12)</option>
+              </select>
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={startAnalysis}
+              >
+                {'\uD83D\uDD2C'} 分析对局
+              </Button>
+            </div>
           )}
           {isAnalyzing && (
             <Button

@@ -14,7 +14,7 @@ import {
 } from './types';
 
 /** 默认命令超时 30 秒 */
-const DEFAULT_TIMEOUT_MS = 30_000;
+const DEFAULT_TIMEOUT_MS = 60_000;
 
 /** Worker 脚本默认路径（相对于 public 目录） */
 const DEFAULT_WORKER_PATH = `${import.meta.env.BASE_URL || '/'}stockfish/stockfish-worker.js`;

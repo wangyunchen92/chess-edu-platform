@@ -55,7 +55,7 @@ const TURNING_POINT_THRESHOLD = 100;
 const MAX_KEY_MOMENTS = 5;
 
 /** 默认分析深度 */
-const DEFAULT_DEPTH = 12;
+const DEFAULT_DEPTH = 8;
 
 // ---------------------------------------------------------------------------
 // ReviewAnalyzer
