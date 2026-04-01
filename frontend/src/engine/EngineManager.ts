@@ -120,7 +120,7 @@ export class EngineManager {
    * @param fen 局面 FEN
    * @param depth 搜索深度，默认使用配置值
    */
-  async getBestMove(fen: string, depth?: number): Promise<string> {
+  async getBestMove(fen: string, depth?: number, timeLimitMs?: number): Promise<string> {
     await this.ensureReady();
     this.assertEngine();
 
@@ -129,7 +129,7 @@ export class EngineManager {
 
     try {
       await this.engine!.setPosition(fen);
-      const move = await this.engine!.getBestMove(d);
+      const move = await this.engine!.getBestMove(d, timeLimitMs);
       return move;
     } catch (err) {
       throw err;
@@ -176,7 +176,7 @@ export class EngineManager {
    * @param depth 搜索深度
    * @returns centipawns 评估值，正值白方优势
    */
-  async evaluatePosition(fen: string, depth?: number): Promise<number> {
+  async evaluatePosition(fen: string, depth?: number, timeLimitMs?: number): Promise<number> {
     await this.ensureReady();
     this.assertEngine();
 
@@ -184,7 +184,7 @@ export class EngineManager {
     this.status = 'busy';
 
     try {
-      const score = await this.engine!.evaluate(fen, d);
+      const score = await this.engine!.evaluate(fen, d, timeLimitMs);
       return score;
     } catch (err) {
       throw err;

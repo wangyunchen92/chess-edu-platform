@@ -154,9 +154,10 @@ export class StockfishWorker {
    * @param depth 搜索深度
    * @returns 评估分数（centipawns），正值白方优势
    */
-  async evaluate(fen: string, depth: number): Promise<number> {
+  async evaluate(fen: string, depth: number, timeLimitMs?: number): Promise<number> {
     await this.setPosition(fen);
-    const lines = await this.collectUntilBestMove(`go depth ${depth}`);
+    const goCmd = timeLimitMs ? `go movetime ${timeLimitMs}` : `go depth ${depth}`;
+    const lines = await this.collectUntilBestMove(goCmd);
 
     // 取最后一条包含 score 的 info 行
     const infoLines = lines.filter(

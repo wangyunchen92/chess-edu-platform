@@ -273,20 +273,32 @@ const ReviewPage: React.FC = () => {
       const totalMoves = review.moves.length
       const analyzedMoves: ReviewMove[] = [...review.moves]
 
+      // Use movetime for speed: 快速500ms, 标准1000ms, 精确2000ms
+      const timeLimitMs = depthRef.current <= 6 ? 500 : depthRef.current <= 8 ? 1000 : 2000
+
       // Evaluate the initial position
-      let prevEval = await engine.evaluatePosition(INITIAL_FEN, depthRef.current)
+      let prevEval = 0
+      try {
+        prevEval = await engine.evaluatePosition(INITIAL_FEN, depthRef.current, timeLimitMs)
+      } catch { prevEval = 0 }
 
       for (let i = 0; i < totalMoves; i++) {
         if (analysisCancelledRef.current) break
 
         const move = analyzedMoves[i]
 
-        // Evaluate position after this move
-        const evalAfter = await engine.evaluatePosition(move.fen, depthRef.current)
+        // Evaluate position after this move (movetime限时，不会超时)
+        let evalAfter = prevEval
+        try {
+          evalAfter = await engine.evaluatePosition(move.fen, depthRef.current, timeLimitMs)
+        } catch { evalAfter = prevEval }
 
         // Get best move for the position BEFORE this move
         const fenBefore = i === 0 ? INITIAL_FEN : analyzedMoves[i - 1].fen
-        const bestMoveUci = await engine.getBestMove(fenBefore, depthRef.current)
+        let bestMoveUci = ''
+        try {
+          bestMoveUci = await engine.getBestMove(fenBefore, depthRef.current, timeLimitMs)
+        } catch { /* skip */ }
 
         // Convert best move UCI to SAN
         let bestMoveSan: string | undefined
