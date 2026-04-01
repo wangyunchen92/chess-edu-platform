@@ -265,7 +265,7 @@ const ExercisesOverview: React.FC = () => {
                       </div>
 
                       {/* Action button */}
-                      <div className="shrink-0">
+                      <div className="shrink-0 flex items-center">
                         {lesson.lesson_learned ? (
                           <Button
                             variant="primary"

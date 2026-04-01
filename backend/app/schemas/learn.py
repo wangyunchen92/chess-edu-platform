@@ -1,7 +1,7 @@
 """Learn module schemas."""
 
 from datetime import datetime
-from typing import Optional
+from typing import Any, Optional
 
 from pydantic import BaseModel, Field
 
@@ -107,7 +107,7 @@ class ExerciseItem(BaseModel):
     exercise_type: str
     question_text: str
     fen: Optional[str] = None
-    options: Optional[dict] = None
+    options: Optional[Any] = None
     attempted: bool = False
     is_correct: Optional[bool] = None
 
