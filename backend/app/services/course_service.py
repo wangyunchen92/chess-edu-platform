@@ -375,6 +375,108 @@ def ai_teach_interaction(
     }
 
 
+def get_exercises_overview(db: Session, user_id: str) -> list[dict]:
+    """Get exercise overview for all courses, grouped by course."""
+    # 1. All courses ordered
+    courses = db.execute(
+        select(Course).order_by(Course.sort_order, Course.level)
+    ).scalars().all()
+
+    if not courses:
+        return []
+
+    # 2. All lessons ordered
+    lessons = db.execute(
+        select(Lesson).order_by(Lesson.course_id, Lesson.lesson_order)
+    ).scalars().all()
+
+    # 3. Exercise count per lesson
+    exercise_count_rows = db.execute(
+        select(Exercise.lesson_id, func.count().label("cnt"))
+        .group_by(Exercise.lesson_id)
+    ).all()
+    exercise_count_map: dict[str, int] = {row.lesson_id: row.cnt for row in exercise_count_rows}
+
+    # 4. User lesson progresses
+    lesson_ids = [l.id for l in lessons]
+    progress_map: dict[str, LessonProgress] = {}
+    if lesson_ids:
+        progresses = db.execute(
+            select(LessonProgress).where(
+                LessonProgress.user_id == user_id,
+                LessonProgress.lesson_id.in_(lesson_ids),
+            )
+        ).scalars().all()
+        progress_map = {p.lesson_id: p for p in progresses}
+
+    # 5. Completed (correctly answered) exercise count per lesson for this user
+    completed_rows = db.execute(
+        select(
+            Exercise.lesson_id,
+            func.count(func.distinct(ExerciseAttempt.exercise_id)).label("cnt"),
+        )
+        .select_from(ExerciseAttempt)
+        .join(Exercise, Exercise.id == ExerciseAttempt.exercise_id)
+        .where(
+            ExerciseAttempt.user_id == user_id,
+            ExerciseAttempt.is_correct.is_(True),
+        )
+        .group_by(Exercise.lesson_id)
+    ).all()
+    completed_map: dict[str, int] = {row.lesson_id: row.cnt for row in completed_rows}
+
+    # 6. Build grouped result
+    course_map: dict[str, dict] = {}
+    for course in courses:
+        course_map[course.id] = {
+            "course_id": course.id,
+            "course_title": course.title,
+            "course_level": course.level,
+            "lessons": [],
+        }
+
+    for lesson in lessons:
+        course_data = course_map.get(lesson.course_id)
+        if course_data is None:
+            continue
+
+        prog = progress_map.get(lesson.id)
+        ex_count = exercise_count_map.get(lesson.id, 0)
+        comp_count = completed_map.get(lesson.id, 0)
+
+        # score/total from lesson_progresses
+        score = prog.exercise_score if prog and prog.exercise_score is not None else 0
+        total = prog.exercise_total if prog and prog.exercise_total is not None else ex_count
+
+        # Determine exercise status
+        prog_status = prog.status if prog else "not_started"
+        if ex_count == 0:
+            ex_status = "not_started"
+        elif comp_count >= ex_count:
+            ex_status = "completed"
+        elif comp_count > 0:
+            ex_status = "in_progress"
+        else:
+            ex_status = "not_started"
+
+        # lesson_learned: has the user started or completed this lesson?
+        lesson_learned = prog_status != "not_started" if prog else False
+
+        course_data["lessons"].append({
+            "lesson_id": lesson.id,
+            "lesson_title": lesson.title,
+            "lesson_order": lesson.lesson_order,
+            "exercise_count": ex_count,
+            "completed_count": comp_count,
+            "score": score,
+            "total": total,
+            "status": ex_status,
+            "lesson_learned": lesson_learned,
+        })
+
+    return list(course_map.values())
+
+
 def _load_content_from_file(course_slug: str, lesson_slug: str) -> dict:
     """Try to load lesson content from a JSON file in content/courses/."""
     if not course_slug or not lesson_slug:

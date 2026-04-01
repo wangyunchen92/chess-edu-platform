@@ -3,7 +3,9 @@ import { useNavigate } from 'react-router-dom'
 import { learnApi } from '@/api/learn'
 import Card from '@/components/common/Card'
 import Badge from '@/components/common/Badge'
+import Button from '@/components/common/Button'
 import ProgressBar from '@/components/common/ProgressBar'
+import type { ExerciseOverviewResponse, ExerciseOverviewLesson } from '@/types/api'
 
 interface Lesson {
   id: string
@@ -60,8 +62,221 @@ function getLockReason(level: number): string {
   return '未解锁'
 }
 
+type TabType = 'courses' | 'exercises'
+
+// ────────────────────────────────────────────────────────────────
+// Exercise Overview Sub-view
+// ────────────────────────────────────────────────────────────────
+
+const ExercisesOverview: React.FC = () => {
+  const navigate = useNavigate()
+  const [data, setData] = useState<ExerciseOverviewResponse | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [collapsedLevels, setCollapsedLevels] = useState<Record<number, boolean>>({})
+
+  useEffect(() => {
+    setLoading(true)
+    learnApi.getExercisesOverview()
+      .then((res) => {
+        const payload = (res.data as any)?.data ?? res.data
+        if (payload) setData(payload)
+      })
+      .catch((err) => {
+        console.error('[ExercisesOverview] Failed to load:', err)
+        setError('加载练习概览失败，请检查网络后重试')
+      })
+      .finally(() => setLoading(false))
+  }, [])
+
+  const toggleLevel = (level: number) => {
+    setCollapsedLevels((prev) => ({ ...prev, [level]: !prev[level] }))
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[40vh]">
+        <div className="text-center">
+          <div className="text-4xl animate-bounce mb-3">{'\u270D\uFE0F'}</div>
+          <p className="text-[var(--text-muted)] text-[var(--text-sm)]">加载练习数据...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error || !data) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[40vh] gap-4">
+        <div className="text-5xl">{'\u270D\uFE0F'}</div>
+        <p className="text-[var(--text-sub)] text-lg">{error ?? '暂无练习数据'}</p>
+        {error && (
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 rounded-full bg-[var(--accent)] text-white text-sm hover:opacity-90"
+          >
+            重试
+          </button>
+        )}
+      </div>
+    )
+  }
+
+  const { summary, lessons } = data
+
+  // Group lessons by level
+  const groupedByLevel: Record<number, ExerciseOverviewLesson[]> = {}
+  for (const l of lessons) {
+    if (!groupedByLevel[l.level]) groupedByLevel[l.level] = []
+    groupedByLevel[l.level].push(l)
+  }
+  const levels = Object.keys(groupedByLevel).map(Number).sort((a, b) => a - b)
+
+  const statusBadge = (status: ExerciseOverviewLesson['status']) => {
+    switch (status) {
+      case 'completed':
+        return <Badge color="success">已完成</Badge>
+      case 'in_progress':
+        return <Badge color="info">进行中</Badge>
+      case 'not_started':
+      default:
+        return <Badge color="neutral">未开始</Badge>
+    }
+  }
+
+  return (
+    <div className="space-y-5">
+      {/* Summary card */}
+      <Card padding="lg" hoverable={false}>
+        <div className="flex items-center justify-around text-center">
+          <div>
+            <div className="text-[var(--text-2xl)] font-bold text-[var(--text)]">
+              {summary.total_exercises}
+            </div>
+            <div className="text-[var(--text-xs)] text-[var(--text-muted)] mt-1">总题数</div>
+          </div>
+          <div className="w-px h-10 bg-[var(--border)]" />
+          <div>
+            <div className="text-[var(--text-2xl)] font-bold text-[var(--success)]">
+              {summary.completed_exercises}
+            </div>
+            <div className="text-[var(--text-xs)] text-[var(--text-muted)] mt-1">已完成</div>
+          </div>
+          <div className="w-px h-10 bg-[var(--border)]" />
+          <div>
+            <div className="text-[var(--text-2xl)] font-bold text-[var(--accent)]">
+              {summary.accuracy_pct}%
+            </div>
+            <div className="text-[var(--text-xs)] text-[var(--text-muted)] mt-1">正确率</div>
+          </div>
+        </div>
+      </Card>
+
+      {/* Grouped by level */}
+      {levels.map((level) => {
+        const config = LEVEL_CONFIG[level]
+        const lessonsInLevel = groupedByLevel[level]
+        const collapsed = !!collapsedLevels[level]
+
+        return (
+          <div key={level}>
+            <button
+              onClick={() => toggleLevel(level)}
+              className="w-full flex items-center justify-between py-2 text-left group"
+            >
+              <h2 className="text-[var(--text-lg)] font-bold text-[var(--text)] flex items-center gap-2">
+                <span className="text-lg">{config?.icon ?? '\uD83D\uDCD6'}</span>
+                {config?.title ?? `Level ${level}`}
+                <span className="text-[var(--text-xs)] text-[var(--text-muted)] font-normal">
+                  ({lessonsInLevel.length} 课)
+                </span>
+              </h2>
+              <span
+                className="text-[var(--text-muted)] transition-transform duration-200"
+                style={{ transform: collapsed ? 'rotate(-90deg)' : 'rotate(0deg)' }}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </span>
+            </button>
+
+            {!collapsed && (
+              <div className="space-y-2 mt-1">
+                {lessonsInLevel.map((lesson) => (
+                  <Card key={lesson.lesson_id} padding="sm" hoverable={false}>
+                    <div className="flex items-center gap-3">
+                      {/* Lesson title */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-[var(--text-sm)] font-medium text-[var(--text)] truncate">
+                            {lesson.lesson_title}
+                          </span>
+                          {statusBadge(lesson.status)}
+                        </div>
+
+                        {/* Progress bar */}
+                        <div className="mt-2">
+                          <ProgressBar
+                            value={lesson.completed_exercises}
+                            max={lesson.total_exercises || 1}
+                            height={4}
+                          />
+                          <div className="flex justify-between mt-1">
+                            <span className="text-[var(--text-xs)] text-[var(--text-muted)]">
+                              {lesson.completed_exercises}/{lesson.total_exercises} 题
+                            </span>
+                            <span className="text-[var(--text-xs)] text-[var(--text-muted)]">
+                              得分 {lesson.correct_count}/{lesson.total_exercises}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Action button */}
+                      <div className="shrink-0">
+                        {lesson.lesson_learned ? (
+                          <Button
+                            variant="primary"
+                            size="sm"
+                            onClick={() => navigate(`/learn/exercise/${lesson.lesson_id}`)}
+                          >
+                            做练习
+                          </Button>
+                        ) : (
+                          <Button
+                            variant="secondary"
+                            size="sm"
+                            onClick={() => navigate(`/learn/lesson/${lesson.lesson_id}`)}
+                          >
+                            先去学习
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </div>
+        )
+      })}
+
+      {lessons.length === 0 && (
+        <div className="text-center py-12 text-[var(--text-muted)]">
+          暂无练习数据
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ────────────────────────────────────────────────────────────────
+// Main Page
+// ────────────────────────────────────────────────────────────────
+
 const CourseListPage: React.FC = () => {
   const navigate = useNavigate()
+  const [activeTab, setActiveTab] = useState<TabType>('courses')
   const [courses, setCourses] = useState<Course[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -209,32 +424,83 @@ const CourseListPage: React.FC = () => {
     </Card>
   )
 
-  if (loading) {
+  // ── Tab bar ──────────────────────────────────────────────────
+
+  const renderTabs = () => (
+    <div className="flex gap-0 border-b border-[var(--border)] mb-5">
+      {([
+        { key: 'courses' as TabType, label: '课程' },
+        { key: 'exercises' as TabType, label: '课后练习' },
+      ]).map((tab) => (
+        <button
+          key={tab.key}
+          onClick={() => setActiveTab(tab.key)}
+          className={[
+            'relative px-5 py-2.5 text-[var(--text-sm)] font-semibold transition-colors',
+            activeTab === tab.key
+              ? 'text-[var(--accent)]'
+              : 'text-[var(--text-muted)] hover:text-[var(--text-sub)]',
+          ].join(' ')}
+        >
+          {tab.label}
+          {activeTab === tab.key && (
+            <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-[var(--accent)] rounded-t" />
+          )}
+        </button>
+      ))}
+    </div>
+  )
+
+  // ── Course loading / empty states ────────────────────────────
+
+  if (loading && activeTab === 'courses') {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="text-center">
-          <div className="text-4xl animate-bounce mb-3">{'\uD83D\uDCDA'}</div>
-          <p className="text-[var(--text-muted)] text-[var(--text-sm)]">加载课程...</p>
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-[var(--text-2xl)] font-bold text-[var(--text)]">
+            {'\uD83D\uDCDA'} 学习中心
+          </h1>
+          <p className="text-[var(--text-sm)] text-[var(--text-sub)] mt-1">
+            系统学习国际象棋，从入门到精通！
+          </p>
+        </div>
+        {renderTabs()}
+        <div className="flex items-center justify-center min-h-[40vh]">
+          <div className="text-center">
+            <div className="text-4xl animate-bounce mb-3">{'\uD83D\uDCDA'}</div>
+            <p className="text-[var(--text-muted)] text-[var(--text-sm)]">加载课程...</p>
+          </div>
         </div>
       </div>
     )
   }
 
-  if (courseList.length === 0) {
+  if (courseList.length === 0 && activeTab === 'courses' && !loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-        <div className="text-5xl">{'\uD83D\uDCDA'}</div>
-        <p className="text-[var(--text-sub)] text-lg">
-          {error ? error : '暂无课程，敬请期待'}
-        </p>
-        {error && (
-          <button
-            onClick={() => window.location.reload()}
-            className="px-4 py-2 rounded-full bg-[var(--accent)] text-white text-sm hover:opacity-90"
-          >
-            重试
-          </button>
-        )}
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-[var(--text-2xl)] font-bold text-[var(--text)]">
+            {'\uD83D\uDCDA'} 学习中心
+          </h1>
+          <p className="text-[var(--text-sm)] text-[var(--text-sub)] mt-1">
+            系统学习国际象棋，从入门到精通！
+          </p>
+        </div>
+        {renderTabs()}
+        <div className="flex flex-col items-center justify-center min-h-[40vh] gap-4">
+          <div className="text-5xl">{'\uD83D\uDCDA'}</div>
+          <p className="text-[var(--text-sub)] text-lg">
+            {error ? error : '暂无课程，敬请期待'}
+          </p>
+          {error && (
+            <button
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 rounded-full bg-[var(--accent)] text-white text-sm hover:opacity-90"
+            >
+              重试
+            </button>
+          )}
+        </div>
       </div>
     )
   }
@@ -250,23 +516,31 @@ const CourseListPage: React.FC = () => {
         </p>
       </div>
 
-      {levels.map((level) => {
-        const config = LEVEL_CONFIG[level]
-        const coursesInLevel = groupedByLevel[level]
-        return (
-          <div key={level}>
-            <h2 className="text-[var(--text-lg)] font-bold text-[var(--text)] mb-1 flex items-center gap-2">
-              <span className="text-lg">{config?.icon ?? '\uD83D\uDCD6'}</span> {config?.title ?? `Level ${level}`}
-            </h2>
-            {config?.description && (
-              <p className="text-[var(--text-xs)] text-[var(--text-muted)] mb-3">{config.description}</p>
-            )}
-            <div className="space-y-3">
-              {coursesInLevel.map(renderCourseCard)}
-            </div>
-          </div>
-        )
-      })}
+      {renderTabs()}
+
+      {activeTab === 'courses' && (
+        <>
+          {levels.map((level) => {
+            const config = LEVEL_CONFIG[level]
+            const coursesInLevel = groupedByLevel[level]
+            return (
+              <div key={level}>
+                <h2 className="text-[var(--text-lg)] font-bold text-[var(--text)] mb-1 flex items-center gap-2">
+                  <span className="text-lg">{config?.icon ?? '\uD83D\uDCD6'}</span> {config?.title ?? `Level ${level}`}
+                </h2>
+                {config?.description && (
+                  <p className="text-[var(--text-xs)] text-[var(--text-muted)] mb-3">{config.description}</p>
+                )}
+                <div className="space-y-3">
+                  {coursesInLevel.map(renderCourseCard)}
+                </div>
+              </div>
+            )
+          })}
+        </>
+      )}
+
+      {activeTab === 'exercises' && <ExercisesOverview />}
     </div>
   )
 }

@@ -594,6 +594,32 @@ export interface ExerciseAttemptResponse {
   xp_earned: number
 }
 
+// ── Exercise Overview ──────────────────────────────────────────
+
+export interface ExerciseOverviewLesson {
+  lesson_id: string
+  lesson_title: string
+  course_id: string
+  course_title: string
+  level: number
+  total_exercises: number
+  completed_exercises: number
+  correct_count: number
+  status: 'not_started' | 'in_progress' | 'completed'
+  lesson_learned: boolean
+}
+
+export interface ExerciseOverviewSummary {
+  total_exercises: number
+  completed_exercises: number
+  accuracy_pct: number
+}
+
+export interface ExerciseOverviewResponse {
+  summary: ExerciseOverviewSummary
+  lessons: ExerciseOverviewLesson[]
+}
+
 export interface AITeachRequest {
   message: string
   context?: Record<string, unknown>

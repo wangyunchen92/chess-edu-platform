@@ -9,6 +9,7 @@ import type {
   ExerciseItem,
   ExerciseAttemptResponse,
   AITeachResponse,
+  ExerciseOverviewResponse,
 } from '@/types/api'
 
 export const learnApi = {
@@ -32,4 +33,7 @@ export const learnApi = {
 
   aiTeach: (id: string, message: string, context?: Record<string, unknown>) =>
     apiClient.post<APIResponse<AITeachResponse>>(`/learn/lessons/${id}/ai-teach`, { message, context }),
+
+  getExercisesOverview: () =>
+    apiClient.get<APIResponse<ExerciseOverviewResponse>>('/learn/exercises/overview'),
 }

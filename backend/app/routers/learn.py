@@ -14,6 +14,7 @@ from app.schemas.learn import (
     ExerciseAttemptRequest,
     ExerciseAttemptResponse,
     ExerciseItem,
+    ExerciseOverviewCourse,
     LessonContent,
     UpdateProgressRequest,
     UpdateProgressResponse,
@@ -51,6 +52,17 @@ def get_course_detail(
             detail="Course not found",
         )
     return APIResponse.success(data=detail)
+
+
+@router.get("/exercises/overview", response_model=APIResponse[list[ExerciseOverviewCourse]])
+def get_exercises_overview(
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> APIResponse[list[ExerciseOverviewCourse]]:
+    """Get exercise overview for all courses, grouped by course."""
+    user_id = current_user["user_id"]
+    data = course_service.get_exercises_overview(db, user_id)
+    return APIResponse.success(data=data)
 
 
 @router.get("/lessons/{lesson_id}", response_model=APIResponse[LessonContent])

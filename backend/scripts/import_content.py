@@ -463,7 +463,59 @@ def import_courses(db: Session) -> int:
                 db.add(lesson)
 
     db.flush()
-    logger.info("Imported %d courses.", count)
+
+    # Import exercises from lesson JSON files into exercises table
+    from app.models.course import Exercise
+    ex_count = 0
+    for dirname in sorted(os.listdir(courses_dir)):
+        dir_path = os.path.join(courses_dir, dirname)
+        if not os.path.isdir(dir_path):
+            continue
+        lesson_files = sorted(
+            f for f in os.listdir(dir_path)
+            if f.startswith("lesson_") and f.endswith(".json")
+        )
+        for lf in lesson_files:
+            lf_path = os.path.join(dir_path, lf)
+            try:
+                with open(lf_path, "r", encoding="utf-8") as f:
+                    ldata = json.load(f)
+            except (json.JSONDecodeError, OSError):
+                continue
+
+            lesson_id = ldata.get("id", lf.replace(".json", ""))
+            exercises = ldata.get("exercises", [])
+            for idx, ex in enumerate(exercises):
+                ex_type = ex.get("type", "choice")
+                if ex_type in ("choice", "quiz"):
+                    exercise = Exercise(
+                        lesson_id=lesson_id,
+                        exercise_order=idx + 1,
+                        exercise_type="quiz",
+                        question_text=ex.get("question", ""),
+                        fen=ex.get("fen"),
+                        options=ex.get("options"),
+                        correct_answer=str(ex.get("correct", ex.get("correctIndex", 0))),
+                        explanation=ex.get("explanation"),
+                    )
+                elif ex_type in ("board_interactive", "board"):
+                    exercise = Exercise(
+                        lesson_id=lesson_id,
+                        exercise_order=idx + 1,
+                        exercise_type="board",
+                        question_text=ex.get("instruction", ex.get("question", "")),
+                        fen=ex.get("fen"),
+                        options=None,
+                        correct_answer=ex.get("expectedMove", ex.get("correct_move", "")),
+                        explanation=ex.get("explanation"),
+                    )
+                else:
+                    continue
+                db.add(exercise)
+                ex_count += 1
+
+    db.flush()
+    logger.info("Imported %d courses, %d exercises.", count, ex_count)
     return count
 
 

@@ -130,6 +130,33 @@ class ExerciseAttemptResponse(BaseModel):
     xp_earned: int = 0
 
 
+class ExerciseOverviewLesson(BaseModel):
+    """Per-lesson exercise summary in the overview."""
+
+    lesson_id: str
+    lesson_title: str
+    lesson_order: int
+    exercise_count: int = 0
+    completed_count: int = 0
+    score: int = 0
+    total: int = 0
+    status: str = "not_started"  # not_started | in_progress | completed
+    lesson_learned: bool = False
+
+    model_config = {"from_attributes": True}
+
+
+class ExerciseOverviewCourse(BaseModel):
+    """Per-course exercise overview."""
+
+    course_id: str
+    course_title: str
+    course_level: int
+    lessons: list[ExerciseOverviewLesson] = []
+
+    model_config = {"from_attributes": True}
+
+
 class AITeachRequest(BaseModel):
     """AI interactive teaching request."""
 
