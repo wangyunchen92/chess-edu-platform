@@ -343,13 +343,16 @@ Nginx(:80)
 # 1. 本地构建前端（设置 base 路径）
 cd frontend && VITE_BASE=/chess/ npm run build
 
-# 2. 清理旧assets+上传（重要：先删旧assets再传新的，避免缓存问题）
+# 2. 部署前备份数据库
+ssh root@118.31.237.111 "/opt/chess-edu/backup.sh"
+
+# 3. 清理旧assets+上传（重要：先删旧assets再传新的，避免缓存问题）
 ssh root@118.31.237.111 "rm -rf /opt/chess-edu/www/chess/assets"
 scp -r frontend/dist/* root@118.31.237.111:/opt/chess-edu/www/chess/
 rsync -av --exclude='__pycache__' --exclude='*.pyc' --exclude='data.db' backend/ root@118.31.237.111:/opt/chess-edu/backend/
 rsync -av content/ root@118.31.237.111:/opt/chess-edu/content/
 
-# 3. 重启后端（不删data.db！用户数据在里面）
+# 4. 重启后端（不删data.db！用户数据在里面）
 ssh root@118.31.237.111 "systemctl restart chess-edu"
 ```
 
@@ -359,6 +362,13 @@ ssh root@118.31.237.111 "systemctl restart chess-edu"
 - 只有首次部署或确认需要重建数据库时才能删 data.db
 - 新增表/字段通过 `init_db()` 的 `create_all()` 自动创建（SQLite 支持 ADD TABLE，不支持 ALTER）
 - 如果需要修改已有表结构，手动执行 `ALTER TABLE` 或导出数据重建
+
+### 数据备份
+
+- **自动备份**：cron 每日凌晨 3 点执行 `/opt/chess-edu/backup.sh`
+- **部署前备份**：部署步骤第 2 步自动触发
+- **备份目录**：`/opt/chess-edu/backups/`，保留最近 7 天
+- **恢复方法**：`gunzip data_xxx.db.gz && cp data_xxx.db /opt/chess-edu/backend/data.db && systemctl restart chess-edu`
 
 ### Nginx 缓存策略
 
