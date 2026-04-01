@@ -18,6 +18,12 @@ export type {
 } from './AdaptiveDifficulty';
 export { ReviewAnalyzer } from './ReviewAnalyzer';
 export type {
+  MoveQuality,
+  MoveAnalysis,
+  GameAnalysisResult,
+  PositionAnalysis,
+} from '../types/chess';
+export type {
   MoveEvaluation,
   EngineStatus,
   EngineConfig,
