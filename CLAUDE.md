@@ -343,19 +343,32 @@ Nginx(:80)
 # 1. 本地构建前端（设置 base 路径）
 cd frontend && VITE_BASE=/chess/ npm run build
 
-# 2. 上传到服务器
-scp -r frontend/dist/* root@118.31.237.111:/opt/chess-edu/frontend/
-scp -r backend/ root@118.31.237.111:/opt/chess-edu/backend/
-scp -r content/ root@118.31.237.111:/opt/chess-edu/content/
+# 2. 清理旧文件+上传（重要：先删旧assets再传新的，避免缓存问题）
+ssh root@118.31.237.111 "rm -rf /opt/chess-edu/www/chess/assets"
+scp -r frontend/dist/* root@118.31.237.111:/opt/chess-edu/www/chess/
+rsync -av --exclude='__pycache__' --exclude='*.pyc' --exclude='data.db' backend/ root@118.31.237.111:/opt/chess-edu/backend/
+rsync -av content/ root@118.31.237.111:/opt/chess-edu/content/
 
-# 3. 服务器上配置
-ssh root@118.31.237.111
-cd /opt/chess-edu/backend
-pip3 install -r requirements.txt
-python3 -m uvicorn app.main:app --host 127.0.0.1 --port 8001
-
-# 4. 配置 systemd 和 Nginx（见 deploy/ 目录）
+# 3. 重启后端
+ssh root@118.31.237.111 "systemctl restart chess-edu"
 ```
+
+### Nginx 缓存策略
+
+前端采用 **hash-based cache busting** + **分层缓存**，用户无需手动清缓存：
+
+| 文件类型 | 缓存策略 | 原因 |
+|----------|---------|------|
+| `index.html` | `no-cache, no-store` | 入口文件永不缓存，确保每次拿到最新版 |
+| `assets/*.js/css` | `1年 + immutable` | 文件名含 content hash，内容变则文件名变 |
+| 图片/字体/音效 | `7天` | 静态资源适度缓存 |
+
+**部署后无需用户清缓存**：index.html 永远最新 → 引用新 hash 的 JS → 浏览器自动下载新文件。
+
+### 注意事项
+- **前端目录是 `/opt/chess-edu/www/chess/`**（Nginx root），不是 `/opt/chess-edu/frontend/`
+- 每次部署前必须 `rm -rf assets` 清理旧 JS，否则残留旧文件占磁盘
+- 后端 venv 路径：`/opt/chess-edu/backend/venv/bin/python3`
 
 ## 项目进度
 
