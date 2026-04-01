@@ -343,15 +343,22 @@ Nginx(:80)
 # 1. 本地构建前端（设置 base 路径）
 cd frontend && VITE_BASE=/chess/ npm run build
 
-# 2. 清理旧文件+上传（重要：先删旧assets再传新的，避免缓存问题）
+# 2. 清理旧assets+上传（重要：先删旧assets再传新的，避免缓存问题）
 ssh root@118.31.237.111 "rm -rf /opt/chess-edu/www/chess/assets"
 scp -r frontend/dist/* root@118.31.237.111:/opt/chess-edu/www/chess/
 rsync -av --exclude='__pycache__' --exclude='*.pyc' --exclude='data.db' backend/ root@118.31.237.111:/opt/chess-edu/backend/
 rsync -av content/ root@118.31.237.111:/opt/chess-edu/content/
 
-# 3. 重启后端
+# 3. 重启后端（不删data.db！用户数据在里面）
 ssh root@118.31.237.111 "systemctl restart chess-edu"
 ```
+
+### 部署注意事项（重要）
+
+- **绝对不要删 data.db** — 线上用户数据、对弈记录、学习进度都在里面，删了就全没了
+- 只有首次部署或确认需要重建数据库时才能删 data.db
+- 新增表/字段通过 `init_db()` 的 `create_all()` 自动创建（SQLite 支持 ADD TABLE，不支持 ALTER）
+- 如果需要修改已有表结构，手动执行 `ALTER TABLE` 或导出数据重建
 
 ### Nginx 缓存策略
 
