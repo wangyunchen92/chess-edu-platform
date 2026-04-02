@@ -20,6 +20,9 @@ const CharacterHallPage = React.lazy(() => import('@/pages/play/CharacterHallPag
 const GamePage = React.lazy(() => import('@/pages/play/GamePage'))
 const ReviewPage = React.lazy(() => import('@/pages/play/ReviewPage'))
 const GameHistoryPage = React.lazy(() => import('@/pages/play/GameHistoryPage'))
+const FreePlayPage = React.lazy(() => import('@/pages/play/FreePlayPage'))
+const FreeGamePage = React.lazy(() => import('@/pages/play/FreeGamePage'))
+const BoardEditorPage = React.lazy(() => import('@/pages/play/BoardEditorPage'))
 
 // Puzzles
 const PuzzlesHomePage = React.lazy(() => import('@/pages/puzzles/PuzzlesHomePage'))
@@ -126,6 +129,16 @@ function App() {
           <Route path="/play/review/:id" element={<SuspenseWrapper><ReviewPage /></SuspenseWrapper>} />
         </Route>
 
+        {/* Free game page — full-screen immersive, no app layout */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/play/free/game/:id" element={<SuspenseWrapper><FreeGamePage /></SuspenseWrapper>} />
+        </Route>
+
+        {/* Board editor — full-screen immersive, no app layout */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/play/editor" element={<SuspenseWrapper><BoardEditorPage /></SuspenseWrapper>} />
+        </Route>
+
         {/* Protected routes with layout */}
         <Route element={<ProtectedRoute />}>
           <Route element={<AppLayout />}>
@@ -134,6 +147,7 @@ function App() {
             {/* Play */}
             <Route path="/play" element={<SuspenseWrapper><CharacterHallPage /></SuspenseWrapper>} />
             <Route path="/play/game/:id" element={<SuspenseWrapper><GamePage /></SuspenseWrapper>} />
+            <Route path="/play/free" element={<SuspenseWrapper><FreePlayPage /></SuspenseWrapper>} />
 
             <Route path="/play/history" element={<SuspenseWrapper><GameHistoryPage /></SuspenseWrapper>} />
 

@@ -329,6 +329,27 @@ const CharacterHallPage: React.FC = () => {
         </p>
       </div>
 
+      {/* Free play entry */}
+      <div
+        className="rounded-[var(--radius-card)] bg-gradient-to-r from-indigo-500/10 to-purple-500/5 p-4 border border-[var(--border)] flex items-center justify-between cursor-pointer hover:border-[var(--accent)] transition-colors"
+        onClick={() => navigate('/play/free')}
+      >
+        <div className="flex items-center gap-3">
+          <span className="text-2xl">{'\u265E'}</span>
+          <div>
+            <h3 className="text-[var(--text-md)] font-semibold text-[var(--text)]">
+              自由对弈
+            </h3>
+            <p className="text-[var(--text-xs)] text-[var(--text-muted)]">
+              面对面下棋 / 自己摆棋 / 导入棋谱 -- 不计评分
+            </p>
+          </div>
+        </div>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="text-[var(--text-muted)]">
+          <path d="M8 4l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </div>
+
       {/* Character groups by region */}
       {characterGroups.map((group) => (
         <section key={group.region}>

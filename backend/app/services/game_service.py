@@ -14,8 +14,11 @@ from app.schemas.play import (
     CharacterDetail,
     CharacterListItem,
     CharacterStats,
+    CreateFreeGameRequest,
     GameDetail,
     GameListItem,
+    SavePositionRequest,
+    SavePositionResponse,
 )
 
 
@@ -29,8 +32,12 @@ def list_characters(db: Session, user_id: str) -> list[CharacterListItem]:
     Returns:
         List of CharacterListItem with unlock status and per-character stats.
     """
-    # Fetch all characters ordered by sort_order
-    stmt = select(Character).order_by(Character.sort_order)
+    # Fetch all characters ordered by sort_order, excluding system placeholders
+    stmt = (
+        select(Character)
+        .where(Character.id != "none")
+        .order_by(Character.sort_order)
+    )
     characters = db.execute(stmt).scalars().all()
 
     # Fetch user's relations with characters
@@ -357,6 +364,7 @@ def list_games(
     user_id: str,
     page: int = 1,
     page_size: int = 20,
+    game_type: Optional[str] = None,
 ) -> tuple[list[GameListItem], int]:
     """List user's games with pagination.
 
@@ -365,19 +373,25 @@ def list_games(
         user_id: Current user ID.
         page: Page number.
         page_size: Items per page.
+        game_type: Optional filter by game_type (ai_character, free_play, imported).
 
     Returns:
         Tuple of (list of GameListItem, total count).
     """
+    # Build base filter conditions
+    conditions = [Game.user_id == user_id]
+    if game_type:
+        conditions.append(Game.game_type == game_type)
+
     # Count total
-    count_stmt = select(func.count()).select_from(Game).where(Game.user_id == user_id)
+    count_stmt = select(func.count()).select_from(Game).where(*conditions)
     total = db.execute(count_stmt).scalar() or 0
 
     # Fetch page
     offset = (page - 1) * page_size
     stmt = (
         select(Game)
-        .where(Game.user_id == user_id)
+        .where(*conditions)
         .order_by(Game.created_at.desc())
         .offset(offset)
         .limit(page_size)
@@ -409,6 +423,8 @@ def list_games(
                 rating_change=g.rating_change,
                 user_rating_before=g.user_rating_before,
                 user_rating_after=g.user_rating_after,
+                game_type=g.game_type or "ai_character",
+                opponent_name=g.opponent_name,
                 started_at=g.started_at,
                 ended_at=g.ended_at,
             )
@@ -457,7 +473,143 @@ def get_game_detail(db: Session, game_id: str, user_id: str) -> Optional[GameDet
         ai_rating_used=game.ai_rating_used,
         hints_used=game.hints_used,
         review_data=game.review_data,
+        game_type=game.game_type or "ai_character",
+        opponent_name=game.opponent_name,
         started_at=game.started_at,
         ended_at=game.ended_at,
         created_at=game.created_at,
     )
+
+
+def create_free_game(
+    db: Session,
+    user_id: str,
+    request: CreateFreeGameRequest,
+) -> Game:
+    """Create a free play or imported game.
+
+    No adaptive difficulty, no daily quota consumption.
+
+    Args:
+        db: Database session.
+        user_id: Current user ID.
+        request: Free game creation request.
+
+    Returns:
+        Newly created Game.
+    """
+    now = datetime.now(timezone.utc)
+
+    # For imported games with PGN, status is completed immediately
+    if request.game_type == "imported" and request.pgn:
+        status = "completed"
+    else:
+        status = "playing"
+
+    game = Game(
+        id=str(uuid.uuid4()),
+        user_id=user_id,
+        character_id="none",
+        user_color=request.user_color,
+        time_control=request.time_control,
+        game_type=request.game_type,
+        opponent_name=request.opponent_name,
+        status=status,
+        pgn=request.pgn if request.game_type == "imported" else None,
+        final_fen=request.initial_fen,
+        started_at=now,
+        ended_at=now if status == "completed" else None,
+    )
+    db.add(game)
+    db.flush()
+    return game
+
+
+def complete_free_game(
+    db: Session,
+    game_id: str,
+    user_id: str,
+    result: str,
+    pgn: Optional[str] = None,
+    moves_count: Optional[int] = None,
+    final_fen: Optional[str] = None,
+) -> Optional[Game]:
+    """Complete a free play game.
+
+    Unlike complete_game, this does NOT trigger:
+    - ELO/rating updates
+    - Character stats updates
+    - Adaptive difficulty updates
+    - Weakness analysis
+    - Training plan auto-complete
+
+    Args:
+        db: Database session.
+        game_id: Game ID.
+        user_id: Current user ID.
+        result: Game result (win, loss, draw).
+        pgn: PGN notation.
+        moves_count: Total move count.
+        final_fen: Final FEN position.
+
+    Returns:
+        Updated Game or None if not found.
+    """
+    stmt = select(Game).where(Game.id == game_id, Game.user_id == user_id)
+    game = db.execute(stmt).scalar_one_or_none()
+    if game is None:
+        return None
+
+    if game.status != "playing":
+        return game  # Already completed
+
+    game.result = result
+    game.pgn = pgn
+    game.total_moves = moves_count
+    game.final_fen = final_fen
+    game.status = "completed"
+    game.ended_at = datetime.now(timezone.utc)
+
+    db.add(game)
+    db.flush()
+    return game
+
+
+def save_position(
+    db: Session,
+    user_id: str,
+    request: SavePositionRequest,
+) -> SavePositionResponse:
+    """Save a board position as an imported game record.
+
+    Args:
+        db: Database session.
+        user_id: Current user ID.
+        request: Position save request with FEN, optional title and notes.
+
+    Returns:
+        SavePositionResponse with game_id and fen.
+    """
+    now = datetime.now(timezone.utc)
+
+    review_data = {}
+    if request.title:
+        review_data["title"] = request.title
+    if request.notes:
+        review_data["notes"] = request.notes
+
+    game = Game(
+        id=str(uuid.uuid4()),
+        user_id=user_id,
+        character_id="none",
+        game_type="imported",
+        status="completed",
+        final_fen=request.fen,
+        review_data=review_data if review_data else None,
+        started_at=now,
+        ended_at=now,
+    )
+    db.add(game)
+    db.flush()
+
+    return SavePositionResponse(game_id=game.id, fen=request.fen)

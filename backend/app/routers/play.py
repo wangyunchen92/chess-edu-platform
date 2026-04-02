@@ -1,5 +1,7 @@
 """Play module router (B1-1, B1-2, B1-3, B1-6)."""
 
+from typing import Optional
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
@@ -12,11 +14,14 @@ from app.schemas.play import (
     CharacterListItem,
     CheckUnlockResponse,
     CompleteGameRequest,
+    CreateFreeGameRequest,
     CreateGameRequest,
     CreateGameResponse,
     GameDetail,
     GameListItem,
     GameReviewResponse,
+    SavePositionRequest,
+    SavePositionResponse,
     UnlockResponse,
 )
 from app.services import dialogue_service, game_service
@@ -173,17 +178,23 @@ def complete_game(
 
 @router.get("/games", response_model=PaginatedResponse[GameListItem])
 def list_games(
+    game_type: Optional[str] = None,
     current_user: dict = Depends(get_current_user),
     pagination: PaginationParams = Depends(),
     db: Session = Depends(get_db),
 ) -> PaginatedResponse[GameListItem]:
-    """List user's game history with pagination."""
+    """List user's game history with pagination.
+
+    Optional query parameter `game_type` filters by game type
+    (ai_character, free_play, imported).
+    """
     user_id = current_user["user_id"]
     items, total = game_service.list_games(
         db=db,
         user_id=user_id,
         page=pagination.page,
         page_size=pagination.page_size,
+        game_type=game_type,
     )
     return PaginatedResponse.create(
         items=items,
@@ -208,6 +219,67 @@ def get_game_detail(
             detail="Game not found",
         )
     return APIResponse.success(data=detail)
+
+
+# ── Free play endpoints ──────────────────────────────────────────
+
+
+@router.post("/free-games", response_model=APIResponse[CreateGameResponse])
+def create_free_game(
+    request: CreateFreeGameRequest,
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> APIResponse[CreateGameResponse]:
+    """Create a free play or imported game.
+
+    No daily quota consumption, no adaptive difficulty.
+    """
+    user_id = current_user["user_id"]
+    game = game_service.create_free_game(db=db, user_id=user_id, request=request)
+    return APIResponse.success(data=CreateGameResponse(game_id=game.id))
+
+
+@router.put("/free-games/{game_id}/complete", response_model=APIResponse[GameDetail])
+def complete_free_game(
+    game_id: str,
+    request: CompleteGameRequest,
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> APIResponse[GameDetail]:
+    """Complete a free play game.
+
+    No ELO update, no character stats, no adaptive difficulty,
+    no weakness analysis, no training plan auto-complete.
+    """
+    user_id = current_user["user_id"]
+    game = game_service.complete_free_game(
+        db=db,
+        game_id=game_id,
+        user_id=user_id,
+        result=request.result,
+        pgn=request.pgn,
+        moves_count=request.moves_count,
+        final_fen=request.final_fen,
+    )
+    if game is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Game not found",
+        )
+    detail = game_service.get_game_detail(db, game_id, user_id)
+    return APIResponse.success(data=detail)
+
+
+@router.post("/positions", response_model=APIResponse[SavePositionResponse])
+def save_position(
+    request: SavePositionRequest,
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> APIResponse[SavePositionResponse]:
+    """Save a board position (setup/editor mode)."""
+    user_id = current_user["user_id"]
+    result = game_service.save_position(db=db, user_id=user_id, request=request)
+    return APIResponse.success(data=result)
 
 
 # ── Review endpoint (B1-6) ───────────────────────────────────────

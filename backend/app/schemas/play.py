@@ -1,7 +1,7 @@
 """Play module schemas."""
 
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any, Literal, Optional
 
 from pydantic import BaseModel, Field
 
@@ -164,6 +164,32 @@ class CompleteGameRequest(BaseModel):
     final_fen: Optional[str] = Field(None, description="Final board FEN position")
 
 
+class CreateFreeGameRequest(BaseModel):
+    """Create a free play or imported game."""
+
+    game_type: Literal["free_play", "imported"]
+    opponent_name: Optional[str] = Field(None, max_length=100, description="Opponent name")
+    user_color: str = Field(default="white", description="User's color: white or black")
+    time_control: int = Field(default=0, ge=0, le=3600, description="Time control in seconds, 0=unlimited")
+    pgn: Optional[str] = Field(None, description="PGN text for imported games")
+    initial_fen: Optional[str] = Field(None, description="Starting FEN for non-standard positions")
+
+
+class SavePositionRequest(BaseModel):
+    """Save a board position (setup mode)."""
+
+    fen: str = Field(..., description="FEN string of the position")
+    title: Optional[str] = Field(None, max_length=200, description="Position title")
+    notes: Optional[str] = Field(None, description="User notes")
+
+
+class SavePositionResponse(BaseModel):
+    """Response after saving a position."""
+
+    game_id: str
+    fen: str
+
+
 class GameListItem(BaseModel):
     """Game item for list endpoint."""
 
@@ -179,6 +205,8 @@ class GameListItem(BaseModel):
     rating_change: Optional[int] = None
     user_rating_before: Optional[int] = None
     user_rating_after: Optional[int] = None
+    game_type: str = "ai_character"
+    opponent_name: Optional[str] = None
     started_at: datetime
     ended_at: Optional[datetime] = None
 
@@ -208,6 +236,8 @@ class GameDetail(BaseModel):
     ai_rating_used: Optional[int] = None
     hints_used: int = 0
     review_data: Optional[dict] = None
+    game_type: str = "ai_character"
+    opponent_name: Optional[str] = None
     started_at: datetime
     ended_at: Optional[datetime] = None
     created_at: datetime

@@ -383,6 +383,8 @@ export interface GameListItem {
   user_rating_after: number | null
   started_at: string
   ended_at: string | null
+  game_type?: string
+  opponent_name?: string | null
 }
 
 export interface GameDetail {
@@ -411,11 +413,33 @@ export interface GameDetail {
   started_at: string
   ended_at: string | null
   created_at: string
+  game_type?: string
+  opponent_name?: string | null
 }
 
 export interface GameReviewResponse {
   game_id: string
   review_data: Record<string, unknown> | null
+}
+
+export interface CreateFreeGameRequest {
+  game_type: 'free_play' | 'imported'
+  opponent_name?: string
+  user_color?: string
+  time_control?: number
+  pgn?: string
+  initial_fen?: string
+}
+
+export interface SavePositionRequest {
+  fen: string
+  title?: string
+  notes?: string
+}
+
+export interface SavePositionResponse {
+  game_id: string
+  fen: string
 }
 
 // ── Puzzles ─────────────────────────────────────────────────────

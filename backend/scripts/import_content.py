@@ -210,6 +210,31 @@ def import_characters(db: Session) -> int:
                     db.add(dlg)
                     dlg_order += 1
 
+    # Ensure "none" placeholder character exists for free_play / imported games
+    none_exists = db.execute(
+        select(Character).where(Character.id == "none")
+    ).scalar_one_or_none()
+    if none_exists is None:
+        none_char = Character(
+            id="none",
+            slug="none",
+            name="自由对弈",
+            tier="system",
+            avatar_key="none",
+            personality="占位角色，不出现在角色大厅",
+            play_style="none",
+            base_rating=0,
+            rating_range_min=0,
+            rating_range_max=0,
+            engine_depth_min=0,
+            engine_depth_max=0,
+            mistake_rate=0,
+            is_free=False,
+            sort_order=9999,
+        )
+        db.add(none_char)
+        logger.info("Inserted 'none' placeholder character for free play.")
+
     db.flush()
     logger.info("Imported %d characters.", count)
     return count

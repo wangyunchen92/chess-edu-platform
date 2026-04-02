@@ -39,6 +39,10 @@ class Game(Base):
     user_rating_after: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     rating_change: Mapped[Optional[int]] = mapped_column(Integer, default=0, nullable=True)
     ai_rating_used: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    game_type: Mapped[str] = mapped_column(
+        String(20), nullable=False, default="ai_character", server_default="ai_character"
+    )
+    opponent_name: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     difficulty_mode: Mapped[Optional[str]] = mapped_column(String(20), nullable=True, default="normal")
     adaptive_params: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True)
     hints_used: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
