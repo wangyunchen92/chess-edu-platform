@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { playApi } from '@/api/play'
 import Chessboard from '@/components/chess/Chessboard'
-import Button from '@/components/common/Button'
 import Card from '@/components/common/Card'
 import ProgressBar from '@/components/common/ProgressBar'
 import { EngineManager } from '@/engine'
@@ -50,8 +49,17 @@ const MISTAKE_THRESHOLD = 100
 const BLUNDER_THRESHOLD = 200
 const BRILLIANT_THRESHOLD = 50
 
-/** Default analysis depth (纯JS引擎建议8，WASM引擎可用12+) */
+/** Default analysis depth */
 const DEFAULT_ANALYSIS_DEPTH = 8
+
+// ---------------------------------------------------------------------------
+// Dark-card inline style (overrides Card component for dark background)
+// ---------------------------------------------------------------------------
+
+const darkCardStyle: React.CSSProperties = {
+  background: 'rgba(30,41,59,0.6)',
+  border: '1px solid rgba(255,255,255,0.08)',
+}
 
 // ---------------------------------------------------------------------------
 // Helpers: child-friendly evaluation text
@@ -153,7 +161,7 @@ function computeStats(moves: ReviewMove[]): AnalysisStats {
     }
   }
 
-  // Accuracy: weighted metric — good/brilliant = 1, inaccuracy = 0.5, mistake/blunder = 0
+  // Accuracy: weighted metric
   const score = analyzed > 0
     ? ((counts.brilliant + counts.good) * 1 + counts.inaccuracy * 0.5) / analyzed * 100
     : 100
@@ -196,7 +204,6 @@ const ReviewPage: React.FC = () => {
         const reviewPayload = payload?.review_data ?? payload
         if (reviewPayload && reviewPayload.moves && reviewPayload.moves.length > 0) {
           setReview(reviewPayload)
-          // If already has annotations, mark as done
           if (reviewPayload.moves.some((m: ReviewMove) => m.annotation)) {
             setAnalysisDone(true)
           }
@@ -273,10 +280,8 @@ const ReviewPage: React.FC = () => {
       const totalMoves = review.moves.length
       const analyzedMoves: ReviewMove[] = [...review.moves]
 
-      // Use movetime for speed: 快速500ms, 标准1000ms, 精确2000ms
       const timeLimitMs = depthRef.current <= 6 ? 500 : depthRef.current <= 8 ? 1000 : 2000
 
-      // Evaluate the initial position
       let prevEval = 0
       try {
         prevEval = await engine.evaluatePosition(INITIAL_FEN, depthRef.current, timeLimitMs)
@@ -287,20 +292,17 @@ const ReviewPage: React.FC = () => {
 
         const move = analyzedMoves[i]
 
-        // Evaluate position after this move (movetime限时，不会超时)
         let evalAfter = prevEval
         try {
           evalAfter = await engine.evaluatePosition(move.fen, depthRef.current, timeLimitMs)
         } catch { evalAfter = prevEval }
 
-        // Get best move for the position BEFORE this move
         const fenBefore = i === 0 ? INITIAL_FEN : analyzedMoves[i - 1].fen
         let bestMoveUci = ''
         try {
           bestMoveUci = await engine.getBestMove(fenBefore, depthRef.current, timeLimitMs)
         } catch { /* skip */ }
 
-        // Convert best move UCI to SAN
         let bestMoveSan: string | undefined
         try {
           const tempGame = createGame(fenBefore)
@@ -309,14 +311,7 @@ const ReviewPage: React.FC = () => {
           bestMoveSan = bestMoveUci
         }
 
-        // Determine which side moved (from FEN: the side to move in fenBefore)
-        const turn = fenBefore.split(' ')[1] // 'w' or 'b'
-
-        // Eval from the mover's perspective
-        // prevEval = eval of position before move (from white's perspective)
-        // evalAfter = eval of position after move (from white's perspective)
-        // For white: good move means evalAfter > prevEval
-        // For black: good move means evalAfter < prevEval (black wants negative evals)
+        const turn = fenBefore.split(' ')[1]
         const evalDropWhitePerspective = evalAfter - prevEval
         const evalDrop = turn === 'w' ? evalDropWhitePerspective : -evalDropWhitePerspective
 
@@ -387,7 +382,6 @@ const ReviewPage: React.FC = () => {
   // Evaluation bar
   const evalPercent = useMemo(() => {
     if (!currentMove?.eval && currentMove?.eval !== 0) return 50
-    // Convert centipawn to percent (clamp -500 to +500 range)
     const clamped = Math.max(-500, Math.min(500, currentMove.eval))
     return 50 + (clamped / 500) * 50
   }, [currentMove])
@@ -398,7 +392,7 @@ const ReviewPage: React.FC = () => {
     return computeStats(review.moves)
   }, [analysisDone, review])
 
-  // Best move arrow data (from/to squares from UCI)
+  // Best move arrow data
   const bestMoveArrow = useMemo(() => {
     if (!currentMove?.bestMoveUci || !analysisDone) return null
     if (currentMove.annotation === 'good' || currentMove.annotation === 'brilliant') return null
@@ -450,401 +444,441 @@ const ReviewPage: React.FC = () => {
     active?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
   }, [currentStep])
 
+  // ---------------------------------------------------------------------------
+  // Loading state — dark immersive
+  // ---------------------------------------------------------------------------
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="fixed inset-0 flex items-center justify-center" style={{ background: '#0b1120' }}>
         <div className="text-center">
           <div className="text-4xl mb-3 animate-bounce">{'\u265E'}</div>
-          <p className="text-[var(--text-sub)]">加载复盘数据...</p>
+          <p className="text-slate-400">加载复盘数据...</p>
         </div>
       </div>
     )
   }
+
+  // ---------------------------------------------------------------------------
+  // No data state — dark immersive
+  // ---------------------------------------------------------------------------
 
   if (!review) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="fixed inset-0 flex items-center justify-center" style={{ background: '#0b1120' }}>
         <div className="text-center">
-          <p className="text-[var(--text-sub)]">未找到对局数据</p>
-          <Button variant="secondary" className="mt-4" onClick={() => navigate('/play/history')}>
+          <p className="text-slate-400">未找到对局数据</p>
+          <button
+            className="mt-4 px-4 py-2 rounded-lg text-sm text-white/80 hover:text-white transition-colors"
+            style={{ background: 'rgba(30,41,59,0.6)', border: '1px solid rgba(255,255,255,0.1)' }}
+            onClick={() => navigate('/play/history')}
+          >
             返回对局列表
-          </Button>
+          </button>
         </div>
       </div>
     )
   }
 
+  // ---------------------------------------------------------------------------
+  // Main immersive layout
+  // ---------------------------------------------------------------------------
+
   return (
-    <div className="space-y-5">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-[var(--text-2xl)] font-bold text-[var(--text)]">
-            {'\uD83D\uDD0D'} 对局复盘
-          </h1>
-          <p className="text-[var(--text-sm)] text-[var(--text-sub)] mt-1">
-            {review.white} vs {review.black} &middot; {review.result}
-          </p>
+    <div className="fixed inset-0 flex flex-col" style={{ background: '#0b1120' }}>
+      {/* ── Top bar ── */}
+      <header
+        className="flex items-center justify-between px-4 py-3 shrink-0"
+        style={{
+          background: 'rgba(11,17,32,0.9)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          borderBottom: '1px solid rgba(255,255,255,0.06)',
+        }}
+      >
+        {/* Left: back */}
+        <button
+          onClick={() => navigate('/play/history')}
+          className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-white transition-colors"
+        >
+          <span className="text-lg">{'\u2190'}</span>
+          <span className="hidden sm:inline">返回</span>
+        </button>
+
+        {/* Center: game info */}
+        <div className="text-center">
+          <span className="text-sm font-medium text-slate-200">
+            {review.white} vs {review.black}
+          </span>
+          <span className="text-xs text-slate-500 ml-2">{review.result}</span>
         </div>
+
+        {/* Right: analysis controls */}
         <div className="flex items-center gap-2">
-          {/* Analysis button */}
           {!analysisDone && !isAnalyzing && review.moves.length > 0 && (
-            <div className="flex items-center gap-2">
+            <>
               <select
                 value={selectedDepth}
                 onChange={(e) => { const v = Number(e.target.value); setSelectedDepth(v); depthRef.current = v }}
-                className="px-2 py-1 rounded-[var(--radius-sm)] text-[var(--text-xs)] text-[var(--text)] bg-[var(--card-bg)] border border-[var(--border)]"
+                className="px-2 py-1 rounded text-xs text-slate-300 border border-white/10 focus:outline-none"
+                style={{ background: 'rgba(30,41,59,0.8)' }}
               >
-                <option value={6}>快速(深度6)</option>
-                <option value={8}>标准(深度8)</option>
-                <option value={12}>精确(深度12)</option>
+                <option value={6}>快速(D6)</option>
+                <option value={8}>标准(D8)</option>
+                <option value={12}>精确(D12)</option>
               </select>
-              <Button
-                variant="primary"
-                size="sm"
+              <button
                 onClick={startAnalysis}
+                className="px-3 py-1.5 rounded text-xs font-medium text-white bg-blue-600 hover:bg-blue-500 transition-colors"
               >
-                {'\uD83D\uDD2C'} 分析对局
-              </Button>
-            </div>
+                {'\uD83D\uDD2C'} 分析
+              </button>
+            </>
           )}
           {isAnalyzing && (
-            <Button
-              variant="secondary"
-              size="sm"
+            <button
               onClick={cancelAnalysis}
+              className="px-3 py-1.5 rounded text-xs text-slate-300 hover:text-white transition-colors"
+              style={{ background: 'rgba(30,41,59,0.6)', border: '1px solid rgba(255,255,255,0.1)' }}
             >
-              取消分析
-            </Button>
+              取消
+            </button>
           )}
-          <Button variant="secondary" size="sm" onClick={() => navigate('/play/history')}>
-            返回列表
-          </Button>
         </div>
-      </div>
+      </header>
 
-      {/* Analysis progress */}
-      {isAnalyzing && (
-        <Card padding="md">
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-[var(--text-sm)] text-[var(--text)]">
-                {'\u2699\uFE0F'} 正在分析... 第 {analysisProgress}/{totalMoves} 步
-              </span>
-              <span className="text-[var(--text-xs)] text-[var(--text-muted)]">
-                {Math.round((analysisProgress / totalMoves) * 100)}%
-              </span>
-            </div>
-            <ProgressBar
-              value={analysisProgress}
-              max={totalMoves}
-              height={8}
-              gradient
-            />
-          </div>
-        </Card>
-      )}
-
-      {/* Analysis error */}
-      {analysisError && (
-        <Card padding="md">
-          <div className="flex items-center gap-2 text-[var(--danger)]">
-            <span>{'\u26A0\uFE0F'}</span>
-            <span className="text-[var(--text-sm)]">{analysisError}</span>
-            <Button variant="secondary" size="sm" onClick={startAnalysis} className="ml-auto">
-              重试
-            </Button>
-          </div>
-        </Card>
-      )}
-
-      {/* Statistics card (shown after analysis) */}
-      {stats && analysisDone && (
-        <Card padding="md">
-          <div className="flex flex-wrap items-center gap-4">
-            {/* Overall rating */}
-            <div className="flex items-center gap-2">
-              <span className="text-2xl">{getOverallEmoji(stats.accuracy)}</span>
-              <div>
-                <p className="text-[var(--text-sm)] font-semibold text-[var(--text)]">
-                  准确度 {stats.accuracy}%
-                </p>
-                <p className="text-[var(--text-xs)] text-[var(--text-sub)]">
-                  {getOverallComment(stats.accuracy)}
-                </p>
-              </div>
-            </div>
-
-            <div className="h-8 w-px bg-[var(--border)] hidden sm:block" />
-
-            {/* Move counts */}
-            <div className="flex items-center gap-3 flex-wrap">
-              {stats.brilliant > 0 && (
-                <span className="inline-flex items-center gap-1 text-[var(--text-xs)]" style={{ color: ANNOTATION_STYLES.brilliant.color }}>
-                  <span>{'\uD83D\uDC8E'}</span> {stats.brilliant} 精妙
-                </span>
-              )}
-              <span className="inline-flex items-center gap-1 text-[var(--text-xs)]" style={{ color: ANNOTATION_STYLES.good.color }}>
-                <span>{'\u2713'}</span> {stats.good} 好棋
-              </span>
-              {stats.inaccuracy > 0 && (
-                <span className="inline-flex items-center gap-1 text-[var(--text-xs)]" style={{ color: ANNOTATION_STYLES.inaccuracy.color }}>
-                  <span>?!</span> {stats.inaccuracy} 不精确
-                </span>
-              )}
-              {stats.mistake > 0 && (
-                <span className="inline-flex items-center gap-1 text-[var(--text-xs)]" style={{ color: ANNOTATION_STYLES.mistake.color }}>
-                  <span>?</span> {stats.mistake} 失误
-                </span>
-              )}
-              {stats.blunder > 0 && (
-                <span className="inline-flex items-center gap-1 text-[var(--text-xs)]" style={{ color: ANNOTATION_STYLES.blunder.color }}>
-                  <span>??</span> {stats.blunder} 漏着
-                </span>
-              )}
-            </div>
-          </div>
-        </Card>
-      )}
-
-      <div className="flex flex-col lg:flex-row gap-5">
-        {/* Left: Board + Controls */}
-        <div className="flex flex-col items-center gap-3">
-          {/* Evaluation bar */}
-          <div className="w-full relative" style={{ height: 14, borderRadius: 7, overflow: 'hidden' }}>
-            <div className="absolute inset-0 flex" style={{ background: '#1e293b' }}>
-              <div
-                className="h-full transition-[width] duration-300"
-                style={{
-                  width: `${evalPercent}%`,
-                  background: '#f1f5f9',
-                  borderRadius: '7px 0 0 7px',
-                }}
-              />
-              <div
-                className="h-full transition-[width] duration-300"
-                style={{
-                  width: `${100 - evalPercent}%`,
-                  background: '#1e293b',
-                  borderRadius: '0 7px 7px 0',
-                }}
-              />
-            </div>
-            {/* Eval text overlay */}
-            {analysisDone && currentMove?.eval !== undefined && (
-              <div
-                className="absolute inset-0 flex items-center justify-center text-[9px] font-bold"
-                style={{
-                  color: currentMove.eval >= 0 ? '#1e293b' : '#f1f5f9',
-                  mixBlendMode: 'difference',
-                }}
-              >
-                {currentMove.eval >= 0 ? '+' : ''}{(currentMove.eval / 100).toFixed(1)}
+      {/* ── Main body ── */}
+      <div className="flex-1 overflow-auto">
+        <div className="flex flex-col lg:flex-row h-full">
+          {/* ── Left: Board area ── */}
+          <div className="w-full lg:w-[60%] flex flex-col items-center justify-center p-4 gap-3">
+            {/* Analysis progress (inline above board) */}
+            {isAnalyzing && (
+              <div className="w-full max-w-[560px]">
+                <Card padding="sm" style={darkCardStyle}>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-slate-300">
+                        {'\u2699\uFE0F'} 分析中 {analysisProgress}/{totalMoves}
+                      </span>
+                      <span className="text-xs text-slate-500">
+                        {Math.round((analysisProgress / totalMoves) * 100)}%
+                      </span>
+                    </div>
+                    <ProgressBar value={analysisProgress} max={totalMoves} height={6} gradient />
+                  </div>
+                </Card>
               </div>
             )}
-          </div>
 
-          {/* Chessboard with optional best-move arrow overlay */}
-          <div className="relative inline-flex">
-            <Chessboard
-              fen={currentFen}
-              orientation="white"
-              interactive={false}
-              lastMove={lastMoveHighlight}
-            />
-            {/* Best move arrow overlay (SVG) */}
-            {bestMoveArrow && (
-              <BestMoveArrow from={bestMoveArrow.from} to={bestMoveArrow.to} orientation="white" />
-            )}
-          </div>
-
-          {/* Controls */}
-          <div className="flex items-center gap-2">
-            <button
-              onClick={goStart}
-              className="w-9 h-9 rounded-[var(--radius-xs)] flex items-center justify-center bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-sub)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors text-sm"
-              title="起始"
-            >
-              {'\u23EE'}
-            </button>
-            <button
-              onClick={goBack}
-              className="w-9 h-9 rounded-[var(--radius-xs)] flex items-center justify-center bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-sub)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors text-sm"
-              title="上一步"
-            >
-              {'\u25C0'}
-            </button>
-            <button
-              onClick={() => setIsPlaying((p) => !p)}
-              className="w-9 h-9 rounded-[var(--radius-xs)] flex items-center justify-center bg-[var(--accent)] text-white transition-colors text-sm"
-              style={{ borderRadius: 'var(--radius-xs)' }}
-              title={isPlaying ? '暂停' : '播放'}
-            >
-              {isPlaying ? '\u23F8' : '\u25B6'}
-            </button>
-            <button
-              onClick={goForward}
-              className="w-9 h-9 rounded-[var(--radius-xs)] flex items-center justify-center bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-sub)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors text-sm"
-              title="下一步"
-            >
-              {'\u25B6'}
-            </button>
-            <button
-              onClick={goEnd}
-              className="w-9 h-9 rounded-[var(--radius-xs)] flex items-center justify-center bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-sub)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors text-sm"
-              title="终局"
-            >
-              {'\u23ED'}
-            </button>
-            <span className="ml-2 text-[var(--text-xs)] text-[var(--text-muted)] tabular-nums">
-              {currentStep} / {totalMoves}
-            </span>
-          </div>
-        </div>
-
-        {/* Right: Move list + tips panel */}
-        <div className="flex-1 space-y-4 min-w-0">
-          {/* AI Summary */}
-          {review.summary && !analysisDone && (
-            <Card padding="md">
-              <div className="flex items-start gap-3">
-                <span className="text-xl shrink-0">{'\uD83E\uDD16'}</span>
-                <div>
-                  <h3 className="text-[var(--text-sm)] font-semibold text-[var(--text)] mb-1">AI 复盘总结</h3>
-                  <p className="text-[var(--text-sm)] text-[var(--text-sub)] leading-relaxed">
-                    {review.summary}
-                  </p>
-                </div>
-              </div>
-            </Card>
-          )}
-
-          {/* Move list with annotations */}
-          <Card padding="sm">
-            <h3 className="text-[var(--text-sm)] font-semibold text-[var(--text)] px-2 py-2">
-              走法列表
-            </h3>
-            <div ref={moveListRef} className="max-h-80 overflow-y-auto" style={{ scrollbarWidth: 'thin' }}>
-              <div className="grid grid-cols-2 gap-x-1 gap-y-0.5 px-2 pb-2">
-                {review.moves.map((move, i) => {
-                  const moveNum = Math.floor(i / 2) + 1
-                  const isWhite = i % 2 === 0
-                  const isActive = currentStep === i + 1
-                  const ann = move.annotation ? ANNOTATION_STYLES[move.annotation] : null
-                  // Don't show annotation badge for 'good' — keep move list clean
-                  const showAnn = ann && move.annotation !== 'good'
-
-                  return (
+            {/* Analysis error */}
+            {analysisError && (
+              <div className="w-full max-w-[560px]">
+                <Card padding="sm" style={darkCardStyle}>
+                  <div className="flex items-center gap-2 text-red-400">
+                    <span>{'\u26A0\uFE0F'}</span>
+                    <span className="text-xs">{analysisError}</span>
                     <button
-                      key={i}
-                      data-active={isActive}
-                      onClick={() => setCurrentStep(i + 1)}
-                      className="flex items-center gap-1 px-2 py-1 rounded text-left text-[var(--text-sm)] transition-colors"
-                      style={{
-                        background: isActive
-                          ? (showAnn ? `${ann!.color}18` : 'var(--accent-light)')
-                          : 'transparent',
-                        color: isActive
-                          ? (showAnn ? ann!.color : 'var(--accent)')
-                          : 'var(--text)',
-                        fontWeight: isActive ? 600 : 400,
-                        borderLeft: showAnn ? `3px solid ${ann!.color}` : '3px solid transparent',
-                      }}
+                      onClick={startAnalysis}
+                      className="ml-auto px-2 py-1 rounded text-xs text-slate-300 hover:text-white"
+                      style={{ background: 'rgba(255,255,255,0.08)' }}
                     >
-                      {isWhite && (
-                        <span className="text-[var(--text-xs)] text-[var(--text-muted)] w-5 shrink-0">
-                          {moveNum}.
-                        </span>
-                      )}
-                      <span className="font-mono">{move.san}</span>
-                      {showAnn && (
-                        <span
-                          className="text-[10px] font-bold ml-0.5"
-                          style={{ color: ann!.color }}
-                          title={ann!.label}
-                        >
-                          {ann!.emoji}
-                        </span>
-                      )}
+                      重试
                     </button>
-                  )
-                })}
+                  </div>
+                </Card>
               </div>
+            )}
+
+            {/* Evaluation bar */}
+            <div className="w-full max-w-[560px] relative" style={{ height: 14, borderRadius: 7, overflow: 'hidden' }}>
+              <div className="absolute inset-0 flex" style={{ background: '#1e293b' }}>
+                <div
+                  className="h-full transition-[width] duration-300"
+                  style={{
+                    width: `${evalPercent}%`,
+                    background: '#f1f5f9',
+                    borderRadius: '7px 0 0 7px',
+                  }}
+                />
+                <div
+                  className="h-full transition-[width] duration-300"
+                  style={{
+                    width: `${100 - evalPercent}%`,
+                    background: '#1e293b',
+                    borderRadius: '0 7px 7px 0',
+                  }}
+                />
+              </div>
+              {analysisDone && currentMove?.eval !== undefined && (
+                <div
+                  className="absolute inset-0 flex items-center justify-center text-[9px] font-bold"
+                  style={{
+                    color: currentMove.eval >= 0 ? '#1e293b' : '#f1f5f9',
+                    mixBlendMode: 'difference',
+                  }}
+                >
+                  {currentMove.eval >= 0 ? '+' : ''}{(currentMove.eval / 100).toFixed(1)}
+                </div>
+              )}
             </div>
-          </Card>
 
-          {/* Position tips panel */}
-          {analysisDone && currentStep > 0 && currentMove && (
-            <Card padding="md">
-              <div className="space-y-3">
-                {/* Friendly eval description */}
-                {currentMove.eval !== undefined && (
-                  <div className="flex items-start gap-2">
-                    <span className="text-base shrink-0">{'\uD83D\uDCA1'}</span>
-                    <p className="text-[var(--text-sm)] text-[var(--text-sub)] leading-relaxed">
-                      {evalToFriendlyText(currentMove.eval)}
+            {/* Chessboard */}
+            <div className="relative inline-flex w-full max-w-[560px]" style={{ maxWidth: 560 }}>
+              <Chessboard
+                fen={currentFen}
+                orientation="white"
+                interactive={false}
+                lastMove={lastMoveHighlight}
+              />
+              {bestMoveArrow && (
+                <BestMoveArrow from={bestMoveArrow.from} to={bestMoveArrow.to} orientation="white" />
+              )}
+            </div>
+
+            {/* Playback controls */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={goStart}
+                className="w-9 h-9 rounded flex items-center justify-center text-slate-400 hover:text-white border border-white/10 hover:border-white/25 transition-colors text-sm"
+                style={{ background: 'rgba(30,41,59,0.5)' }}
+                title="起始"
+              >
+                {'\u23EE'}
+              </button>
+              <button
+                onClick={goBack}
+                className="w-9 h-9 rounded flex items-center justify-center text-slate-400 hover:text-white border border-white/10 hover:border-white/25 transition-colors text-sm"
+                style={{ background: 'rgba(30,41,59,0.5)' }}
+                title="上一步"
+              >
+                {'\u25C0'}
+              </button>
+              <button
+                onClick={() => setIsPlaying((p) => !p)}
+                className="w-9 h-9 rounded flex items-center justify-center text-white bg-blue-600 hover:bg-blue-500 transition-colors text-sm"
+                title={isPlaying ? '暂停' : '播放'}
+              >
+                {isPlaying ? '\u23F8' : '\u25B6'}
+              </button>
+              <button
+                onClick={goForward}
+                className="w-9 h-9 rounded flex items-center justify-center text-slate-400 hover:text-white border border-white/10 hover:border-white/25 transition-colors text-sm"
+                style={{ background: 'rgba(30,41,59,0.5)' }}
+                title="下一步"
+              >
+                {'\u25B6'}
+              </button>
+              <button
+                onClick={goEnd}
+                className="w-9 h-9 rounded flex items-center justify-center text-slate-400 hover:text-white border border-white/10 hover:border-white/25 transition-colors text-sm"
+                style={{ background: 'rgba(30,41,59,0.5)' }}
+                title="终局"
+              >
+                {'\u23ED'}
+              </button>
+              <span className="ml-2 text-xs text-slate-500 tabular-nums">
+                {currentStep} / {totalMoves}
+              </span>
+            </div>
+          </div>
+
+          {/* ── Right: Info panel ── */}
+          <div
+            className="w-full lg:w-[40%] flex flex-col gap-4 p-4 overflow-y-auto"
+            style={{ borderLeft: '1px solid rgba(255,255,255,0.06)' }}
+          >
+            {/* Statistics card (shown after analysis) */}
+            {stats && analysisDone && (
+              <Card padding="md" style={darkCardStyle}>
+                <div className="flex flex-wrap items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl">{getOverallEmoji(stats.accuracy)}</span>
+                    <div>
+                      <p className="text-sm font-semibold text-slate-200">
+                        准确度 {stats.accuracy}%
+                      </p>
+                      <p className="text-xs text-slate-400">
+                        {getOverallComment(stats.accuracy)}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="h-8 w-px bg-white/10 hidden sm:block" />
+
+                  <div className="flex items-center gap-3 flex-wrap">
+                    {stats.brilliant > 0 && (
+                      <span className="inline-flex items-center gap-1 text-xs" style={{ color: ANNOTATION_STYLES.brilliant.color }}>
+                        <span>{'\uD83D\uDC8E'}</span> {stats.brilliant} 精妙
+                      </span>
+                    )}
+                    <span className="inline-flex items-center gap-1 text-xs" style={{ color: ANNOTATION_STYLES.good.color }}>
+                      <span>{'\u2713'}</span> {stats.good} 好棋
+                    </span>
+                    {stats.inaccuracy > 0 && (
+                      <span className="inline-flex items-center gap-1 text-xs" style={{ color: ANNOTATION_STYLES.inaccuracy.color }}>
+                        <span>?!</span> {stats.inaccuracy} 不精确
+                      </span>
+                    )}
+                    {stats.mistake > 0 && (
+                      <span className="inline-flex items-center gap-1 text-xs" style={{ color: ANNOTATION_STYLES.mistake.color }}>
+                        <span>?</span> {stats.mistake} 失误
+                      </span>
+                    )}
+                    {stats.blunder > 0 && (
+                      <span className="inline-flex items-center gap-1 text-xs" style={{ color: ANNOTATION_STYLES.blunder.color }}>
+                        <span>??</span> {stats.blunder} 漏着
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </Card>
+            )}
+
+            {/* AI Summary */}
+            {review.summary && !analysisDone && (
+              <Card padding="md" style={darkCardStyle}>
+                <div className="flex items-start gap-3">
+                  <span className="text-xl shrink-0">{'\uD83E\uDD16'}</span>
+                  <div>
+                    <h3 className="text-sm font-semibold text-slate-200 mb-1">AI 复盘总结</h3>
+                    <p className="text-sm text-slate-400 leading-relaxed">
+                      {review.summary}
                     </p>
                   </div>
-                )}
+                </div>
+              </Card>
+            )}
 
-                {/* Move annotation + comment */}
-                {currentMove.annotation && currentMove.annotation !== 'good' && (
-                  <div className="flex items-start gap-2">
-                    <span
-                      className="text-xs font-bold px-1.5 py-0.5 rounded shrink-0"
-                      style={{
-                        color: ANNOTATION_STYLES[currentMove.annotation]?.color,
-                        background: `${ANNOTATION_STYLES[currentMove.annotation]?.color}15`,
-                      }}
-                    >
-                      {ANNOTATION_STYLES[currentMove.annotation]?.label}
-                    </span>
-                    <p className="text-[var(--text-sm)] text-[var(--text-sub)] leading-relaxed">
-                      {currentMove.comment}
-                    </p>
-                  </div>
-                )}
+            {/* Move list with annotations */}
+            <Card padding="sm" style={darkCardStyle}>
+              <h3 className="text-sm font-semibold text-slate-200 px-2 py-2">
+                走法列表
+              </h3>
+              <div ref={moveListRef} className="max-h-80 overflow-y-auto" style={{ scrollbarWidth: 'thin' }}>
+                <div className="grid grid-cols-2 gap-x-1 gap-y-0.5 px-2 pb-2">
+                  {review.moves.map((move, i) => {
+                    const moveNum = Math.floor(i / 2) + 1
+                    const isWhite = i % 2 === 0
+                    const isActive = currentStep === i + 1
+                    const ann = move.annotation ? ANNOTATION_STYLES[move.annotation] : null
+                    const showAnn = ann && move.annotation !== 'good'
 
-                {/* Best move recommendation */}
-                {currentMove.bestMove &&
-                  currentMove.annotation !== 'good' &&
-                  currentMove.annotation !== 'brilliant' && (
-                  <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-emerald-50">
-                    <span className="text-sm">{'\u2728'}</span>
-                    <span className="text-[var(--text-sm)] text-emerald-700">
-                      最佳走法: <strong className="font-mono">{currentMove.bestMove}</strong>
-                    </span>
-                  </div>
-                )}
-              </div>
-            </Card>
-          )}
-
-          {/* Fallback for initial position or no analysis */}
-          {analysisDone && currentStep === 0 && (
-            <Card padding="md">
-              <div className="flex items-start gap-2">
-                <span className="text-base shrink-0">{'\uD83D\uDCA1'}</span>
-                <p className="text-[var(--text-sm)] text-[var(--text-sub)]">
-                  点击走法列表中的任意一步，查看局面分析。用方向键也可以切换步数哦!
-                </p>
-              </div>
-            </Card>
-          )}
-
-          {/* Before analysis hint */}
-          {!analysisDone && !isAnalyzing && review.moves.length > 0 && (
-            <Card padding="md">
-              <div className="flex items-start gap-2">
-                <span className="text-base shrink-0">{'\uD83D\uDD2C'}</span>
-                <div>
-                  <p className="text-[var(--text-sm)] text-[var(--text-sub)]">
-                    点击上方的"分析对局"按钮，AI会帮你分析每一步棋的好坏，找出可以进步的地方!
-                  </p>
+                    return (
+                      <button
+                        key={i}
+                        data-active={isActive}
+                        onClick={() => setCurrentStep(i + 1)}
+                        className="flex items-center gap-1 px-2 py-1 rounded text-left text-sm transition-colors"
+                        style={{
+                          background: isActive
+                            ? (showAnn ? `${ann!.color}18` : 'rgba(59,130,246,0.15)')
+                            : 'transparent',
+                          color: isActive
+                            ? (showAnn ? ann!.color : '#93c5fd')
+                            : '#cbd5e1',
+                          fontWeight: isActive ? 600 : 400,
+                          borderLeft: showAnn ? `3px solid ${ann!.color}` : '3px solid transparent',
+                        }}
+                      >
+                        {isWhite && (
+                          <span className="text-xs text-slate-500 w-5 shrink-0">
+                            {moveNum}.
+                          </span>
+                        )}
+                        <span className="font-mono">{move.san}</span>
+                        {showAnn && (
+                          <span
+                            className="text-[10px] font-bold ml-0.5"
+                            style={{ color: ann!.color }}
+                            title={ann!.label}
+                          >
+                            {ann!.emoji}
+                          </span>
+                        )}
+                      </button>
+                    )
+                  })}
                 </div>
               </div>
             </Card>
-          )}
+
+            {/* Position tips panel */}
+            {analysisDone && currentStep > 0 && currentMove && (
+              <Card padding="md" style={darkCardStyle}>
+                <div className="space-y-3">
+                  {/* Friendly eval description */}
+                  {currentMove.eval !== undefined && (
+                    <div className="flex items-start gap-2">
+                      <span className="text-base shrink-0">{'\uD83D\uDCA1'}</span>
+                      <p className="text-sm text-slate-400 leading-relaxed">
+                        {evalToFriendlyText(currentMove.eval)}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Move annotation + comment */}
+                  {currentMove.annotation && currentMove.annotation !== 'good' && (
+                    <div className="flex items-start gap-2">
+                      <span
+                        className="text-xs font-bold px-1.5 py-0.5 rounded shrink-0"
+                        style={{
+                          color: ANNOTATION_STYLES[currentMove.annotation]?.color,
+                          background: `${ANNOTATION_STYLES[currentMove.annotation]?.color}15`,
+                        }}
+                      >
+                        {ANNOTATION_STYLES[currentMove.annotation]?.label}
+                      </span>
+                      <p className="text-sm text-slate-400 leading-relaxed">
+                        {currentMove.comment}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Best move recommendation */}
+                  {currentMove.bestMove &&
+                    currentMove.annotation !== 'good' &&
+                    currentMove.annotation !== 'brilliant' && (
+                    <div
+                      className="flex items-center gap-2 px-3 py-2 rounded-lg"
+                      style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)' }}
+                    >
+                      <span className="text-sm">{'\u2728'}</span>
+                      <span className="text-sm text-emerald-400">
+                        最佳走法: <strong className="font-mono">{currentMove.bestMove}</strong>
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </Card>
+            )}
+
+            {/* Fallback for initial position or no analysis */}
+            {analysisDone && currentStep === 0 && (
+              <Card padding="md" style={darkCardStyle}>
+                <div className="flex items-start gap-2">
+                  <span className="text-base shrink-0">{'\uD83D\uDCA1'}</span>
+                  <p className="text-sm text-slate-400">
+                    点击走法列表中的任意一步，查看局面分析。用方向键也可以切换步数哦!
+                  </p>
+                </div>
+              </Card>
+            )}
+
+            {/* Before analysis hint */}
+            {!analysisDone && !isAnalyzing && review.moves.length > 0 && (
+              <Card padding="md" style={darkCardStyle}>
+                <div className="flex items-start gap-2">
+                  <span className="text-base shrink-0">{'\uD83D\uDD2C'}</span>
+                  <div>
+                    <p className="text-sm text-slate-400">
+                      点击右上角的"分析"按钮，AI会帮你分析每一步棋的好坏，找出可以进步的地方!
+                    </p>
+                  </div>
+                </div>
+              </Card>
+            )}
+          </div>
         </div>
       </div>
     </div>
@@ -863,12 +897,7 @@ interface BestMoveArrowProps {
 
 const FILES_ARR = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
 
-/**
- * Renders a semi-transparent green arrow on top of the chessboard
- * to indicate the engine's recommended best move.
- */
 const BestMoveArrow: React.FC<BestMoveArrowProps> = ({ from, to, orientation }) => {
-  // Convert square notation to grid coordinates
   const squareToCoords = (sq: string): { x: number; y: number } => {
     const file = FILES_ARR.indexOf(sq[0])
     const rank = parseInt(sq[1], 10) - 1
@@ -882,9 +911,6 @@ const BestMoveArrow: React.FC<BestMoveArrowProps> = ({ from, to, orientation }) 
   const fromCoords = squareToCoords(from)
   const toCoords = squareToCoords(to)
 
-  // Calculate arrow positions as percentages
-  // Each square is 1/8 of the board; center of square = (idx + 0.5) / 8
-  // The board has a 24px left margin for rank labels — we offset accordingly
   const pct = (idx: number) => ((idx + 0.5) / 8) * 100
 
   const x1 = pct(fromCoords.x)
@@ -896,7 +922,6 @@ const BestMoveArrow: React.FC<BestMoveArrowProps> = ({ from, to, orientation }) 
     <svg
       className="absolute pointer-events-none"
       style={{
-        // The chessboard grid starts after the 24px rank label column
         left: 24,
         top: 0,
         width: 'calc(100% - 24px)',

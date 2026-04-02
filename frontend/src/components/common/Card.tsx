@@ -6,6 +6,7 @@ interface CardProps {
   hoverable?: boolean
   padding?: 'none' | 'sm' | 'md' | 'lg'
   onClick?: () => void
+  style?: React.CSSProperties
 }
 
 const paddingMap = {
@@ -21,6 +22,7 @@ const Card: React.FC<CardProps> = ({
   hoverable = true,
   padding = 'md',
   onClick,
+  style,
 }) => {
   return (
     <div
@@ -33,6 +35,7 @@ const Card: React.FC<CardProps> = ({
         className,
       ].join(' ')}
       onClick={onClick}
+      style={style}
     >
       {children}
     </div>

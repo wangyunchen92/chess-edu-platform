@@ -121,6 +121,11 @@ function App() {
           <Route path="/learn/lesson/:id" element={<SuspenseWrapper><LessonPage /></SuspenseWrapper>} />
         </Route>
 
+        {/* Review page — full-screen immersive, no app layout */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/play/review/:id" element={<SuspenseWrapper><ReviewPage /></SuspenseWrapper>} />
+        </Route>
+
         {/* Protected routes with layout */}
         <Route element={<ProtectedRoute />}>
           <Route element={<AppLayout />}>
@@ -129,7 +134,7 @@ function App() {
             {/* Play */}
             <Route path="/play" element={<SuspenseWrapper><CharacterHallPage /></SuspenseWrapper>} />
             <Route path="/play/game/:id" element={<SuspenseWrapper><GamePage /></SuspenseWrapper>} />
-            <Route path="/play/review/:id" element={<SuspenseWrapper><ReviewPage /></SuspenseWrapper>} />
+
             <Route path="/play/history" element={<SuspenseWrapper><GameHistoryPage /></SuspenseWrapper>} />
 
             {/* Puzzles */}
