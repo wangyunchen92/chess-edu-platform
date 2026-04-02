@@ -85,7 +85,7 @@ const GameHistoryPage: React.FC = () => {
       {/* Game list */}
       <div className="space-y-3">
         {games.map((game) => {
-          const result = RESULT_MAP[game.result]
+          const result = RESULT_MAP[game.result] ?? { label: '进行中', color: 'neutral' as const, emoji: '\u265E' }
           return (
             <Card
               key={game.id}
