@@ -13,8 +13,8 @@
     },
     {
       "type": "board_demo",
-      "fen": "r1bqk2r/ppppnppp/8/4p3/1b2P3/2N2N2/PPPP1PPP/R1BQKB1R w KQkq - 0 4",
-      "description": "黑象b4牵制了白马c3！白马不能移动，因为移开后白王e1就被象将军了。这是'绝对牵制'。",
+      "fen": "r1bqk2r/ppppnppp/8/4p3/1b2P3/2N2N2/PPP2PPP/R1BQKB1R w KQkq - 0 4",
+      "description": "黑象b4牵制了白马c3！白马不能移动，因为移开后沿b4-c3-d2-e1这条对角线，白王e1就被象将军了。这是'绝对牵制'——被牵制的棋子完全不能合法移动！",
       "highlights": ["b4", "c3", "e1"]
     }
   ],

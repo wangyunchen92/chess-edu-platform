@@ -13,9 +13,9 @@
     },
     {
       "type": "board_demo",
-      "fen": "r1bqk2r/pppp1ppp/2n5/2b1N3/2B1P3/8/PPPP1PPP/RNBQK2R w KQkq - 0 4",
-      "description": "白马e5如果跳到f7（Nxf7），叉王和车的同时，身后c4的象也能发挥作用。闪击的关键是移动的棋子和被露出的棋子同时产生威胁。",
-      "highlights": ["e5", "c4"]
+      "fen": "r2qk2r/ppp2ppp/2n5/4B3/3P4/8/PPP2PPP/R3R1K1 w kq - 0 1",
+      "description": "白象e5挡在e列上。白方走Bc7！象移到c7攻击黑后d8，同时让开了e列——身后的白车e1直接将军黑王e8！黑方必须应将，白象就能从容吃掉黑后。这就是闪将的威力！",
+      "highlights": ["e5", "c7", "e1", "e8", "d8"]
     }
   ],
   "exercises": [

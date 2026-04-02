@@ -13,9 +13,9 @@
     },
     {
       "type": "board_demo",
-      "fen": "r3k2r/ppp2ppp/8/3Nb3/8/8/PPP2PPP/R3R1K1 w - - 0 10",
-      "description": "Nf6+ 马叉王和车！马跳到f6将军黑王，同时攻击e8的车。黑王必须逃，白马就能吃掉车。",
-      "highlights": ["d5", "f6"]
+      "fen": "r3kb1r/ppp2ppp/8/3Np3/8/8/PPP2PPP/R3R1K1 w kq - 0 10",
+      "description": "Nc7+ 马叉王和车！马从d5跳到c7将军黑王e8，同时攻击a8的黑车。黑王必须逃走，白马就能吃掉a8的车，白赚大了！",
+      "highlights": ["d5", "c7", "a8", "e8"]
     }
   ],
   "exercises": [
