@@ -236,18 +236,18 @@ const ExercisesOverview: React.FC = () => {
               <div className="space-y-2 mt-1">
                 {lessonsInLevel.map((lesson) => (
                   <Card key={lesson.lesson_id} padding="sm" hoverable={false}>
-                    <div className="flex items-center gap-3">
-                      {/* Lesson title */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span className="text-[var(--text-sm)] font-medium text-[var(--text)] truncate">
-                            {lesson.lesson_title}
-                          </span>
-                          {statusBadge(lesson.status)}
-                        </div>
+                    <div className="space-y-2">
+                      {/* Top row: title + status */}
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-[var(--text-sm)] font-medium text-[var(--text)] truncate">
+                          {lesson.lesson_title}
+                        </span>
+                        {statusBadge(lesson.status)}
+                      </div>
 
-                        {/* Progress bar */}
-                        <div className="mt-2">
+                      {/* Bottom row: progress bar + button aligned */}
+                      <div className="flex items-center gap-3">
+                        <div className="flex-1 min-w-0">
                           <ProgressBar
                             value={lesson.completed_exercises}
                             max={lesson.total_exercises || 1}
@@ -262,27 +262,27 @@ const ExercisesOverview: React.FC = () => {
                             </span>
                           </div>
                         </div>
-                      </div>
 
-                      {/* Action button */}
-                      <div className="shrink-0 flex items-center">
-                        {lesson.lesson_learned ? (
-                          <Button
-                            variant="primary"
-                            size="sm"
-                            onClick={() => navigate(`/learn/exercise/${lesson.lesson_id}`)}
-                          >
-                            做练习
-                          </Button>
-                        ) : (
-                          <Button
-                            variant="secondary"
-                            size="sm"
-                            onClick={() => navigate(`/learn/lesson/${lesson.lesson_id}`)}
-                          >
-                            先去学习
-                          </Button>
-                        )}
+                        {/* Action button - aligned with progress bar */}
+                        <div className="shrink-0">
+                          {lesson.lesson_learned ? (
+                            <Button
+                              variant="primary"
+                              size="sm"
+                              onClick={() => navigate(`/learn/exercise/${lesson.lesson_id}`)}
+                            >
+                              做练习
+                            </Button>
+                          ) : (
+                            <Button
+                              variant="secondary"
+                              size="sm"
+                              onClick={() => navigate(`/learn/lesson/${lesson.lesson_id}`)}
+                            >
+                              先去学习
+                            </Button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </Card>

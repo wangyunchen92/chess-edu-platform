@@ -77,29 +77,17 @@ const CHARACTER_EMOJI: Record<string, string> = {
 }
 
 // Play style labels
-const PLAY_STYLE_LABELS: Record<string, string> = {
-  simple: '简单稳健',
-  aggressive: '冲动进攻',
-  defensive: '沉稳防守',
-  balanced: '均衡踏实',
-  tricky: '陷阱诡计',
-  counter_attack: '防守反击',
-  positional: '正统进攻',
-  tactical: '阴险狡诈',
-  strategic: '大局观深',
-}
-
-// Play style badge colors
-const PLAY_STYLE_COLORS: Record<string, 'primary' | 'success' | 'warning' | 'danger' | 'info' | 'purple' | 'neutral'> = {
-  simple: 'success',
-  aggressive: 'danger',
-  defensive: 'info',
-  balanced: 'primary',
-  tricky: 'warning',
-  counter_attack: 'info',
-  positional: 'purple',
-  tactical: 'warning',
-  strategic: 'purple',
+// Per-character style labels and colors (keyed by slug)
+const CHARACTER_STYLE: Record<string, { label: string; color: 'primary' | 'success' | 'warning' | 'danger' | 'info' | 'purple' | 'neutral' }> = {
+  douding:      { label: '随机可爱',   color: 'success' },
+  mianhuatang:  { label: '冲动进攻',   color: 'danger' },
+  guigui:       { label: '沉稳防守',   color: 'info' },
+  dongdong:     { label: '均衡踏实',   color: 'primary' },
+  lihuahua:     { label: '陷阱诡计',   color: 'warning' },
+  tiedundun:    { label: '防守反击',   color: 'info' },
+  yinzong:      { label: '正统进攻',   color: 'danger' },
+  gulu:         { label: '阴险狡诈',   color: 'purple' },
+  yunduoshifu:  { label: '全能大师',   color: 'purple' },
 }
 
 // ---------------------------------------------------------------------------
@@ -188,8 +176,8 @@ const CharacterHallPage: React.FC = () => {
               ? `${c.rating_range_min}-${c.rating_range_max}`
               : undefined,
             playStyle: c.play_style ?? '',
-            playStyleLabel: PLAY_STYLE_LABELS[c.play_style] ?? c.play_style ?? '',
-            playStyleColor: PLAY_STYLE_COLORS[c.play_style] ?? 'neutral',
+            playStyleLabel: CHARACTER_STYLE[c.slug ?? c.id]?.label ?? c.play_style?.split('，')[0] ?? '',
+            playStyleColor: CHARACTER_STYLE[c.slug ?? c.id]?.color ?? 'neutral',
             styleWeights: c.styleWeights ?? { attack: 0.25, defense: 0.25, tactics: 0.25, positional: 0.25 },
             wins: c.stats?.games_won ?? 0,
             losses: c.stats?.games_lost ?? 0,
