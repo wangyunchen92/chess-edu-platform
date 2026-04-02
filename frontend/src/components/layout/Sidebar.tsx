@@ -49,6 +49,27 @@ const navItems: NavItem[] = [
     ),
   },
   {
+    path: '/adventure',
+    label: '冒险',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <path d="M10 2l2.5 5.5L18 8.5l-4 4 1 5.5L10 15l-5 3 1-5.5-4-4 5.5-1L10 2z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+  },
+  {
+    path: '/train',
+    label: '训练',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <path d="M4 10a6 6 0 1112 0" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+        <path d="M10 10V6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        <circle cx="10" cy="10" r="1.5" fill="currentColor" />
+        <path d="M6 16h8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      </svg>
+    ),
+  },
+  {
     path: '/diagnosis',
     label: '弱点诊断',
     icon: (
