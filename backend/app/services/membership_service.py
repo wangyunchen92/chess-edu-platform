@@ -59,8 +59,6 @@ def _get_user_tier(db: Session, user_id: str) -> str:
     # Admin always has full access
     if role == "admin":
         return "premium"
-
-    tier, expires_at = row
     if tier != "free" and expires_at is not None:
         if expires_at.replace(tzinfo=timezone.utc) < datetime.now(timezone.utc):
             return "free"
