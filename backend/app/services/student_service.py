@@ -32,16 +32,16 @@ def join_teacher(
     ).scalar_one_or_none()
 
     if invite is None:
-        raise ValueError("Invalid invite code")
+        raise ValueError("邀请码无效")
 
     # 2. Check expiry
     now = datetime.now(timezone.utc)
     if invite.expires_at.replace(tzinfo=timezone.utc) <= now:
-        raise ValueError("Invite code has expired")
+        raise ValueError("邀请码已过期")
 
     # 3. Check usage
     if invite.used_count >= invite.max_uses:
-        raise ValueError("Invite code has reached max uses")
+        raise ValueError("邀请码已达到使用上限")
 
     teacher_id = invite.teacher_id
 
@@ -55,7 +55,7 @@ def join_teacher(
 
     if existing is not None:
         if existing.status == "active":
-            raise ValueError("Already joined this teacher")
+            raise ValueError("你已经加入了这位老师")
         # Re-activate a previously removed binding
         existing.status = "active"
         existing.removed_at = None

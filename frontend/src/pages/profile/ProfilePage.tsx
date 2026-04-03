@@ -582,8 +582,8 @@ const StudentJoinSection: React.FC = () => {
                   {'\uD83D\uDC68\u200D\uD83C\uDFEB'}
                 </div>
                 <div>
-                  <p className="text-[var(--text-sm)] font-semibold text-[var(--text)]">{t.nickname || t.username}</p>
-                  <p className="text-[var(--text-xs)] text-[var(--text-muted)]">加入于 {new Date(t.created_at).toLocaleDateString('zh-CN')}</p>
+                  <p className="text-[var(--text-sm)] font-semibold text-[var(--text)]">{t.teacher_nickname || '老师'}</p>
+                  <p className="text-[var(--text-xs)] text-[var(--text-muted)]">加入于 {t.bindtime ? new Date(t.bindtime).toLocaleDateString('zh-CN') : '未知'}</p>
                 </div>
               </div>
             </div>
