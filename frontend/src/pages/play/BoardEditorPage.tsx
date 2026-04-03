@@ -469,7 +469,18 @@ const BoardEditorPage: React.FC = () => {
                   />
                   <button
                     onClick={() => {
-                      navigator.clipboard.writeText(currentFen).catch(() => {})
+                      if (navigator.clipboard && window.isSecureContext) {
+                        navigator.clipboard.writeText(currentFen).catch(() => {})
+                      } else {
+                        const ta = document.createElement('textarea')
+                        ta.value = currentFen
+                        ta.style.position = 'fixed'
+                        ta.style.opacity = '0'
+                        document.body.appendChild(ta)
+                        ta.select()
+                        document.execCommand('copy')
+                        document.body.removeChild(ta)
+                      }
                     }}
                     className="px-2.5 py-1.5 rounded text-xs text-slate-400 hover:text-white transition-colors"
                     style={darkCardStyle}
