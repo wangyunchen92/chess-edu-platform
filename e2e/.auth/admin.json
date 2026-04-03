@@ -6,15 +6,15 @@
       "localStorage": [
         {
           "name": "token",
-          "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjYjNiZDcyMy1lOTE4LTQxY2YtYmQ0Yy0zZWU4ZjQwZDJlNDAiLCJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiZXhwIjoxNzc1MTkyMTcwLCJ0eXBlIjoiYWNjZXNzIn0.MjH7AsXsNUtg81_JbebyNzhcJ59GH1jyG5b7GSm-WRM"
+          "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjYjNiZDcyMy1lOTE4LTQxY2YtYmQ0Yy0zZWU4ZjQwZDJlNDAiLCJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiZXhwIjoxNzc1MTk1MjI0LCJ0eXBlIjoiYWNjZXNzIn0.KAcMXkzM07pw6MNOCpInApbbp-VOAIzGUY4of967dWw"
         },
         {
           "name": "refresh_token",
-          "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjYjNiZDcyMy1lOTE4LTQxY2YtYmQ0Yy0zZWU4ZjQwZDJlNDAiLCJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiZXhwIjoxNzc3Nzc2OTcwLCJ0eXBlIjoicmVmcmVzaCJ9.E9R6gkH3JnhjO7tZy1LrNa-6JwNUsv5OJZNBocAFQZM"
+          "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjYjNiZDcyMy1lOTE4LTQxY2YtYmQ0Yy0zZWU4ZjQwZDJlNDAiLCJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiZXhwIjoxNzc3NzgwMDI0LCJ0eXBlIjoicmVmcmVzaCJ9.dlpCkV5l-NVGSIQ3pAFNj61g9zRnH3-tbZ7LooNE0TA"
         },
         {
           "name": "user",
-          "value": "{\"id\":\"cb3bd723-e918-41cf-bd4c-3ee8f40d2e40\",\"username\":\"admin\",\"nickname\":\"管理员\",\"avatar_url\":null,\"role\":\"admin\",\"status\":\"active\",\"membership_tier\":\"free\",\"membership_expires_at\":null,\"created_at\":\"2026-04-03T01:10:50\",\"last_login_at\":\"2026-04-03T02:56:10.929063Z\",\"login_count\":71,\"rating\":300,\"rank_title\":\"beginner_1\"}"
+          "value": "{\"id\":\"cb3bd723-e918-41cf-bd4c-3ee8f40d2e40\",\"username\":\"admin\",\"nickname\":\"管理员\",\"avatar_url\":null,\"role\":\"admin\",\"status\":\"active\",\"membership_tier\":\"free\",\"membership_expires_at\":null,\"created_at\":\"2026-04-03T01:10:50\",\"last_login_at\":\"2026-04-03T03:47:04.678679Z\",\"login_count\":76,\"rating\":300,\"rank_title\":\"beginner_1\"}"
         }
       ]
     }
