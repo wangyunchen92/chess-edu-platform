@@ -1,13 +1,17 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
 import { userApi } from '@/api/user'
 import { gamificationApi } from '@/api/gamification'
+import * as teacherApi from '@/api/teacher'
+import * as studentApi from '@/api/student'
 import Card from '@/components/common/Card'
 import Button from '@/components/common/Button'
+import Modal from '@/components/common/Modal'
 import RatingDisplay from '@/components/gamification/RatingDisplay'
 import StreakBadge from '@/components/gamification/StreakBadge'
 import ProgressBar from '@/components/common/ProgressBar'
+import { useUIStore } from '@/stores/uiStore'
 
 interface ProfileData {
   rating: number
@@ -389,6 +393,12 @@ const ProfilePage: React.FC = () => {
         )}
       </Card>
 
+      {/* Teacher: Invite Code Section */}
+      {user?.role === 'teacher' && <TeacherInviteSection />}
+
+      {/* Student: Join Teacher Section */}
+      {user?.role === 'student' && <StudentJoinSection />}
+
       {/* Logout */}
       <button
         onClick={() => {
@@ -400,6 +410,210 @@ const ProfilePage: React.FC = () => {
         退出登录
       </button>
     </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Teacher: Generate & manage invite codes
+// ---------------------------------------------------------------------------
+
+const TeacherInviteSection: React.FC = () => {
+  const addToast = useUIStore((s) => s.addToast)
+  const [codes, setCodes] = useState<any[]>([])
+  const [loading, setLoading] = useState(false)
+  const [generating, setGenerating] = useState(false)
+  const [copiedCode, setCopiedCode] = useState<string | null>(null)
+
+  const loadCodes = useCallback(async () => {
+    setLoading(true)
+    try {
+      const res = await teacherApi.getInviteCodes()
+      const data = (res.data as any)?.data ?? res.data
+      setCodes(Array.isArray(data) ? data : [])
+    } catch { setCodes([]) }
+    finally { setLoading(false) }
+  }, [])
+
+  useEffect(() => { loadCodes() }, [loadCodes])
+
+  const handleGenerate = async () => {
+    setGenerating(true)
+    try {
+      await teacherApi.createInviteCode()
+      addToast('success', '邀请码已生成')
+      loadCodes()
+    } catch (err) {
+      addToast('error', err instanceof Error ? err.message : '生成失败')
+    } finally { setGenerating(false) }
+  }
+
+  const handleCopy = async (code: string) => {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(code)
+      } else {
+        const ta = document.createElement('textarea')
+        ta.value = code
+        ta.style.position = 'fixed'
+        ta.style.opacity = '0'
+        document.body.appendChild(ta)
+        ta.select()
+        document.execCommand('copy')
+        document.body.removeChild(ta)
+      }
+      setCopiedCode(code)
+      addToast('success', '已复制到剪贴板')
+      setTimeout(() => setCopiedCode(null), 2000)
+    } catch { addToast('error', '复制失败') }
+  }
+
+  const activeCodes = codes.filter((c) => c.status === 'active' && new Date(c.expires_at) > new Date())
+
+  return (
+    <Card padding="lg">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <span className="text-xl">{'\uD83D\uDCE8'}</span>
+          <h3 className="text-[var(--text-md)] font-semibold text-[var(--text)]">邀请学生</h3>
+        </div>
+        <Button variant="primary" size="sm" onClick={handleGenerate} loading={generating}>
+          生成邀请码
+        </Button>
+      </div>
+
+      {loading ? (
+        <p className="text-[var(--text-xs)] text-[var(--text-muted)] text-center py-2">加载中...</p>
+      ) : activeCodes.length === 0 ? (
+        <p className="text-[var(--text-sm)] text-[var(--text-muted)] text-center py-4">
+          点击"生成邀请码"，把码分享给学生即可绑定
+        </p>
+      ) : (
+        <div className="space-y-3">
+          {activeCodes.map((c) => (
+            <div key={c.id || c.code} className="flex items-center justify-between px-4 py-3 rounded-[var(--radius-sm)] bg-[var(--bg)]">
+              <div>
+                <span className="font-mono text-2xl font-bold tracking-[0.15em] text-[var(--text)] select-all">
+                  {c.code}
+                </span>
+                <p className="text-[var(--text-xs)] text-[var(--text-muted)] mt-1">
+                  {new Date(c.expires_at).toLocaleDateString('zh-CN')} 过期 · 已使用 {c.used_count}/{c.max_uses}
+                </p>
+              </div>
+              <Button variant="secondary" size="sm" onClick={() => handleCopy(c.code)}>
+                {copiedCode === c.code ? '已复制' : '复制'}
+              </Button>
+            </div>
+          ))}
+        </div>
+      )}
+    </Card>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Student: Join teacher with invite code
+// ---------------------------------------------------------------------------
+
+const StudentJoinSection: React.FC = () => {
+  const addToast = useUIStore((s) => s.addToast)
+  const [teachers, setTeachers] = useState<any[]>([])
+  const [loading, setLoading] = useState(false)
+  const [showModal, setShowModal] = useState(false)
+  const [inviteCode, setInviteCode] = useState('')
+  const [joining, setJoining] = useState(false)
+  const [joinError, setJoinError] = useState('')
+
+  const loadTeachers = useCallback(async () => {
+    setLoading(true)
+    try {
+      const res = await studentApi.getMyTeachers()
+      const data = (res.data as any)?.data ?? res.data
+      setTeachers(Array.isArray(data) ? data : [])
+    } catch { setTeachers([]) }
+    finally { setLoading(false) }
+  }, [])
+
+  useEffect(() => { loadTeachers() }, [loadTeachers])
+
+  const handleJoin = async () => {
+    const code = inviteCode.trim().toUpperCase()
+    if (code.length !== 6) {
+      setJoinError('请输入6位邀请码')
+      return
+    }
+    setJoining(true)
+    setJoinError('')
+    try {
+      const res = await studentApi.joinTeacher({ invite_code: code })
+      const data = (res.data as any)?.data ?? res.data
+      addToast('success', `已加入 ${data?.teacher_nickname ?? '老师'}`)
+      setShowModal(false)
+      setInviteCode('')
+      loadTeachers()
+    } catch (err) {
+      setJoinError(err instanceof Error ? err.message : '加入失败')
+    } finally { setJoining(false) }
+  }
+
+  return (
+    <Card padding="lg">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <span className="text-xl">{'\uD83D\uDC68\u200D\uD83C\uDFEB'}</span>
+          <h3 className="text-[var(--text-md)] font-semibold text-[var(--text)]">我的老师</h3>
+        </div>
+        <Button variant="primary" size="sm" onClick={() => { setShowModal(true); setInviteCode(''); setJoinError('') }}>
+          加入老师
+        </Button>
+      </div>
+
+      {loading ? (
+        <p className="text-[var(--text-xs)] text-[var(--text-muted)] text-center py-2">加载中...</p>
+      ) : teachers.length === 0 ? (
+        <p className="text-[var(--text-sm)] text-[var(--text-muted)] text-center py-4">
+          还没有加入老师，向老师要一个邀请码吧
+        </p>
+      ) : (
+        <div className="space-y-2">
+          {teachers.map((t) => (
+            <div key={t.teacher_id} className="flex items-center justify-between px-4 py-3 rounded-[var(--radius-sm)] bg-[var(--bg)]">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-[var(--accent-light)] flex items-center justify-center text-lg">
+                  {'\uD83D\uDC68\u200D\uD83C\uDFEB'}
+                </div>
+                <div>
+                  <p className="text-[var(--text-sm)] font-semibold text-[var(--text)]">{t.nickname || t.username}</p>
+                  <p className="text-[var(--text-xs)] text-[var(--text-muted)]">加入于 {new Date(t.created_at).toLocaleDateString('zh-CN')}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Join modal */}
+      <Modal open={showModal} onClose={() => setShowModal(false)} title="加入老师">
+        <div className="space-y-4">
+          <p className="text-[var(--text-sm)] text-[var(--text-sub)]">
+            输入老师给你的6位邀请码
+          </p>
+          <input
+            type="text"
+            maxLength={6}
+            value={inviteCode}
+            onChange={(e) => setInviteCode(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''))}
+            placeholder="例如 A3K9X2"
+            className="w-full px-4 py-3 text-center font-mono text-2xl font-bold tracking-[0.2em] rounded-[var(--radius-sm)] bg-[var(--bg)] border border-[var(--border)] text-[var(--text)] focus:border-[var(--accent)] outline-none"
+          />
+          {joinError && (
+            <p className="text-[var(--text-xs)] text-[var(--danger)] text-center">{joinError}</p>
+          )}
+          <Button variant="primary" className="w-full" onClick={handleJoin} loading={joining}>
+            确认加入
+          </Button>
+        </div>
+      </Modal>
+    </Card>
   )
 }
 

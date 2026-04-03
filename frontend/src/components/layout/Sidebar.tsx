@@ -107,6 +107,7 @@ const navItems: NavItem[] = [
   {
     path: '/settings',
     label: '设置',
+    adminOnly: true,
     icon: (
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
         <path d="M10 13a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" strokeWidth="1.8" />
