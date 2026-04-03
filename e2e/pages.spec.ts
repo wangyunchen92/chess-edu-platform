@@ -1,10 +1,7 @@
 import { test, expect } from '@playwright/test'
-import { login } from './helpers'
 
+// 使用 globalSetup 保存的 admin storageState，无需每次登录
 test.describe('页面渲染检查', () => {
-  test.beforeEach(async ({ page }) => {
-    await login(page, 'admin', 'admin123')
-  })
 
   const pages = [
     { path: '/', title: '首页', selector: 'text=今日任务' },
@@ -36,7 +33,6 @@ test.describe('页面渲染检查', () => {
 
 test.describe('课后练习流程', () => {
   test('学习中心切换到课后练习tab', async ({ page }) => {
-    await login(page, 'admin', 'admin123')
     await page.goto('/learn')
     await page.waitForLoadState('networkidle')
 
@@ -51,7 +47,6 @@ test.describe('课后练习流程', () => {
 
 test.describe('角色大厅', () => {
   test('显示9个角色按区域分组', async ({ page }) => {
-    await login(page, 'admin', 'admin123')
     await page.goto('/play')
     await page.waitForLoadState('networkidle')
 

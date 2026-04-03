@@ -4,16 +4,33 @@ export default defineConfig({
   testDir: './e2e',
   timeout: 30_000,
   retries: 1,
+  globalSetup: './e2e/global-setup.ts',
   use: {
     baseURL: 'http://localhost:5173',
     headless: true,
     screenshot: 'only-on-failure',
     trace: 'on-first-retry',
+    channel: 'chrome',
+    storageState: 'e2e/.auth/admin.json',  // 复用已登录状态
   },
   projects: [
+    // 无需登录的测试（auth.spec.ts 自己处理登录）
     {
-      name: 'chromium',
-      use: { browserName: 'chromium' },
+      name: 'auth',
+      testMatch: 'auth.spec.ts',
+      use: { storageState: undefined },  // 不复用登录状态
+    },
+    // 需要特定角色的测试
+    {
+      name: 'teacher-student',
+      testMatch: 'teacher-student.spec.ts',
+      use: { storageState: undefined },  // 自己登录不同角色
+    },
+    // 需要 admin 登录的页面测试（复用 globalSetup 的状态）
+    {
+      name: 'pages',
+      testMatch: 'pages.spec.ts',
+      dependencies: [],
     },
   ],
 })
