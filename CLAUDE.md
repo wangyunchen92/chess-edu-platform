@@ -273,14 +273,37 @@
 
 **测试工程师(qa-agent)必须进行页面实操测试**，不能仅做接口测试或代码审查。
 
-测试分三层:
+测试分四层:
 1. **接口测试** — curl/httpx 验证 API 请求响应格式和数据正确性
-2. **页面实操测试** — 启动前后端服务，实际点击页面元素，验证:
+2. **页面实操测试（Playwright E2E）** — 用 Playwright 自动化测试，真正打开浏览器:
    - 页面是否正常渲染（不是空白/mock数据）
    - 点击是否跳转到正确页面
    - 数据是否正确展示（不是 undefined/null）
-   - 交互流程是否完整可走通
+   - 交互流程是否完整可走通（登录→操作→验证）
+   - 运行: `npx playwright test`
 3. **回归测试** — 确认修改未破坏其他已有功能
+4. **构建验证** — TypeScript 编译 + Vite 构建
+
+### Playwright E2E 测试
+
+```bash
+# 运行所有 E2E 测试
+npx playwright test
+
+# 运行指定测试文件
+npx playwright test e2e/auth.spec.ts
+
+# 带UI模式调试
+npx playwright test --ui
+```
+
+测试文件位于 `e2e/` 目录:
+- `e2e/helpers.ts` — 公共辅助函数（login、waitForApi）
+- `e2e/auth.spec.ts` — 认证流程（登录、权限、角色路由）
+- `e2e/teacher-student.spec.ts` — 师生管理（邀请码、绑定、复制）
+- `e2e/pages.spec.ts` — 页面渲染检查 + 关键交互流程
+
+**编写测试用例时必须同时包含 Playwright E2E 用例**，不能只写接口测试。
 
 历史教训:
 - 接口返回正常 ≠ 页面正常（数据绑定错误、字段名不一致、mock数据覆盖）
