@@ -1,10 +1,14 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useAuthStore } from '@/stores/authStore'
 import { useUIStore } from '@/stores/uiStore'
 import { userApi } from '@/api/user'
+import * as studentApi from '@/api/student'
 import Card from '@/components/common/Card'
 import Button from '@/components/common/Button'
+import Modal from '@/components/common/Modal'
+import Avatar from '@/components/common/Avatar'
 import Loading from '@/components/common/Loading'
+import type { MyTeacherItem } from '@/types/api'
 
 type BoardTheme = 'indigo' | 'green' | 'wood'
 
@@ -324,6 +328,11 @@ const SettingsPage: React.FC = () => {
           </div>
         </div>
       </Card>
+      {/* ── Join Teacher (student only) ── */}
+      {user?.role === 'student' && (
+        <JoinTeacherSection />
+      )}
+
       {/* Logout */}
       <button
         onClick={() => {
@@ -335,6 +344,199 @@ const SettingsPage: React.FC = () => {
         退出登录
       </button>
     </div>
+  )
+}
+
+// ── Join Teacher sub-component ──────────────────────────────────
+
+const JoinTeacherSection: React.FC = () => {
+  const addToast = useUIStore((s) => s.addToast)
+
+  const [myTeachers, setMyTeachers] = useState<MyTeacherItem[]>([])
+  const [teachersLoading, setTeachersLoading] = useState(true)
+  const [showJoinModal, setShowJoinModal] = useState(false)
+  const [inviteCode, setInviteCode] = useState('')
+  const [joining, setJoining] = useState(false)
+  const [joinError, setJoinError] = useState<string | null>(null)
+  const [joinSuccess, setJoinSuccess] = useState<string | null>(null)
+
+  const loadTeachers = useCallback(async () => {
+    setTeachersLoading(true)
+    try {
+      const res = await studentApi.getMyTeachers()
+      const data = res.data?.data ?? res.data
+      setMyTeachers(Array.isArray(data) ? data : [])
+    } catch {
+      // silent
+    } finally {
+      setTeachersLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    loadTeachers()
+  }, [loadTeachers])
+
+  const handleJoin = async () => {
+    const code = inviteCode.trim().toUpperCase()
+    if (code.length !== 6) {
+      setJoinError('请输入6位邀请码')
+      return
+    }
+    setJoining(true)
+    setJoinError(null)
+    setJoinSuccess(null)
+    try {
+      const res = await studentApi.joinTeacher({ invite_code: code })
+      const data = res.data?.data ?? res.data
+      setJoinSuccess(`已成功加入 ${data.teacher_nickname} 老师`)
+      setInviteCode('')
+      addToast('success', `已加入 ${data.teacher_nickname} 老师`)
+      loadTeachers()
+      setTimeout(() => {
+        setShowJoinModal(false)
+        setJoinSuccess(null)
+      }, 1500)
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : '加入失败'
+      setJoinError(msg)
+    } finally {
+      setJoining(false)
+    }
+  }
+
+  const handleLeave = async (teacherId: string, name: string) => {
+    try {
+      await studentApi.leaveTeacher(teacherId)
+      addToast('success', `已离开 ${name} 老师`)
+      loadTeachers()
+    } catch (err: unknown) {
+      addToast('error', err instanceof Error ? err.message : '操作失败')
+    }
+  }
+
+  return (
+    <>
+      <Card padding="lg" hoverable={false}>
+        <h3 className="text-[var(--text-md)] font-semibold text-[var(--text)] mb-4">
+          我的老师
+        </h3>
+
+        {/* Join teacher button */}
+        <Button
+          variant="primary"
+          size="md"
+          onClick={() => {
+            setShowJoinModal(true)
+            setJoinError(null)
+            setJoinSuccess(null)
+            setInviteCode('')
+          }}
+          className="mb-4"
+        >
+          加入老师
+        </Button>
+
+        <p className="text-[var(--text-xs)] text-[var(--text-muted)] mb-4">
+          向老师要一个6位邀请码，输入后就能加入啦
+        </p>
+
+        {/* Teacher list */}
+        {teachersLoading ? (
+          <div className="py-4 text-center text-[var(--text-muted)] text-[var(--text-sm)]">
+            加载中...
+          </div>
+        ) : myTeachers.length === 0 ? (
+          <div className="py-4 text-center text-[var(--text-muted)] text-[var(--text-sm)]">
+            还没有加入老师
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {myTeachers.map((t) => (
+              <div
+                key={t.teacher_id}
+                className="flex items-center gap-3 p-3 rounded-[var(--radius-sm)] bg-[var(--bg)]"
+              >
+                <Avatar
+                  src={t.teacher_avatar_url}
+                  name={t.teacher_nickname}
+                  size="md"
+                />
+                <div className="flex-1">
+                  <p className="text-[var(--text-sm)] font-medium text-[var(--text)]">
+                    {t.teacher_nickname} 老师
+                  </p>
+                  <p className="text-[var(--text-xs)] text-[var(--text-muted)]">
+                    {new Date(t.bindtime).toLocaleDateString('zh-CN')} 加入
+                  </p>
+                </div>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => handleLeave(t.teacher_id, t.teacher_nickname)}
+                >
+                  离开
+                </Button>
+              </div>
+            ))}
+          </div>
+        )}
+      </Card>
+
+      {/* Join modal */}
+      <Modal
+        open={showJoinModal}
+        onClose={() => setShowJoinModal(false)}
+        title="加入老师"
+        width="400px"
+      >
+        <div className="space-y-4">
+          <p className="text-[var(--text-sm)] text-[var(--text-sub)]">
+            输入老师给你的6位邀请码
+          </p>
+
+          {/* Code input - large, centered, monospace */}
+          <input
+            type="text"
+            value={inviteCode}
+            onChange={(e) => {
+              const v = e.target.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 6)
+              setInviteCode(v)
+              setJoinError(null)
+            }}
+            className="w-full text-center font-mono text-3xl tracking-[0.3em] font-bold py-4 rounded-[var(--radius-sm)] border-2 border-[var(--border)] bg-[var(--bg)] text-[var(--text)] outline-none focus:border-[var(--accent)] transition-colors"
+            placeholder="______"
+            maxLength={6}
+            autoFocus
+          />
+
+          {/* Error */}
+          {joinError && (
+            <p className="text-[var(--text-sm)] text-[var(--danger)]">
+              {joinError}
+            </p>
+          )}
+
+          {/* Success */}
+          {joinSuccess && (
+            <p className="text-[var(--text-sm)] text-[var(--success)] font-medium">
+              {joinSuccess}
+            </p>
+          )}
+
+          <Button
+            variant="primary"
+            size="lg"
+            className="w-full"
+            onClick={handleJoin}
+            loading={joining}
+            disabled={inviteCode.length !== 6}
+          >
+            加入
+          </Button>
+        </div>
+      </Modal>
+    </>
   )
 }
 

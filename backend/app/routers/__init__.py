@@ -14,6 +14,8 @@ from app.routers.notifications import router as notifications_router
 from app.routers.play import router as play_router
 from app.routers.puzzles import router as puzzles_router
 from app.routers.train import router as train_router
+from app.routers.student_extra import router as student_extra_router
+from app.routers.teacher import router as teacher_router
 from app.routers.user import router as user_router
 
 router = APIRouter()
@@ -31,3 +33,5 @@ router.include_router(dashboard_router, prefix="/dashboard", tags=["Dashboard"])
 router.include_router(notifications_router, prefix="/notifications", tags=["Notifications"])
 router.include_router(adventure_router, prefix="/adventure", tags=["Adventure"])
 router.include_router(diagnosis_router, prefix="/diagnosis", tags=["Diagnosis"])
+router.include_router(teacher_router, prefix="/teacher", tags=["Teacher"])
+router.include_router(student_extra_router, prefix="/student", tags=["Student"])

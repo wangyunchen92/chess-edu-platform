@@ -8,6 +8,7 @@ interface NavItem {
   label: string
   icon: React.ReactNode
   adminOnly?: boolean
+  teacherOnly?: boolean
 }
 
 const navItems: NavItem[] = [
@@ -91,6 +92,19 @@ const navItems: NavItem[] = [
     ),
   },
   {
+    path: '/teacher',
+    label: '我的学生',
+    teacherOnly: true,
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <circle cx="8" cy="6" r="3" stroke="currentColor" strokeWidth="1.8" />
+        <path d="M2 17c0-3.3 2.4-5.5 6-5.5s6 2.2 6 5.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+        <circle cx="15" cy="7" r="2" stroke="currentColor" strokeWidth="1.6" />
+        <path d="M15 11c2.2 0 4 1.3 4 3.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+      </svg>
+    ),
+  },
+  {
     path: '/settings',
     label: '设置',
     adminOnly: true,
@@ -109,7 +123,12 @@ const Sidebar: React.FC = () => {
   const location = useLocation()
   const user = useAuthStore((s) => s.user)
   const isAdmin = user?.role === 'admin'
-  const visibleItems = navItems.filter((item) => !item.adminOnly || isAdmin)
+  const isTeacher = user?.role === 'teacher'
+  const visibleItems = navItems.filter((item) => {
+    if (item.adminOnly && !isAdmin) return false
+    if (item.teacherOnly && !isTeacher) return false
+    return true
+  })
 
   const isActive = (path: string) => {
     if (path === '/') return location.pathname === '/'

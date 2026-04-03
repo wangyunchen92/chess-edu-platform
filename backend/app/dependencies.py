@@ -85,6 +85,26 @@ def get_optional_user(
     }
 
 
+def require_teacher(current_user: dict = Depends(get_current_user)) -> dict:
+    """Ensure the current user has the teacher role."""
+    if current_user.get("role") != "teacher":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Teacher privileges required",
+        )
+    return current_user
+
+
+def require_student(current_user: dict = Depends(get_current_user)) -> dict:
+    """Ensure the current user has the student role."""
+    if current_user.get("role") != "student":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Student role required",
+        )
+    return current_user
+
+
 class PaginationParams:
     """Common pagination parameters."""
 

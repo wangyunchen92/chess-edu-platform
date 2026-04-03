@@ -12,6 +12,7 @@ from app.models.membership import MembershipPlan, UserDailyQuota
 from app.models.notification import Notification
 from app.models.puzzle import DailyPuzzle, Puzzle, PuzzleAttempt
 from app.models.train import DailyTrainPlan, DailyTrainRecord
+from app.models.teacher import InviteCode, TeacherStudent
 from app.models.user import User, UserProfile
 
 __all__ = [
@@ -57,4 +58,7 @@ __all__ = [
     "WeaknessRecommendation",
     # Adaptive
     "AdaptiveDifficultyConfig",
+    # Teacher
+    "InviteCode",
+    "TeacherStudent",
 ]

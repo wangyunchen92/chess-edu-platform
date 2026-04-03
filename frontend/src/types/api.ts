@@ -815,6 +815,133 @@ export interface CompleteChallengeRequest {
   quiz_score?: number
 }
 
+// ── Teacher / Student Management ──────────────────────────────
+
+export interface InviteCodeResponse {
+  id: string
+  code: string
+  max_uses: number
+  used_count: number
+  status: string
+  expires_at: string
+  created_at: string
+}
+
+export interface StudentSummary {
+  total_games: number
+  win_rate: number
+  total_puzzles: number
+  puzzle_accuracy: number
+  course_completion: number
+  game_rating: number
+  puzzle_rating: number
+  rank_title: string
+  last_active_at: string | null
+}
+
+export interface TeacherStudentItem {
+  student_id: string
+  username: string
+  nickname: string
+  avatar_url: string | null
+  bindtime: string
+  summary: StudentSummary
+}
+
+export interface StudentDetailProfile {
+  birth_year: number | null
+  chess_experience: string | null
+  assessment_done: boolean
+  initial_rating: number | null
+}
+
+export interface StudentDetailRatings {
+  game_rating: number
+  puzzle_rating: number
+  rank_title: string
+  rank_tier: number
+  rank_region: string
+  xp_total: number
+  coins: number
+}
+
+export interface StudentRecentGame {
+  id: string
+  character_name: string
+  result: string
+  rating_change: number
+  played_at: string
+}
+
+export interface StudentGameStats {
+  total_games: number
+  wins: number
+  losses: number
+  draws: number
+  win_rate: number
+  recent_games: StudentRecentGame[]
+}
+
+export interface StudentPuzzleStats {
+  total_attempts: number
+  correct_count: number
+  accuracy: number
+  current_streak: number
+}
+
+export interface StudentCourseItem {
+  course_id: string
+  title: string
+  total_lessons: number
+  completed: number
+  progress: number
+}
+
+export interface StudentCourseStats {
+  total_lessons: number
+  completed_lessons: number
+  completion_rate: number
+  courses: StudentCourseItem[]
+}
+
+export interface StudentStreak {
+  current_login_streak: number
+  max_login_streak: number
+  current_train_streak: number
+}
+
+export interface StudentDetailResponse {
+  student_id: string
+  username: string
+  nickname: string
+  avatar_url: string | null
+  bindtime: string
+  profile: StudentDetailProfile
+  ratings: StudentDetailRatings
+  game_stats: StudentGameStats
+  puzzle_stats: StudentPuzzleStats
+  course_stats: StudentCourseStats
+  streak: StudentStreak
+  last_active_at: string | null
+}
+
+export interface JoinTeacherRequest {
+  invite_code: string
+}
+
+export interface JoinTeacherResponse {
+  teacher_id: string
+  teacher_nickname: string
+  bindtime: string
+}
+
+export interface MyTeacherItem {
+  teacher_id: string
+  teacher_nickname: string
+  teacher_avatar_url: string | null
+  bindtime: string
+}
+
 // ── Dashboard ───────────────────────────────────────────────────
 
 export interface DashboardTrainProgress {

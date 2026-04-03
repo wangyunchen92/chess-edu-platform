@@ -62,6 +62,10 @@ const AdminUsers = React.lazy(() => import('@/pages/admin/AdminUsers'))
 const AdminMembership = React.lazy(() => import('@/pages/admin/AdminMembership'))
 const AdminPoints = React.lazy(() => import('@/pages/admin/AdminPoints'))
 
+// Teacher
+const TeacherDashboardPage = React.lazy(() => import('@/pages/teacher/TeacherDashboardPage'))
+const StudentDetailPage = React.lazy(() => import('@/pages/teacher/StudentDetailPage'))
+
 /**
  * Suspense wrapper providing a loading fallback for lazy-loaded pages.
  */
@@ -88,6 +92,20 @@ const ProtectedRoute: React.FC<{ requireAdmin?: boolean }> = ({ requireAdmin = f
   }
 
   return <Outlet />
+}
+
+/**
+ * RoleGuard: restricts access to a specific role.
+ * Redirects non-matching roles to dashboard.
+ */
+const RoleGuard: React.FC<{ role: string; children: React.ReactNode }> = ({ role, children }) => {
+  const user = useAuthStore((s) => s.user)
+
+  if (user?.role !== role) {
+    return <Navigate to="/" replace />
+  }
+
+  return <>{children}</>
 }
 
 /**
@@ -180,6 +198,14 @@ function App() {
 
             {/* Settings */}
             <Route path="/settings" element={<SuspenseWrapper><SettingsPage /></SuspenseWrapper>} />
+          </Route>
+        </Route>
+
+        {/* Teacher routes */}
+        <Route element={<ProtectedRoute />}>
+          <Route element={<AppLayout />}>
+            <Route path="/teacher" element={<RoleGuard role="teacher"><SuspenseWrapper><TeacherDashboardPage /></SuspenseWrapper></RoleGuard>} />
+            <Route path="/teacher/student/:id" element={<RoleGuard role="teacher"><SuspenseWrapper><StudentDetailPage /></SuspenseWrapper></RoleGuard>} />
           </Route>
         </Route>
 
