@@ -293,28 +293,55 @@ def get_available_themes_with_progress(db: Session, user_id: str) -> list[dict]:
     return results
 
 
-def get_challenge_progress(db: Session, user_id: str) -> list[dict]:
-    """Get challenge progress across difficulty levels 1-5."""
-    levels = []
-    for level in range(1, 11):
-        total_stmt = select(func.count()).select_from(Puzzle).where(
-            Puzzle.is_challenge.is_(True),
-            Puzzle.difficulty_level == level,
-        )
-        total = db.execute(total_stmt).scalar() or 0
+CHALLENGE_PUZZLES_PER_LEVEL = 20
+CHALLENGE_TOTAL_LEVELS = 10
 
-        solved_stmt = (
-            select(func.count(func.distinct(PuzzleAttempt.puzzle_id)))
-            .select_from(PuzzleAttempt)
-            .join(Puzzle, Puzzle.id == PuzzleAttempt.puzzle_id)
-            .where(
-                PuzzleAttempt.user_id == user_id,
-                PuzzleAttempt.is_correct.is_(True),
-                PuzzleAttempt.source == "challenge",
-                Puzzle.difficulty_level == level,
+
+def _get_challenge_puzzle_ids_for_level(db: Session, level: int) -> list[str]:
+    """Get puzzle IDs for a specific challenge level (1-10).
+
+    All challenge puzzles are sorted by rating, then split into 10 equal segments.
+    Each level gets 20 puzzles from its segment.
+    """
+    # Get all challenge puzzle IDs sorted by rating
+    all_ids_stmt = (
+        select(Puzzle.id)
+        .where(Puzzle.is_challenge.is_(True))
+        .order_by(Puzzle.rating, Puzzle.id)
+    )
+    all_ids = [r[0] for r in db.execute(all_ids_stmt).all()]
+
+    if not all_ids:
+        return []
+
+    total = len(all_ids)
+    segment_size = total // CHALLENGE_TOTAL_LEVELS
+    start = (level - 1) * segment_size
+    # Take CHALLENGE_PUZZLES_PER_LEVEL from this segment
+    segment = all_ids[start:start + segment_size]
+    return segment[:CHALLENGE_PUZZLES_PER_LEVEL]
+
+
+def get_challenge_progress(db: Session, user_id: str) -> list[dict]:
+    """Get challenge progress across 10 levels, 20 puzzles each."""
+    levels = []
+    for level in range(1, CHALLENGE_TOTAL_LEVELS + 1):
+        puzzle_ids = _get_challenge_puzzle_ids_for_level(db, level)
+        total = len(puzzle_ids)
+
+        if total == 0:
+            solved = 0
+        else:
+            solved_stmt = (
+                select(func.count(func.distinct(PuzzleAttempt.puzzle_id)))
+                .where(
+                    PuzzleAttempt.user_id == user_id,
+                    PuzzleAttempt.is_correct.is_(True),
+                    PuzzleAttempt.source == "challenge",
+                    PuzzleAttempt.puzzle_id.in_(puzzle_ids),
+                )
             )
-        )
-        solved = db.execute(solved_stmt).scalar() or 0
+            solved = db.execute(solved_stmt).scalar() or 0
 
         pct = int(solved / total * 100) if total > 0 else 0
         levels.append({
@@ -328,14 +355,15 @@ def get_challenge_progress(db: Session, user_id: str) -> list[dict]:
 
 
 def get_challenge_puzzles(db: Session, user_id: str, level: int) -> list[dict]:
-    """Get puzzles for a specific challenge level with attempt status."""
+    """Get 20 puzzles for a specific challenge level with attempt status."""
+    puzzle_ids = _get_challenge_puzzle_ids_for_level(db, level)
+    if not puzzle_ids:
+        return []
+
     stmt = (
         select(Puzzle)
-        .where(
-            Puzzle.is_challenge.is_(True),
-            Puzzle.difficulty_level == level,
-        )
-        .order_by(Puzzle.challenge_order, Puzzle.id)
+        .where(Puzzle.id.in_(puzzle_ids))
+        .order_by(Puzzle.rating, Puzzle.id)
     )
     puzzles = db.execute(stmt).scalars().all()
 
