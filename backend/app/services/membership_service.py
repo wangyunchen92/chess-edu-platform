@@ -13,20 +13,22 @@ from app.models.user import User
 # ── Tier feature configuration ────────────────────────────────────
 # -1 means unlimited
 
+# 当前阶段：全部放开，后续重新设计会员体系后在此配置
+# -1 means unlimited
 TIER_FEATURES = {
     "free": {
-        "daily_games": 3,
-        "daily_puzzles": 3,
-        "course_level_max": 0,
-        "hints_per_game": 1,
-        "ai_qa_daily": 5,
+        "daily_games": -1,
+        "daily_puzzles": -1,
+        "course_level_max": -1,
+        "hints_per_game": -1,
+        "ai_qa_daily": -1,
     },
     "basic": {
         "daily_games": -1,
-        "daily_puzzles": 10,
-        "course_level_max": 2,
-        "hints_per_game": 3,
-        "ai_qa_daily": 20,
+        "daily_puzzles": -1,
+        "course_level_max": -1,
+        "hints_per_game": -1,
+        "ai_qa_daily": -1,
     },
     "premium": {
         "daily_games": -1,

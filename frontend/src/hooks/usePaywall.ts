@@ -1,5 +1,10 @@
-import { useState, useEffect, useCallback } from 'react'
-import { useAuthStore } from '@/stores/authStore'
+/**
+ * usePaywall — 会员限制 hook
+ *
+ * 当前阶段：全部放开，不做任何限制。
+ * 后续会员系统重新设计后，改为从后端 API 获取配额状态。
+ * 前端不再用 localStorage 计数（不可靠），统一由后端判断。
+ */
 
 interface PaywallResult {
   blocked: boolean
@@ -8,74 +13,11 @@ interface PaywallResult {
   checkAndBlock: () => boolean
 }
 
-const DAILY_LIMITS: Record<string, number> = {
-  puzzle: 5,
-  game: 3,
-  ai_teach: 3,
-}
-
-function getUsageKey(feature: string): string {
-  const today = new Date().toISOString().slice(0, 10)
-  return `paywall_${feature}_${today}`
-}
-
-function getUsageCount(feature: string): number {
-  try {
-    return parseInt(localStorage.getItem(getUsageKey(feature)) ?? '0', 10)
-  } catch {
-    return 0
+export function usePaywall(_feature: string): PaywallResult {
+  return {
+    blocked: false,
+    message: '',
+    remaining: Infinity,
+    checkAndBlock: () => false,
   }
-}
-
-function incrementUsage(feature: string): void {
-  const key = getUsageKey(feature)
-  const current = getUsageCount(feature)
-  localStorage.setItem(key, String(current + 1))
-}
-
-/**
- * usePaywall - checks free-tier quota for a given feature.
- * Admin users and paid members are never blocked.
- * Returns { blocked, message, remaining, checkAndBlock }.
- * Call checkAndBlock() before performing the action - it returns true if blocked.
- */
-export function usePaywall(feature: string): PaywallResult {
-  const user = useAuthStore((s) => s.user)
-  const isUnlimited = user?.role === 'admin' || (user?.membership_tier && user.membership_tier !== 'free')
-
-  const limit = DAILY_LIMITS[feature] ?? 5
-  const [count, setCount] = useState(() => getUsageCount(feature))
-
-  useEffect(() => {
-    setCount(getUsageCount(feature))
-  }, [feature])
-
-  if (isUnlimited) {
-    return {
-      blocked: false,
-      message: '',
-      remaining: Infinity,
-      checkAndBlock: () => false,
-    }
-  }
-
-  const remaining = Math.max(0, limit - count)
-  const blocked = remaining <= 0
-
-  const message = blocked
-    ? `今日免费${feature === 'puzzle' ? '谜题' : feature === 'game' ? '对局' : 'AI教学'}次数已用完，升级会员解锁更多！`
-    : ''
-
-  const checkAndBlock = useCallback((): boolean => {
-    const current = getUsageCount(feature)
-    if (current >= limit) {
-      setCount(current)
-      return true
-    }
-    incrementUsage(feature)
-    setCount(current + 1)
-    return false
-  }, [feature, limit])
-
-  return { blocked, message, remaining, checkAndBlock }
 }
