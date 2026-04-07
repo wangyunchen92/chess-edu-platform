@@ -38,7 +38,7 @@
 
 ### 谜题域
 - **puzzles** — 谜题库（FEN/解法/难度/评分/标签/每日池/挑战池）
-- **daily_puzzles** — 每日谜题分配
+- **daily_puzzles** — 每日谜题分配（按用户个性化，含user_id）
 - **puzzle_attempts** — 解题记录（正确性/用时/提示/评分变化）
 
 ### 学习域
@@ -388,10 +388,36 @@ ssh root@118.31.237.111 "systemctl restart chess-edu"
 
 ### 数据备份
 
-- **自动备份**：cron 每日凌晨 3 点执行 `/opt/chess-edu/backup.sh`
-- **部署前备份**：部署步骤第 2 步自动触发
-- **备份目录**：`/opt/chess-edu/backups/`，保留最近 7 天
-- **恢复方法**：`gunzip data_xxx.db.gz && cp data_xxx.db /opt/chess-edu/backend/data.db && systemctl restart chess-edu`
+#### SQLite 优化
+- **WAL 模式**：已开启（database.py 自动设置），提升并发读性能
+- **busy_timeout=5000**：写入冲突时等 5 秒而非立即报错
+
+#### 多层备份策略
+- **每日备份**：cron 凌晨 3 点 + 下午 3 点（每12小时），保留 7 天
+- **每周备份**：周日自动归档，保留 4 周
+- **每月备份**：1 号自动归档，保留 6 个月
+- **部署前备份**：部署步骤自动触发
+- **完整性检查**：每次备份后自动执行 `PRAGMA integrity_check`
+- **备份目录**：`/opt/chess-edu/backups/{daily,weekly,monthly}/`
+- **备份日志**：`/opt/chess-edu/backups/backup.log`
+
+#### 异地备份（本地下载）
+```bash
+# 下载最新备份到本地
+./scripts/backup-download.sh
+
+# 从备份恢复（交互式，含回滚）
+./scripts/backup-restore.sh
+```
+
+#### 恢复流程
+```bash
+# 1. 列出可用备份
+./scripts/backup-restore.sh
+
+# 2. 选择备份恢复（自动停服→恢复→验证→重启，失败自动回滚）
+./scripts/backup-restore.sh daily/data_20260407_030001.db.gz
+```
 
 ### Nginx 缓存策略
 
@@ -424,6 +450,10 @@ ssh root@118.31.237.111 "systemctl restart chess-edu"
 | 训练自动完成 | 做完谜题/课程/对弈自动标记训练计划 | ✅ 完成 |
 | 数据清洁 | 清除所有MOCK假数据，API失败显示错误不显示假数据 | ✅ 完成 |
 | 部署上线 | 阿里云服务器 http://118.31.237.111/chess/ | ✅ 已上线 |
+| 移动端适配基础 | useBreakpoint Hook、AppLayout响应式(Sidebar↔BottomNav)、Modal底部弹出、Button/Toast触摸优化、棋盘vw自适应 | ✅ 完成 |
+| 谜题库扩充 | Lichess精选14,767道谜题(rating 399~2799)，5级难度均匀分布，69种战术标签 | ✅ 完成 |
+| 每日谜题个性化 | 按用户puzzle_rating±200匹配出题，每人不同题，优先未做过的题(daily_puzzles加user_id) | ✅ 完成 |
+| 专题训练预留 | get_theme_puzzles/get_available_themes API已实现，待前端页面 | ✅ 后端就绪 |
 
 ## 常见陷阱
 
@@ -444,3 +474,9 @@ ssh root@118.31.237.111 "systemctl restart chess-edu"
 - useCallback 依赖列表不要包含会被 callback 内部修改的 store（会导致无限循环）
 - 所有 MOCK 默认值必须是 0/空，不能用假数据（1200分、42局等）
 - 静态资源路径（棋子SVG/音效/Stockfish）必须用 `import.meta.env.BASE_URL` 前缀
+- 棋盘格子大小用 `min(vh, vw)` 计算，避免手机竖屏溢出
+- LessonPage/GamePage 用 `fixed inset-0` 全屏覆盖，绕过 AppLayout padding
+- 移动端新组件必须 Mobile First（先写无前缀样式，再用 md:/lg: 扩展），见 docs/frontend-style-guide.md 第13节
+- 每日谜题是按用户 puzzle_rating 个性化匹配的，不是全站统一题目
+- 谜题库约15,000道（Lichess精选），rating 399~2799，themes字段含69种战术标签（逗号分隔）
+- 导入新题用 `backend/scripts/import_lichess_puzzles.py`（采样）+ `backend/scripts/load_puzzles_to_db.py`（入库）
