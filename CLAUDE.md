@@ -454,6 +454,24 @@ ssh root@118.31.237.111 "systemctl restart chess-edu"
 | 谜题库扩充 | Lichess精选14,767道谜题(rating 399~2799)，5级难度均匀分布，69种战术标签 | ✅ 完成 |
 | 每日谜题个性化 | 按用户puzzle_rating±200匹配出题，每人不同题，优先未做过的题(daily_puzzles加user_id) | ✅ 完成 |
 | 专题训练预留 | get_theme_puzzles/get_available_themes API已实现，待前端页面 | ✅ 后端就绪 |
+| **Phase 2a 完成** | | |
+| AI角色扩展 | 6个新角色（冬冬/狸花花/铁墩墩/银鬃/咕噜/云朵师父），角色大厅按区域分组，解锁机制+剧情弹窗 | ✅ 完成 |
+| 课程扩展 | Level 2 基础战术（15课）+ Level 3 中级战略（5课），课后练习中心（tab切换+进度概览） | ✅ 完成 |
+| 课程FEN修复 | Level 1 全部15课FEN替换为经过验证的真实局面（修复牵制/串击/闪击等棋理错误） | ✅ 完成 |
+| 弱点诊断 | 诊断API+雷达图+推荐训练+Dashboard摘要，3新表(user_weakness_profiles等) | ✅ 完成 |
+| 自适应难度 | PlayStyleController棋风差异化+AdaptiveDifficulty动态调参，9角色引擎全部接入 | ✅ 完成 |
+| 冒险模式 | 晋级挑战页面+冒险地图扩展（4区域+角色+挑战入口）+侧边栏入口 | ✅ 完成 |
+| 复盘分析 | Stockfish逐步分析+走法标注(brilliant~blunder)+评估条+局面小贴士+最佳走法箭头+统计卡片 | ✅ 完成 |
+| 复盘沉浸式 | 全屏深色布局，无侧边栏/顶导航，桌面左右/移动上下响应式 | ✅ 完成 |
+| 自由对弈 | 面对面对弈+自己摆棋+PGN导入，games表新增game_type/opponent_name | ✅ 完成 |
+| 空白棋盘摆题 | 棋子面板+FEN导入导出+Stockfish分析+保存局面 | ✅ 完成 |
+| 师生管理 | 邀请码绑定(6位码+72h过期)+老师工作台(学生列表+数据聚合)+学生详情+权限守卫 | ✅ 完成 |
+| 研发流程升级 | CLAUDE.md集成Superpowers Skills工作流，测试规范四层(接口+Playwright E2E+回归+构建) | ✅ 完成 |
+| Playwright E2E | 21个自动化测试用例（认证+页面渲染+师生管理），globalSetup+storageState | ✅ 完成 |
+| 数据库迁移 | SQLite→PostgreSQL 15（Docker），31表+15798行数据完整迁移，双数据库兼容 | ✅ 完成 |
+| 数据备份增强 | WAL模式+多层备份(日/周/月)+pg_dump+异地下载脚本+恢复脚本(含自动回滚) | ✅ 完成 |
+| Bug修复集 | 登录页中文化、paywall管理员免限、谜题棋盘翻面、错题本、unicode转义、Rating→评分、clipboard HTTP兼容、dashboard 500、/chess重定向、Nginx缓存策略 | ✅ 完成 |
+| **第一阶段完成** | **线上全面测试 34/34 通过，PostgreSQL生产环境稳定运行** | **✅ 2026-04-07** |
 
 ## 常见陷阱
 
