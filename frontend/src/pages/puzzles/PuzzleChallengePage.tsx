@@ -18,8 +18,13 @@ const LEVEL_INFO: Record<number, { label: string; emoji: string; color: string }
   1: { label: '入门', emoji: '\u2B50', color: 'var(--success)' },
   2: { label: '初级', emoji: '\u2B50\u2B50', color: 'var(--info)' },
   3: { label: '中级', emoji: '\u2B50\u2B50\u2B50', color: 'var(--warning)' },
-  4: { label: '高级', emoji: '\uD83C\uDF1F', color: 'var(--danger)' },
-  5: { label: '大师', emoji: '\uD83D\uDC51', color: 'var(--rank-purple)' },
+  4: { label: '进阶', emoji: '\uD83C\uDF1F', color: 'var(--accent)' },
+  5: { label: '高级', emoji: '\uD83C\uDF1F\uD83C\uDF1F', color: 'var(--danger)' },
+  6: { label: '精英', emoji: '\uD83D\uDD25', color: 'var(--danger)' },
+  7: { label: '专家', emoji: '\uD83D\uDCA0', color: 'var(--rank-purple)' },
+  8: { label: '大师', emoji: '\uD83D\uDC51', color: 'var(--rank-purple)' },
+  9: { label: '宗师', emoji: '\uD83C\uDFC6', color: 'var(--warning)' },
+  10: { label: '传奇', emoji: '\uD83D\uDC8E', color: 'var(--danger)' },
 }
 
 const PuzzleChallengePage: React.FC = () => {
@@ -52,7 +57,7 @@ const PuzzleChallengePage: React.FC = () => {
       })
       .catch((err) => {
         console.error('[PuzzleChallengePage] Failed to load challenge:', err)
-        const count = [10, 15, 20, 20, 25][level - 1] ?? 10
+        const count = [20, 20, 20, 20, 20, 20, 20, 20, 20, 20][level - 1] ?? 20
         setPuzzles(
           Array.from({ length: count }, (_, i) => ({
             id: `challenge-${level}-${i + 1}`,
@@ -79,8 +84,9 @@ const PuzzleChallengePage: React.FC = () => {
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[var(--text-2xl)] font-bold text-[var(--text)]">
-            {info.emoji} 第{level}关: {info.label}
+          <h1 className="text-[var(--text-2xl)] font-bold text-[var(--text)] flex items-center gap-2">
+            <span>{info.emoji}</span>
+            <span>第{level}关: {info.label}</span>
           </h1>
           <p className="text-[var(--text-sm)] text-[var(--text-sub)] mt-1">
             完成所有题目解锁下一关
@@ -121,7 +127,7 @@ const PuzzleChallengePage: React.FC = () => {
             <p className="text-[var(--text-lg)] font-bold text-[var(--success)]">
               恭喜通关！
             </p>
-            {level < 5 && (
+            {level < 10 && (
               <Button
                 variant="primary"
                 onClick={() => navigate(`/puzzles/challenge?level=${level + 1}`)}

@@ -24,6 +24,30 @@ from app.services.membership_service import consume_quota, get_daily_quota
 router = APIRouter()
 
 
+@router.get("/themes")
+def get_themes(
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Get all available puzzle themes with user progress."""
+    user_id = current_user["user_id"]
+    data = puzzle_service.get_available_themes_with_progress(db, user_id)
+    return APIResponse.success(data=data)
+
+
+@router.get("/theme/{theme}")
+def get_theme_puzzles_route(
+    theme: str,
+    count: int = 10,
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Get puzzles for a specific theme, matched to user rating."""
+    user_id = current_user["user_id"]
+    puzzles = puzzle_service.get_theme_puzzles(db, user_id, theme, count)
+    return APIResponse.success(data=puzzles)
+
+
 @router.get("/daily", response_model=APIResponse[DailyPuzzlesResponse])
 def get_daily_puzzles(
     current_user: dict = Depends(get_current_user),
@@ -55,10 +79,10 @@ def get_challenge_level_puzzles(
     db: Session = Depends(get_db),
 ) -> APIResponse[list[ChallengePuzzleItem]]:
     """Get puzzles for a specific challenge level."""
-    if level < 1 or level > 5:
+    if level < 1 or level > 10:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Level must be between 1 and 5",
+            detail="Level must be between 1 and 10",
         )
     user_id = current_user["user_id"]
     puzzles = puzzle_service.get_challenge_puzzles(db, user_id, level)

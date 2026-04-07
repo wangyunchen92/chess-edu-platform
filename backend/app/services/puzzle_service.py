@@ -5,7 +5,7 @@ from __future__ import annotations
 import uuid
 from datetime import date, datetime, timezone
 
-from sqlalchemy import Date, cast, func, select
+from sqlalchemy import Date, case, cast, func, select
 from sqlalchemy.orm import Session
 
 from app.models.gamification import RatingHistory, UserRating
@@ -208,10 +208,95 @@ def get_available_themes(db: Session) -> list[dict]:
     return results
 
 
+THEME_CATEGORIES = {
+    "basic_tactics": {
+        "name": "基础战术",
+        "themes": [
+            "fork", "pin", "skewer", "discoveredAttack", "doubleCheck",
+            "hangingPiece", "trappedPiece",
+        ],
+    },
+    "checkmate": {
+        "name": "将杀训练",
+        "themes": [
+            "mateIn1", "mateIn2", "mateIn3", "backRankMate",
+            "smotheredMate", "hookMate", "mate",
+        ],
+    },
+    "advanced_tactics": {
+        "name": "高级战术",
+        "themes": [
+            "sacrifice", "deflection", "decoy", "intermezzo",
+            "quietMove", "xRayAttack", "capturingDefender",
+        ],
+    },
+    "endgame": {
+        "name": "残局训练",
+        "themes": [
+            "pawnEndgame", "rookEndgame", "queenEndgame",
+            "bishopEndgame", "knightEndgame", "endgame",
+        ],
+    },
+}
+
+
+def get_available_themes_with_progress(db: Session, user_id: str) -> list[dict]:
+    """Get all available themes with user progress (attempted/correct/accuracy)."""
+    # 1. Get all themes and counts (reuse existing logic)
+    themes = get_available_themes(db)
+    theme_map = {t["theme"]: t for t in themes}
+
+    # 2. Batch query user attempts grouped by puzzle themes
+    attempts = db.execute(
+        select(
+            Puzzle.themes,
+            func.count(PuzzleAttempt.id).label("attempted"),
+            func.sum(case((PuzzleAttempt.is_correct == True, 1), else_=0)).label("correct"),
+        )
+        .join(Puzzle, Puzzle.id == PuzzleAttempt.puzzle_id)
+        .where(PuzzleAttempt.user_id == user_id)
+        .group_by(Puzzle.themes)
+    ).all()
+
+    # Aggregate per-theme stats (a puzzle may have multiple theme tags)
+    theme_stats: dict[str, dict] = {}
+    for row in attempts:
+        if not row.themes:
+            continue
+        for t in row.themes.split(","):
+            t = t.strip()
+            if t not in theme_stats:
+                theme_stats[t] = {"attempted": 0, "correct": 0}
+            theme_stats[t]["attempted"] += row.attempted or 0
+            theme_stats[t]["correct"] += row.correct or 0
+
+    # 3. Build category lookup
+    theme_to_category: dict[str, str] = {}
+    for cat_key, cat_info in THEME_CATEGORIES.items():
+        for t in cat_info["themes"]:
+            theme_to_category[t] = cat_key
+
+    # 4. Merge results
+    results = []
+    for t in themes:
+        stats = theme_stats.get(t["theme"], {})
+        attempted = stats.get("attempted", 0)
+        correct = stats.get("correct", 0)
+        results.append({
+            **t,
+            "category": theme_to_category.get(t["theme"], "other"),
+            "attempted": attempted,
+            "correct": correct,
+            "accuracy": round(correct / attempted * 100) if attempted > 0 else 0,
+        })
+
+    return results
+
+
 def get_challenge_progress(db: Session, user_id: str) -> list[dict]:
     """Get challenge progress across difficulty levels 1-5."""
     levels = []
-    for level in range(1, 6):
+    for level in range(1, 11):
         total_stmt = select(func.count()).select_from(Puzzle).where(
             Puzzle.is_challenge.is_(True),
             Puzzle.difficulty_level == level,

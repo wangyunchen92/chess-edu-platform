@@ -23,11 +23,16 @@ interface ChallengeLevel {
 }
 
 const CHALLENGE_LEVELS: ChallengeLevel[] = [
-  { level: 1, label: '入门', emoji: '\u2B50', unlocked: true, progress: 0, total: 10 },
-  { level: 2, label: '初级', emoji: '\u2B50\u2B50', unlocked: false, progress: 0, total: 15 },
+  { level: 1, label: '入门', emoji: '\u2B50', unlocked: true, progress: 0, total: 20 },
+  { level: 2, label: '初级', emoji: '\u2B50\u2B50', unlocked: false, progress: 0, total: 20 },
   { level: 3, label: '中级', emoji: '\u2B50\u2B50\u2B50', unlocked: false, progress: 0, total: 20 },
-  { level: 4, label: '高级', emoji: '\uD83C\uDF1F', unlocked: false, progress: 0, total: 20 },
-  { level: 5, label: '大师', emoji: '\uD83D\uDC51', unlocked: false, progress: 0, total: 25 },
+  { level: 4, label: '进阶', emoji: '\uD83C\uDF1F', unlocked: false, progress: 0, total: 20 },
+  { level: 5, label: '高级', emoji: '\uD83C\uDF1F\uD83C\uDF1F', unlocked: false, progress: 0, total: 20 },
+  { level: 6, label: '精英', emoji: '\uD83D\uDD25', unlocked: false, progress: 0, total: 20 },
+  { level: 7, label: '专家', emoji: '\uD83D\uDCA0', unlocked: false, progress: 0, total: 20 },
+  { level: 8, label: '大师', emoji: '\uD83D\uDC51', unlocked: false, progress: 0, total: 20 },
+  { level: 9, label: '宗师', emoji: '\uD83C\uDFC6', unlocked: false, progress: 0, total: 20 },
+  { level: 10, label: '传奇', emoji: '\uD83D\uDC8E', unlocked: false, progress: 0, total: 20 },
 ]
 
 const PuzzlesHomePage: React.FC = () => {
@@ -211,6 +216,23 @@ const PuzzlesHomePage: React.FC = () => {
           ))}
         </div>
       </div>
+
+      {/* Theme Training */}
+      <Card padding="lg" onClick={() => navigate('/puzzles/themes')}>
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 rounded-[var(--radius-md)] flex items-center justify-center text-2xl"
+            style={{ background: 'rgba(99,102,241,0.1)' }}>
+            {'\u2694\uFE0F'}
+          </div>
+          <div className="flex-1">
+            <h3 className="text-[var(--text-md)] font-semibold text-[var(--text)]">专项训练</h3>
+            <p className="text-[var(--text-xs)] text-[var(--text-muted)]">
+              按战术主题针对性练习，提升薄弱环节
+            </p>
+          </div>
+          <div className="text-[var(--text-muted)] text-sm">{'\u203A'}</div>
+        </div>
+      </Card>
 
       {/* Mistake Book */}
       <Card padding="lg" onClick={() => navigate('/puzzles/mistakes')}>

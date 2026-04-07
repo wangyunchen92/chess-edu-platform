@@ -8,6 +8,7 @@ import type {
   PuzzleAttemptResponse,
   MistakeListResponse,
   PuzzleStatsResponse,
+  ThemeItem,
 } from '@/types/api'
 
 export const puzzlesApi = {
@@ -31,4 +32,10 @@ export const puzzlesApi = {
 
   getPuzzleStats: () =>
     apiClient.get<APIResponse<PuzzleStatsResponse>>('/puzzles/stats'),
+
+  getThemes: () =>
+    apiClient.get<APIResponse<ThemeItem[]>>('/puzzles/themes'),
+
+  getThemePuzzles: (theme: string, count: number = 10) =>
+    apiClient.get<APIResponse<PuzzleItem[]>>(`/puzzles/theme/${theme}?count=${count}`),
 }

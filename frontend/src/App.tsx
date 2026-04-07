@@ -31,6 +31,8 @@ const DailyPuzzlePage = React.lazy(() => import('@/pages/puzzles/DailyPuzzlePage
 const PuzzleChallengePage = React.lazy(() => import('@/pages/puzzles/PuzzleChallengePage'))
 const PuzzleSolvePage = React.lazy(() => import('@/pages/puzzles/PuzzleSolvePage'))
 const MistakeBookPage = React.lazy(() => import('@/pages/puzzles/MistakeBookPage'))
+const ThemeTrainingPage = React.lazy(() => import('@/pages/puzzles/ThemeTrainingPage'))
+const ThemePracticePage = React.lazy(() => import('@/pages/puzzles/ThemePracticePage'))
 
 // Learn
 const CourseListPage = React.lazy(() => import('@/pages/learn/CourseListPage'))
@@ -178,6 +180,8 @@ function App() {
             <Route path="/puzzles/daily" element={<SuspenseWrapper><DailyPuzzlePage /></SuspenseWrapper>} />
             <Route path="/puzzles/challenge" element={<SuspenseWrapper><PuzzleChallengePage /></SuspenseWrapper>} />
             <Route path="/puzzles/solve/:id" element={<SuspenseWrapper><PuzzleSolvePage /></SuspenseWrapper>} />
+            <Route path="/puzzles/themes" element={<SuspenseWrapper><ThemeTrainingPage /></SuspenseWrapper>} />
+            <Route path="/puzzles/theme/:theme" element={<SuspenseWrapper><ThemePracticePage /></SuspenseWrapper>} />
             <Route path="/puzzles/mistakes" element={<SuspenseWrapper><MistakeBookPage /></SuspenseWrapper>} />
 
             {/* Learn */}

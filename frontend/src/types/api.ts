@@ -533,6 +533,16 @@ export interface PuzzleStatsResponse {
   challenge_progress: ChallengeLevelProgress[]
 }
 
+export interface ThemeItem {
+  theme: string
+  name: string
+  category: string
+  count: number
+  attempted: number
+  correct: number
+  accuracy: number
+}
+
 // ── Learn ───────────────────────────────────────────────────────
 
 export interface LessonBrief {
