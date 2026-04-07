@@ -16,12 +16,12 @@ interface ChallengePuzzle {
 
 const LEVEL_INFO: Record<number, { label: string; emoji: string; color: string }> = {
   1: { label: '入门', emoji: '\u2B50', color: 'var(--success)' },
-  2: { label: '初级', emoji: '\u2B50\u2B50', color: 'var(--info)' },
-  3: { label: '中级', emoji: '\u2B50\u2B50\u2B50', color: 'var(--warning)' },
-  4: { label: '进阶', emoji: '\uD83C\uDF1F', color: 'var(--accent)' },
-  5: { label: '高级', emoji: '\uD83C\uDF1F\uD83C\uDF1F', color: 'var(--danger)' },
-  6: { label: '精英', emoji: '\uD83D\uDD25', color: 'var(--danger)' },
-  7: { label: '专家', emoji: '\uD83D\uDCA0', color: 'var(--rank-purple)' },
+  2: { label: '初级', emoji: '\uD83C\uDF1F', color: 'var(--info)' },
+  3: { label: '中级', emoji: '\uD83D\uDCAA', color: 'var(--warning)' },
+  4: { label: '进阶', emoji: '\u26A1', color: 'var(--accent)' },
+  5: { label: '高级', emoji: '\uD83D\uDD25', color: 'var(--danger)' },
+  6: { label: '精英', emoji: '\uD83D\uDCA0', color: 'var(--danger)' },
+  7: { label: '专家', emoji: '\uD83E\uDDD9', color: 'var(--rank-purple)' },
   8: { label: '大师', emoji: '\uD83D\uDC51', color: 'var(--rank-purple)' },
   9: { label: '宗师', emoji: '\uD83C\uDFC6', color: 'var(--warning)' },
   10: { label: '传奇', emoji: '\uD83D\uDC8E', color: 'var(--danger)' },
