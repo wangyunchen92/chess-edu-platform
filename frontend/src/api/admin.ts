@@ -121,3 +121,7 @@ export const adjustUserPoints = (userId: string, data: {
   puzzle_rating_change?: number
   reason: string
 }) => apiClient.put<APIResponse<UserPointsDetail>>(`/admin/users/${userId}/points`, data)
+
+/** 获取用户详情（含对弈/谜题/课程统计） */
+export const getUserDetail = (userId: string) =>
+  apiClient.get<APIResponse<any>>(`/admin/users/${userId}/detail`)

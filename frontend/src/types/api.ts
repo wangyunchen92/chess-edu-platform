@@ -26,6 +26,18 @@ export interface LoginRequest {
   password: string
 }
 
+export interface RegisterRequest {
+  phone: string
+  password: string
+  nickname?: string
+  invite_code: string
+}
+
+export interface ChangePasswordRequest {
+  old_password: string
+  new_password: string
+}
+
 export interface TokenData {
   access_token: string
   refresh_token: string

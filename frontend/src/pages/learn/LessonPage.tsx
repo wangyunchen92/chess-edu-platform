@@ -428,7 +428,7 @@ const LessonPage: React.FC = () => {
   // ---------------------------------------------------------------------------
 
   return (
-    <div className={`h-screen overflow-hidden bg-gradient-to-br ${theme.bg} flex flex-col`}>
+    <div className={`overflow-hidden bg-gradient-to-br ${theme.bg} flex flex-col fixed inset-0 z-30`}>
       {/* Reward overlay */}
       <RewardOverlay visible={showReward} onDismiss={handleRewardDismiss} message="太棒了！" />
 
@@ -456,18 +456,16 @@ const LessonPage: React.FC = () => {
       {/* Desktop: side by side. Mobile: stacked */}
       <div className="flex-1 flex flex-col sm:flex-row min-h-0">
         {/* Left: Chessboard */}
-        <div className="sm:w-[45%] shrink-0 flex items-center justify-center p-2 sm:p-4 h-[32vh] sm:h-auto" style={{ background: 'rgba(0,0,0,0.02)' }}>
-          <div style={{ transform: 'scale(0.82)', transformOrigin: 'center center' }}>
-            <Chessboard
-              fen={currentFen}
-              orientation="white"
-              interactive={boardInteractive}
-              highlights={currentHighlights}
-              onMove={handleBoardMove}
-              onSquareClick={handleSquareClick}
-              getValidMoves={getValidMoves}
-            />
-          </div>
+        <div className="shrink-0 flex items-center justify-center p-2 sm:w-[45%] sm:p-4" style={{ background: 'rgba(0,0,0,0.02)' }}>
+          <Chessboard
+            fen={currentFen}
+            orientation="white"
+            interactive={boardInteractive}
+            highlights={currentHighlights}
+            onMove={handleBoardMove}
+            onSquareClick={handleSquareClick}
+            getValidMoves={getValidMoves}
+          />
         </div>
 
         {/* Right: Chat */}

@@ -52,6 +52,7 @@ class User(Base):
         DateTime(timezone=True), nullable=True
     )
     login_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    phone: Mapped[Optional[str]] = mapped_column(String(20), unique=True, nullable=True)
     created_by: Mapped[Optional[str]] = mapped_column(
         String(36), ForeignKey("users.id"), nullable=True
     )

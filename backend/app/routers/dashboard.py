@@ -1,7 +1,7 @@
 """Dashboard module router (B2-11)."""
 
 from fastapi import APIRouter, Depends
-from sqlalchemy import select, func
+from sqlalchemy import Date, cast, func, select
 from sqlalchemy.orm import Session
 
 from app.database import get_db
@@ -119,7 +119,7 @@ def get_dashboard(
         select(func.count()).select_from(Game).where(
             Game.user_id == user_id,
             Game.status == "completed",
-            func.date(Game.ended_at) == today,
+            cast(Game.ended_at, Date) == today,
         )
     ).scalar() or 0
 

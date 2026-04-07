@@ -31,14 +31,14 @@ def upgrade() -> None:
     # 2. characters — insert 'none' placeholder
     # ──────────────────────────────────────────────
     op.execute("""
-    INSERT OR IGNORE INTO characters (
+    INSERT INTO characters (
         id, slug, name, tier, avatar_key, personality,
         play_style, base_rating, rating_range_min, rating_range_max,
         engine_depth_min, engine_depth_max, mistake_rate, is_free, sort_order
     ) VALUES (
         'none', 'none', '自由对弈', 'system', 'none', '占位角色，不出现在角色大厅',
         'none', 0, 0, 0, 0, 0, 0, 0, 9999
-    );
+    ) ON CONFLICT (id) DO NOTHING;
     """)
 
 

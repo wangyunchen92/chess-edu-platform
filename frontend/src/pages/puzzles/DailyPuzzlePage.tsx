@@ -41,33 +41,6 @@ interface DailyPuzzle {
   hint?: string
 }
 
-const MOCK_DAILY: DailyPuzzle[] = [
-  {
-    id: 'daily-1',
-    fen: 'r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4',
-    solution: ['h5f7'],
-    theme: '将杀',
-    difficulty: '入门',
-    hint: '1步杀，找到将杀的走法',
-  },
-  {
-    id: 'daily-2',
-    fen: 'r2qkb1r/ppp2ppp/2n1bn2/3pp3/2B1P3/3P1N2/PPP2PPP/RNBQK2R w KQkq - 0 5',
-    solution: ['c4b5', 'c6d4', 'f3d4'],
-    theme: '战术',
-    difficulty: '初级',
-    hint: '利用钉子战术',
-  },
-  {
-    id: 'daily-3',
-    fen: '6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1',
-    solution: ['e1e8'],
-    theme: '残局',
-    difficulty: '入门',
-    hint: '底线杀！找到将杀的走法',
-  },
-]
-
 const DailyPuzzlePage: React.FC = () => {
   const navigate = useNavigate()
   const { message } = usePaywall('puzzle')
@@ -82,6 +55,7 @@ const DailyPuzzlePage: React.FC = () => {
   const [puzzleStatus, setPuzzleStatus] = useState<('pending' | 'solved' | 'failed')[]>([])
   const [allDone, setAllDone] = useState(false)
   const [submittedIds, setSubmittedIds] = useState<Set<string>>(new Set())
+  const [loadError, setLoadError] = useState<string | null>(null)
   const puzzleStore = usePuzzleStore()
 
   useEffect(() => {
@@ -141,14 +115,12 @@ const DailyPuzzlePage: React.FC = () => {
             setAllDone(true)
           }
         } else {
-          setPuzzles(MOCK_DAILY)
-          setPuzzleStatus(MOCK_DAILY.map(() => 'pending' as const))
+          setLoadError('暂无每日谜题数据')
         }
       })
       .catch((err) => {
         console.error('[DailyPuzzlePage] Failed to load daily puzzles:', err)
-        setPuzzles(MOCK_DAILY)
-        setPuzzleStatus(MOCK_DAILY.map(() => 'pending' as const))
+        setLoadError('加载每日谜题失败，请检查网络后重试')
       })
       .finally(() => setLoading(false))
   }, [])
@@ -280,6 +252,23 @@ const DailyPuzzlePage: React.FC = () => {
         <div className="text-center">
           <div className="text-4xl mb-3 animate-bounce">{'\uD83E\uDDE9'}</div>
           <p className="text-[var(--text-sub)]">加载谜题...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (loadError) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="text-center">
+          <div className="text-4xl mb-3">{'\u26A0\uFE0F'}</div>
+          <p className="text-[var(--text-sub)] mb-4">{loadError}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 rounded-lg bg-[var(--accent)] text-white text-sm hover:opacity-90"
+          >
+            重试
+          </button>
         </div>
       </div>
     )

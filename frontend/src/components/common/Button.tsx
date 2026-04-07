@@ -34,9 +34,9 @@ const variantStyles: Record<ButtonVariant, string> = {
 }
 
 const sizeStyles: Record<ButtonSize, string> = {
-  sm: 'px-3 py-1.5 text-[var(--text-xs)] rounded-[var(--radius-xs)]',
-  md: 'px-[18px] py-2 text-[var(--text-sm)] rounded-[var(--radius-sm)]',
-  lg: 'px-6 py-3 text-[var(--text-md)] rounded-[var(--radius-sm)]',
+  sm: 'px-3 py-1.5 text-[var(--text-xs)] rounded-[var(--radius-xs)] min-h-[44px]',
+  md: 'px-[18px] py-2 text-[var(--text-sm)] rounded-[var(--radius-sm)] min-h-[44px]',
+  lg: 'px-6 py-3 text-[var(--text-md)] rounded-[var(--radius-sm)] min-h-[44px]',
 }
 
 const Button: React.FC<ButtonProps> = ({

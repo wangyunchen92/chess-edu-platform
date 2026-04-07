@@ -194,8 +194,8 @@ const Chessboard: React.FC<ChessboardProps> = ({
                   key={square}
                   className="relative flex items-center justify-center cursor-pointer"
                   style={{
-                    width: 'clamp(52px, calc((100vh - 80px) / 8), 80px)',
-                    height: 'clamp(52px, calc((100vh - 80px) / 8), 80px)',
+                    width: 'clamp(40px, min(calc((100vh - 80px) / 8), calc((100vw - 40px) / 8)), 80px)',
+                    height: 'clamp(40px, min(calc((100vh - 80px) / 8), calc((100vw - 40px) / 8)), 80px)',
                     backgroundColor: isHighlighted
                       ? 'var(--board-check)'
                       : isSelected
@@ -253,7 +253,7 @@ const Chessboard: React.FC<ChessboardProps> = ({
           <div
             key={`label-${file}`}
             className="flex items-center justify-center text-[10px] font-medium text-[var(--text-muted)] select-none h-6"
-            style={{ width: 'clamp(52px, calc((100vh - 80px) / 8), 80px)' }}
+            style={{ width: 'clamp(40px, min(calc((100vh - 80px) / 8), calc((100vw - 40px) / 8)), 80px)' }}
           >
             {file}
           </div>

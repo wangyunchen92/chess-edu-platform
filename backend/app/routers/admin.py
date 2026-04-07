@@ -208,6 +208,23 @@ def update_membership(
         )
 
 
+@router.get("/users/{user_id}/detail")
+def get_user_detail(
+    user_id: str,
+    admin_user: dict = Depends(require_admin),
+    db: Session = Depends(get_db),
+):
+    """Get detailed user info including stats (admin only)."""
+    try:
+        detail = admin_service.get_user_detail(db, user_id)
+        return APIResponse.success(data=detail)
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(e),
+        )
+
+
 @router.get("/users/{user_id}/points", response_model=APIResponse[UserPointsDetail])
 def get_user_points(
     user_id: str,

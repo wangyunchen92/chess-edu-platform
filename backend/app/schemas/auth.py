@@ -86,3 +86,17 @@ class UserResponse(BaseModel):
                 d[k] = v
             return d
         return data
+
+
+class RegisterRequest(BaseModel):
+    """User registration request."""
+    phone: str = Field(..., min_length=11, max_length=11, description="手机号")
+    password: str = Field(..., min_length=6, max_length=128, description="密码")
+    nickname: Optional[str] = Field(None, max_length=50, description="昵称")
+    invite_code: str = Field(..., min_length=1, max_length=50, description="邀请码")
+
+
+class ChangePasswordRequest(BaseModel):
+    """Change password request."""
+    old_password: str = Field(..., min_length=1, max_length=128, description="旧密码")
+    new_password: str = Field(..., min_length=6, max_length=128, description="新密码")

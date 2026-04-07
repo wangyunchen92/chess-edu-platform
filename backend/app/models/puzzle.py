@@ -50,13 +50,16 @@ class Puzzle(Base):
 class DailyPuzzle(Base):
     __tablename__ = "daily_puzzles"
     __table_args__ = (
-        UniqueConstraint("puzzle_date", "sort_order", name="uq_daily_puzzles_date_order"),
+        UniqueConstraint("puzzle_date", "user_id", "sort_order", name="uq_daily_puzzles_user_date_order"),
     )
 
     id: Mapped[str] = mapped_column(
         String(36), primary_key=True, default=lambda: str(uuid.uuid4())
     )
     puzzle_date: Mapped[date] = mapped_column(Date, nullable=False)
+    user_id: Mapped[Optional[str]] = mapped_column(
+        String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=True
+    )
     puzzle_id: Mapped[str] = mapped_column(
         String(36), ForeignKey("puzzles.id"), nullable=False
     )

@@ -5,6 +5,7 @@ import { userApi } from '@/api/user'
 import { gamificationApi } from '@/api/gamification'
 import * as teacherApi from '@/api/teacher'
 import * as studentApi from '@/api/student'
+import apiClient from '@/api/client'
 import Card from '@/components/common/Card'
 import Button from '@/components/common/Button'
 import Modal from '@/components/common/Modal'
@@ -52,6 +53,13 @@ const ProfilePage: React.FC = () => {
   const [data, setData] = useState<ProfileData>(MOCK_PROFILE)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [showPwdModal, setShowPwdModal] = useState(false)
+  const [oldPwd, setOldPwd] = useState('')
+  const [newPwd, setNewPwd] = useState('')
+  const [confirmPwd, setConfirmPwd] = useState('')
+  const [pwdLoading, setPwdLoading] = useState(false)
+  const [pwdError, setPwdError] = useState('')
+  const addToast = useUIStore((s) => s.addToast)
 
   useEffect(() => {
     setLoading(true)
@@ -177,6 +185,39 @@ const ProfilePage: React.FC = () => {
     }).finally(() => setLoading(false))
   }, [])
 
+  const handleChangePassword = async () => {
+    if (!oldPwd || !newPwd) {
+      setPwdError('请填写所有字段')
+      return
+    }
+    if (newPwd.length < 6) {
+      setPwdError('新密码至少6位')
+      return
+    }
+    if (newPwd !== confirmPwd) {
+      setPwdError('两次输入的新密码不一致')
+      return
+    }
+    setPwdLoading(true)
+    setPwdError('')
+    try {
+      await apiClient.put('/auth/password', {
+        old_password: oldPwd,
+        new_password: newPwd,
+      })
+      addToast('success', '密码修改成功')
+      setShowPwdModal(false)
+      setOldPwd('')
+      setNewPwd('')
+      setConfirmPwd('')
+    } catch (err) {
+      const message = err instanceof Error ? err.message : '修改失败'
+      setPwdError(message)
+    } finally {
+      setPwdLoading(false)
+    }
+  }
+
   const nickname = user?.nickname ?? user?.username ?? '冒险者'
   const username = user?.username ?? 'player'
   const winRate = data.gameStats.winRate > 0
@@ -213,28 +254,39 @@ const ProfilePage: React.FC = () => {
 
       {/* ── Profile Header ── */}
       <Card padding="lg" hoverable={false}>
-        <div className="flex items-center gap-5">
+        <div className="flex flex-col items-center text-center md:flex-row md:text-left md:items-center gap-4 md:gap-5">
           <div
-            className="w-20 h-20 rounded-full flex items-center justify-center text-white text-3xl font-bold shrink-0"
+            className="w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center text-white text-2xl md:text-3xl font-bold shrink-0"
             style={{ background: 'linear-gradient(135deg, var(--accent), var(--accent-2))' }}
           >
             {nickname.charAt(0)}
           </div>
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-3 flex-wrap">
-              <h1 className="text-[var(--text-2xl)] font-bold text-[var(--text)]">{nickname}</h1>
-              <span className="text-[var(--text-xs)] px-2 py-0.5 rounded-full bg-[var(--accent-light)] text-[var(--accent)] font-semibold">
+            <div className="flex items-center justify-center md:justify-start gap-2">
+              <h1 className="text-[var(--text-xl)] md:text-[var(--text-2xl)] font-bold text-[var(--text)] truncate">{nickname}</h1>
+              <span className="text-[var(--text-xs)] px-2 py-0.5 rounded-full bg-[var(--accent-light)] text-[var(--accent)] font-semibold shrink-0">
                 {user?.role === 'admin' ? '管理员' : user?.role === 'teacher' ? '教师' : '学生'}
               </span>
             </div>
             <p className="text-[var(--text-sm)] text-[var(--text-muted)] mt-0.5">@{username}</p>
-            <div className="flex items-center gap-4 mt-2">
+            <div className="flex items-center justify-center md:justify-start gap-4 mt-2">
               <StreakBadge days={data.streak} />
             </div>
           </div>
-          <Button variant="secondary" size="sm" onClick={() => navigate('/settings')}>
-            编辑资料
-          </Button>
+          <div className="flex gap-2 w-full md:w-auto">
+            <Button variant="secondary" size="sm" className="flex-1 md:flex-none" onClick={() => {
+              setShowPwdModal(true)
+              setOldPwd('')
+              setNewPwd('')
+              setConfirmPwd('')
+              setPwdError('')
+            }}>
+              修改密码
+            </Button>
+            <Button variant="secondary" size="sm" className="flex-1 md:flex-none" onClick={() => navigate('/settings')}>
+              编辑资料
+            </Button>
+          </div>
         </div>
       </Card>
 
@@ -393,11 +445,89 @@ const ProfilePage: React.FC = () => {
         )}
       </Card>
 
-      {/* Teacher: Invite Code Section */}
+      {/* Teacher: Student Management + Invite Code */}
+      {user?.role === 'teacher' && (
+        <Card padding="lg" hoverable={false}>
+          <div
+            className="flex items-center justify-between cursor-pointer"
+            onClick={() => navigate('/teacher')}
+          >
+            <div className="flex items-center gap-3">
+              <span className="text-xl">{'\uD83D\uDCCA'}</span>
+              <div>
+                <h3 className="text-[var(--text-md)] font-semibold text-[var(--text)]">学生管理</h3>
+                <p className="text-[var(--text-xs)] text-[var(--text-muted)]">查看学生学习进度、对弈数据、谜题统计</p>
+              </div>
+            </div>
+            <span className="text-[var(--text-muted)] text-lg">&#8250;</span>
+          </div>
+        </Card>
+      )}
       {user?.role === 'teacher' && <TeacherInviteSection />}
 
       {/* Student: Join Teacher Section */}
       {user?.role === 'student' && <StudentJoinSection />}
+
+      {/* Admin: User Management */}
+      {user?.role === 'admin' && (
+        <Card padding="lg" hoverable={false}>
+          <div
+            className="flex items-center justify-between cursor-pointer"
+            onClick={() => navigate('/admin/users-list')}
+          >
+            <div className="flex items-center gap-3">
+              <span className="text-xl">{'\uD83D\uDC65'}</span>
+              <div>
+                <h3 className="text-[var(--text-md)] font-semibold text-[var(--text)]">用户管理</h3>
+                <p className="text-[var(--text-xs)] text-[var(--text-muted)]">查看所有用户信息、登录数据、学习进度</p>
+              </div>
+            </div>
+            <span className="text-[var(--text-muted)] text-lg">&#8250;</span>
+          </div>
+        </Card>
+      )}
+
+      {/* Password Change Modal */}
+      <Modal open={showPwdModal} onClose={() => setShowPwdModal(false)} title="修改密码">
+        <div className="space-y-4">
+          <div>
+            <label className="block text-[var(--text-xs)] text-[var(--text-sub)] font-medium mb-1.5">当前密码</label>
+            <input
+              type="password"
+              value={oldPwd}
+              onChange={(e) => setOldPwd(e.target.value)}
+              placeholder="请输入当前密码"
+              className="w-full px-4 py-2.5 rounded-[var(--radius-sm)] text-[var(--text-sm)] bg-[var(--bg)] border border-[var(--border)] text-[var(--text)] focus:border-[var(--accent)] outline-none"
+            />
+          </div>
+          <div>
+            <label className="block text-[var(--text-xs)] text-[var(--text-sub)] font-medium mb-1.5">新密码</label>
+            <input
+              type="password"
+              value={newPwd}
+              onChange={(e) => setNewPwd(e.target.value)}
+              placeholder="请输入新密码（至少6位）"
+              className="w-full px-4 py-2.5 rounded-[var(--radius-sm)] text-[var(--text-sm)] bg-[var(--bg)] border border-[var(--border)] text-[var(--text)] focus:border-[var(--accent)] outline-none"
+            />
+          </div>
+          <div>
+            <label className="block text-[var(--text-xs)] text-[var(--text-sub)] font-medium mb-1.5">确认新密码</label>
+            <input
+              type="password"
+              value={confirmPwd}
+              onChange={(e) => setConfirmPwd(e.target.value)}
+              placeholder="请再次输入新密码"
+              className="w-full px-4 py-2.5 rounded-[var(--radius-sm)] text-[var(--text-sm)] bg-[var(--bg)] border border-[var(--border)] text-[var(--text)] focus:border-[var(--accent)] outline-none"
+            />
+          </div>
+          {pwdError && (
+            <p className="text-[var(--text-xs)] text-[var(--danger)] text-center">{pwdError}</p>
+          )}
+          <Button variant="primary" className="w-full" onClick={handleChangePassword} loading={pwdLoading}>
+            确认修改
+          </Button>
+        </div>
+      </Modal>
 
       {/* Logout */}
       <button

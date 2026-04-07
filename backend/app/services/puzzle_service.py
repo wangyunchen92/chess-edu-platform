@@ -5,7 +5,7 @@ from __future__ import annotations
 import uuid
 from datetime import date, datetime, timezone
 
-from sqlalchemy import func, select
+from sqlalchemy import Date, cast, func, select
 from sqlalchemy.orm import Session
 
 from app.models.gamification import RatingHistory, UserRating
@@ -13,40 +13,89 @@ from app.models.puzzle import DailyPuzzle, Puzzle, PuzzleAttempt
 from app.utils.elo import calculate_puzzle_rating
 
 
+def _get_user_puzzle_rating(db: Session, user_id: str) -> int:
+    """Get user's current puzzle rating, default 300."""
+    user_rating = db.execute(
+        select(UserRating).where(UserRating.user_id == user_id)
+    ).scalar_one_or_none()
+    return user_rating.puzzle_rating if user_rating else 300
+
+
+def _pick_puzzles_by_rating(
+    db: Session, user_id: str, count: int = 3, theme: str | None = None,
+) -> list:
+    """Pick puzzles matched to user's puzzle_rating.
+
+    Strategy:
+    1. Query within ±200 of user rating, exclude already-attempted puzzles
+    2. If not enough, widen to ±400
+    3. If still not enough, fall back to random from daily pool
+    """
+    user_pr = _get_user_puzzle_rating(db, user_id)
+
+    # Get puzzle IDs the user has already attempted (any source)
+    attempted_ids_stmt = (
+        select(PuzzleAttempt.puzzle_id)
+        .where(PuzzleAttempt.user_id == user_id)
+        .distinct()
+    )
+    attempted_ids = set(
+        row[0] for row in db.execute(attempted_ids_stmt).all()
+    )
+
+    for spread in (200, 400, 800, None):
+        base = select(Puzzle).where(Puzzle.is_daily_pool.is_(True))
+
+        if spread is not None:
+            base = base.where(
+                Puzzle.rating >= user_pr - spread,
+                Puzzle.rating <= user_pr + spread,
+            )
+
+        if theme:
+            base = base.where(Puzzle.themes.contains(theme))
+
+        if attempted_ids:
+            base = base.where(Puzzle.id.notin_(attempted_ids))
+
+        base = base.order_by(func.random()).limit(count)
+        results = db.execute(base).scalars().all()
+
+        if len(results) >= count:
+            return results[:count]
+
+        # If we got some but not enough, keep them and try wider
+        if results and spread is None:
+            return results
+
+    # Absolute fallback: random from entire pool (allow repeats)
+    fallback = (
+        select(Puzzle)
+        .where(Puzzle.is_daily_pool.is_(True))
+        .order_by(func.random())
+        .limit(count)
+    )
+    return db.execute(fallback).scalars().all()
+
+
 def get_daily_puzzles(db: Session, user_id: str) -> dict:
-    """Get or generate today's 3 daily puzzles with user attempt status."""
+    """Get or generate today's 3 daily puzzles matched to user's rating."""
     today = date.today()
 
-    # Check if daily puzzles exist for today
+    # Check if this user already has daily puzzles for today
     stmt = (
         select(DailyPuzzle)
-        .where(DailyPuzzle.puzzle_date == today)
+        .where(
+            DailyPuzzle.puzzle_date == today,
+            DailyPuzzle.user_id == user_id,
+        )
         .order_by(DailyPuzzle.sort_order)
     )
     daily_records = db.execute(stmt).scalars().all()
 
     if not daily_records:
-        # Generate today's puzzles from the daily pool
-        pool_stmt = (
-            select(Puzzle)
-            .where(Puzzle.is_daily_pool.is_(True))
-            .order_by(func.random())
-            .limit(3)
-        )
-        pool_puzzles = db.execute(pool_stmt).scalars().all()
-
-        # If not enough daily pool puzzles, grab from challenge pool
-        if len(pool_puzzles) < 3:
-            extra_stmt = (
-                select(Puzzle)
-                .where(
-                    Puzzle.is_daily_pool.is_(False),
-                    Puzzle.id.notin_([p.id for p in pool_puzzles]),
-                )
-                .order_by(func.random())
-                .limit(3 - len(pool_puzzles))
-            )
-            pool_puzzles.extend(db.execute(extra_stmt).scalars().all())
+        # Generate personalized puzzles based on user's puzzle rating
+        pool_puzzles = _pick_puzzles_by_rating(db, user_id, count=3)
 
         new_records = []
         for i, puzzle in enumerate(pool_puzzles):
@@ -55,12 +104,11 @@ def get_daily_puzzles(db: Session, user_id: str) -> dict:
                 puzzle_date=today,
                 puzzle_id=puzzle.id,
                 sort_order=i + 1,
+                user_id=user_id,
             )
             db.add(dp)
             new_records.append(dp)
         db.flush()
-
-        # Use the just-created records directly instead of re-querying
         daily_records = new_records
 
     # Get user attempts for these puzzles today
@@ -95,6 +143,69 @@ def get_daily_puzzles(db: Session, user_id: str) -> dict:
         "date": today.isoformat(),
         "puzzles": items,
     }
+
+
+def get_theme_puzzles(
+    db: Session, user_id: str, theme: str, count: int = 10,
+) -> list[dict]:
+    """Get puzzles for a specific theme, matched to user's rating.
+
+    For future theme-based training feature.
+    """
+    puzzles = _pick_puzzles_by_rating(db, user_id, count=count, theme=theme)
+    return [_puzzle_to_dict(p) for p in puzzles]
+
+
+def get_available_themes(db: Session) -> list[dict]:
+    """Get all available themes with puzzle counts.
+
+    For future theme-based training feature.
+    """
+    all_puzzles = db.execute(
+        select(Puzzle.themes).where(Puzzle.themes.isnot(None))
+    ).scalars().all()
+
+    theme_counts: dict[str, int] = {}
+    for themes_str in all_puzzles:
+        if not themes_str:
+            continue
+        for t in themes_str.split(","):
+            t = t.strip()
+            if t:
+                theme_counts[t] = theme_counts.get(t, 0) + 1
+
+    # Theme display names
+    THEME_NAMES = {
+        "fork": "双攻", "pin": "牵制", "skewer": "串击",
+        "discoveredAttack": "闪击", "doubleCheck": "双将",
+        "sacrifice": "弃子", "deflection": "引离", "decoy": "引入",
+        "hangingPiece": "悬子", "trappedPiece": "困子",
+        "intermezzo": "中间着", "quietMove": "安静着",
+        "defensiveMove": "防守着", "xRayAttack": "X光攻击",
+        "mate": "将杀", "mateIn1": "一步杀", "mateIn2": "两步杀",
+        "mateIn3": "三步杀", "backRankMate": "底线杀",
+        "smotheredMate": "闷杀", "hookMate": "钩杀",
+        "opening": "开局", "middlegame": "中局", "endgame": "残局",
+        "rookEndgame": "车残局", "queenEndgame": "后残局",
+        "pawnEndgame": "兵残局", "bishopEndgame": "象残局",
+        "knightEndgame": "马残局",
+        "crushing": "碾压", "advantage": "优势",
+        "promotion": "升变", "castling": "王车易位",
+        "kingsideAttack": "王翼攻击", "queensideAttack": "后翼攻击",
+        "exposedKing": "暴露王", "capturingDefender": "吃掉防守者",
+    }
+
+    results = []
+    for theme, count in sorted(theme_counts.items(), key=lambda x: -x[1]):
+        if count < 10:  # Skip very rare themes
+            continue
+        results.append({
+            "theme": theme,
+            "name": THEME_NAMES.get(theme, theme),
+            "count": count,
+        })
+
+    return results
 
 
 def get_challenge_progress(db: Session, user_id: str) -> list[dict]:
@@ -364,7 +475,7 @@ def get_puzzle_stats(db: Session, user_id: str) -> dict:
     daily_stmt = select(func.count()).select_from(PuzzleAttempt).where(
         PuzzleAttempt.user_id == user_id,
         PuzzleAttempt.source == "daily",
-        func.date(PuzzleAttempt.created_at) == today,
+        cast(PuzzleAttempt.created_at, Date) == today,
     )
     daily_today = db.execute(daily_stmt).scalar() or 0
 
@@ -388,13 +499,13 @@ def _calculate_puzzle_streak(db: Session, user_id: str) -> int:
     """Calculate the number of consecutive days the user solved at least one puzzle correctly."""
     # Get distinct dates with correct attempts, ordered descending
     stmt = (
-        select(func.date(PuzzleAttempt.created_at).label("attempt_date"))
+        select(cast(PuzzleAttempt.created_at, Date).label("attempt_date"))
         .where(
             PuzzleAttempt.user_id == user_id,
             PuzzleAttempt.is_correct.is_(True),
         )
-        .group_by(func.date(PuzzleAttempt.created_at))
-        .order_by(func.date(PuzzleAttempt.created_at).desc())
+        .group_by(cast(PuzzleAttempt.created_at, Date))
+        .order_by(cast(PuzzleAttempt.created_at, Date).desc())
         .limit(365)
     )
     rows = db.execute(stmt).all()

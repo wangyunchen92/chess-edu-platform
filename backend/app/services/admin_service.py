@@ -408,6 +408,80 @@ def get_user_points(db: Session, user_id: str) -> UserPointsDetail:
     )
 
 
+def get_user_detail(db: Session, user_id: str):
+    """Get detailed info for any user (admin only)."""
+    from app.services.teacher_service import (
+        _build_course_stats,
+        _build_game_stats,
+        _build_puzzle_stats,
+    )
+    from app.schemas.teacher import (
+        StudentDetailResponse,
+        StudentProfileInfo,
+        StudentRatingsInfo,
+        StreakInfo,
+    )
+
+    user = db.execute(
+        select(User).where(User.id == user_id)
+    ).scalar_one_or_none()
+
+    if user is None:
+        raise ValueError("用户不存在")
+
+    # Profile
+    profile_info = StudentProfileInfo()
+    if user.profile:
+        profile_info = StudentProfileInfo(
+            birth_year=user.profile.birth_year,
+            chess_experience=user.profile.chess_experience,
+            assessment_done=user.profile.assessment_done,
+            initial_rating=user.profile.initial_rating,
+        )
+
+    # Ratings
+    ratings_info = StudentRatingsInfo()
+    if user.rating:
+        ratings_info = StudentRatingsInfo(
+            game_rating=user.rating.game_rating,
+            puzzle_rating=user.rating.puzzle_rating,
+            rank_title=user.rating.rank_title,
+            rank_tier=user.rating.rank_tier,
+            rank_region=user.rating.rank_region,
+            xp_total=user.rating.xp_total,
+            coins=user.rating.coins,
+        )
+
+    # Stats
+    game_stats = _build_game_stats(db, user_id)
+    puzzle_stats = _build_puzzle_stats(db, user_id)
+    course_stats = _build_course_stats(db, user_id)
+
+    # Streak
+    streak_info = StreakInfo()
+    if user.streak:
+        streak_info = StreakInfo(
+            current_login_streak=user.streak.login_streak,
+            max_login_streak=user.streak.login_streak_max,
+            current_train_streak=user.streak.train_streak,
+        )
+
+    return StudentDetailResponse(
+        student_id=user_id,
+        username=user.username,
+        nickname=user.nickname,
+        avatar_url=user.avatar_url,
+        bindtime=user.created_at,
+        profile=profile_info,
+        ratings=ratings_info,
+        game_stats=game_stats,
+        puzzle_stats=puzzle_stats,
+        course_stats=course_stats,
+        streak=streak_info,
+        last_active_at=user.last_login_at,
+    )
+
+
 def adjust_user_points(
     db: Session,
     user_id: str,

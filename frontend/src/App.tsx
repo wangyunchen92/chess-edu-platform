@@ -8,6 +8,7 @@ import Loading from '@/components/common/Loading'
 
 // Auth (kept eager — small & on critical path)
 import LoginPage from '@/pages/auth/LoginPage'
+import RegisterPage from '@/pages/auth/RegisterPage'
 import AssessmentPage from '@/pages/auth/AssessmentPage'
 
 // ── Lazy-loaded page components (grouped by module) ──────────────
@@ -61,6 +62,8 @@ const AdminDashboard = React.lazy(() => import('@/pages/admin/AdminDashboard'))
 const AdminUsers = React.lazy(() => import('@/pages/admin/AdminUsers'))
 const AdminMembership = React.lazy(() => import('@/pages/admin/AdminMembership'))
 const AdminPoints = React.lazy(() => import('@/pages/admin/AdminPoints'))
+const AdminUserListPage = React.lazy(() => import('@/pages/admin/AdminUserListPage'))
+const AdminUserDetailPage = React.lazy(() => import('@/pages/admin/AdminUserDetailPage'))
 
 // Teacher
 const TeacherDashboardPage = React.lazy(() => import('@/pages/teacher/TeacherDashboardPage'))
@@ -130,6 +133,7 @@ function App() {
         {/* Public routes */}
         <Route element={<PublicRoute />}>
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
         </Route>
 
         {/* Assessment (protected, no layout) */}
@@ -218,6 +222,14 @@ function App() {
               <Route path="membership" element={<AdminMembership />} />
               <Route path="points" element={<AdminPoints />} />
             </Route>
+          </Route>
+        </Route>
+
+        {/* Admin user management (outside AdminLayout) */}
+        <Route element={<ProtectedRoute requireAdmin />}>
+          <Route element={<AppLayout />}>
+            <Route path="/admin/users-list" element={<SuspenseWrapper><AdminUserListPage /></SuspenseWrapper>} />
+            <Route path="/admin/user/:id" element={<SuspenseWrapper><AdminUserDetailPage /></SuspenseWrapper>} />
           </Route>
         </Route>
 

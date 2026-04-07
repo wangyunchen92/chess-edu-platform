@@ -13,6 +13,8 @@ class Settings(BaseSettings):
     )
 
     # Database
+    # Production: set DATABASE_URL=postgresql://chess:chess_edu_2026@localhost:5432/chess_edu
+    # Development without PG: auto fallback to SQLite (default)
     DATABASE_URL: str = "sqlite:///./data.db"
 
     # JWT
@@ -35,6 +37,7 @@ class Settings(BaseSettings):
     OSS_ENDPOINT: str = "oss-cn-hangzhou.aliyuncs.com"
 
     # App
+    REGISTER_INVITE_CODE: str = "CHESS2026"
     APP_ENV: str = "development"
     APP_DEBUG: bool = True
     APP_HOST: str = "0.0.0.0"

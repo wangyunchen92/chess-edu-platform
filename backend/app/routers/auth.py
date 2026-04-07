@@ -13,6 +13,8 @@ from app.models.user import User
 from app.schemas.auth import (
     LoginRequest,
     LoginResponse,
+    RegisterRequest,
+    ChangePasswordRequest,
     TokenRefreshRequest,
     TokenRefreshResponse,
     UserResponse,
@@ -20,8 +22,10 @@ from app.schemas.auth import (
 from app.schemas.common import APIResponse
 from app.services.auth_service import (
     authenticate_user,
+    change_password,
     create_tokens,
     refresh_tokens,
+    register_user,
     update_login_info,
 )
 
@@ -62,6 +66,38 @@ def login(
     )
 
 
+@router.post("/register", response_model=APIResponse[LoginResponse])
+def register(
+    request: RegisterRequest,
+    db: Session = Depends(get_db),
+) -> APIResponse[LoginResponse]:
+    """Register a new user with phone number and invite code."""
+    try:
+        user = register_user(
+            db,
+            phone=request.phone,
+            password=request.password,
+            nickname=request.nickname,
+            invite_code=request.invite_code,
+        )
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e),
+        )
+
+    update_login_info(db, user)
+    tokens = create_tokens(user)
+    user_resp = UserResponse.model_validate(user)
+
+    return APIResponse.success(
+        data=LoginResponse(
+            user=user_resp,
+            tokens=tokens,
+        )
+    )
+
+
 @router.post("/token/refresh", response_model=APIResponse[TokenRefreshResponse])
 def token_refresh(
     request: TokenRefreshRequest,
@@ -89,6 +125,29 @@ def logout(
     A full implementation would use a token blacklist (e.g., Redis).
     """
     return APIResponse.success(message="Logged out successfully")
+
+
+@router.put("/password", response_model=APIResponse)
+def update_password(
+    request: ChangePasswordRequest,
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> APIResponse:
+    """Change current user's password."""
+    try:
+        change_password(
+            db,
+            user_id=current_user["user_id"],
+            old_password=request.old_password,
+            new_password=request.new_password,
+        )
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e),
+        )
+
+    return APIResponse.success(message="密码修改成功")
 
 
 @router.get("/me", response_model=APIResponse[UserResponse])

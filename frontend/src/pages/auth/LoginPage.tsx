@@ -160,6 +160,18 @@ const LoginPage: React.FC = () => {
             登录
           </Button>
         </form>
+
+        {/* Link to register */}
+        <p className="text-center text-slate-400 text-[var(--text-sm)] mt-5">
+          没有账号？{' '}
+          <button
+            type="button"
+            onClick={() => navigate('/register')}
+            className="text-[var(--accent)] hover:underline font-medium"
+          >
+            立即注册
+          </button>
+        </p>
       </div>
     </div>
   )
