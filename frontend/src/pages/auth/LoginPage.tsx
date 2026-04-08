@@ -33,7 +33,12 @@ const LoginPage: React.FC = () => {
       addToast('success', '登录成功')
       navigate('/', { replace: true })
     } catch (err) {
-      const message = err instanceof Error ? err.message : '登录失败'
+      const raw = err instanceof Error ? err.message : '登录失败'
+      const message = raw.includes('401') || raw.includes('Invalid') || raw.includes('password')
+        ? '用户名或密码错误'
+        : raw.includes('Network') || raw.includes('network')
+          ? '网络连接失败，请检查网络'
+          : raw
       setError(message)
     } finally {
       setLoading(false)
@@ -146,7 +151,7 @@ const LoginPage: React.FC = () => {
 
           {/* Error */}
           {error && (
-            <p className="text-[var(--danger)] text-[var(--text-xs)] mt-1">{error}</p>
+            <p className="text-red-400 text-[var(--text-sm)] mt-2 text-center">{error}</p>
           )}
 
           {/* Submit */}
