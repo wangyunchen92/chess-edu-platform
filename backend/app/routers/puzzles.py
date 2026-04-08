@@ -196,6 +196,20 @@ def submit_puzzle_attempt(
             ).scalar() or 0
             if today_daily_count >= 3:
                 train_service.auto_complete_item(db, user_id, "puzzle")
+
+                # Check if all daily puzzles were answered correctly -> reward
+                from app.models.puzzle import PuzzleAttempt as PA2
+                today_correct = db.execute(
+                    select(func.count()).select_from(PA2).where(
+                        PA2.user_id == user_id,
+                        PA2.source == "daily",
+                        PA2.is_correct.is_(True),
+                        PA2.created_at >= today_str,
+                    )
+                ).scalar() or 0
+                if today_correct >= 3:
+                    from app.services.credit_service import grant_daily_reward
+                    grant_daily_reward(db, user_id, "daily_puzzle_perfect")
         except Exception as e:
             import logging
             logging.getLogger("chess_edu").error(f"auto_complete_item failed: {e}", exc_info=True)

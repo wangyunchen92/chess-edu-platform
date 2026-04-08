@@ -49,6 +49,16 @@ def complete_plan_item(
     if result["xp_earned"] > 0:
         award_xp(db, user_id, result["xp_earned"], reason="train_item_complete")
 
+    # Check if all training items are completed -> grant credits reward
+    try:
+        plan = train_service.get_or_create_today_plan(db, user_id)
+        items = plan.get("items", [])
+        if items and all(item.get("completed", False) for item in items):
+            from app.services.credit_service import grant_daily_reward
+            grant_daily_reward(db, user_id, "training_complete")
+    except Exception:
+        pass
+
     return APIResponse.success(data=result)
 
 

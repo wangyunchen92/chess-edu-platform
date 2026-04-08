@@ -47,6 +47,22 @@ def login(
 
     update_login_info(db, user)
 
+    # Grant daily login reward + streak bonus
+    try:
+        from app.services.credit_service import grant_daily_reward
+        user_id_str = str(user.id)
+        reward = grant_daily_reward(db, user_id=user_id_str, reward_type="login")
+
+        # Check 7-day streak bonus
+        from app.models.gamification import UserStreak
+        streak = db.execute(
+            select(UserStreak).where(UserStreak.user_id == user_id_str)
+        ).scalar_one_or_none()
+        if streak and streak.login_streak == 7:
+            grant_daily_reward(db, user_id=user_id_str, reward_type="streak_7_days")
+    except Exception:
+        pass  # Don't block login if reward fails
+
     tokens = create_tokens(user)
     user_resp = UserResponse.model_validate(user)
 
