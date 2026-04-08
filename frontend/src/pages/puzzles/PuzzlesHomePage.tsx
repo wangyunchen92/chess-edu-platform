@@ -24,12 +24,12 @@ interface ChallengeLevel {
 
 const CHALLENGE_LEVELS: ChallengeLevel[] = [
   { level: 1, label: '入门', emoji: '\u2B50', unlocked: true, progress: 0, total: 20 },
-  { level: 2, label: '初级', emoji: '\u2B50\u2B50', unlocked: false, progress: 0, total: 20 },
-  { level: 3, label: '中级', emoji: '\u2B50\u2B50\u2B50', unlocked: false, progress: 0, total: 20 },
-  { level: 4, label: '进阶', emoji: '\uD83C\uDF1F', unlocked: false, progress: 0, total: 20 },
-  { level: 5, label: '高级', emoji: '\uD83C\uDF1F\uD83C\uDF1F', unlocked: false, progress: 0, total: 20 },
-  { level: 6, label: '精英', emoji: '\uD83D\uDD25', unlocked: false, progress: 0, total: 20 },
-  { level: 7, label: '专家', emoji: '\uD83D\uDCA0', unlocked: false, progress: 0, total: 20 },
+  { level: 2, label: '初级', emoji: '\uD83C\uDF1F', unlocked: false, progress: 0, total: 20 },
+  { level: 3, label: '中级', emoji: '\uD83D\uDCAA', unlocked: false, progress: 0, total: 20 },
+  { level: 4, label: '进阶', emoji: '\u26A1', unlocked: false, progress: 0, total: 20 },
+  { level: 5, label: '高级', emoji: '\uD83D\uDD25', unlocked: false, progress: 0, total: 20 },
+  { level: 6, label: '精英', emoji: '\uD83D\uDCA0', unlocked: false, progress: 0, total: 20 },
+  { level: 7, label: '专家', emoji: '\uD83E\uDDD9', unlocked: false, progress: 0, total: 20 },
   { level: 8, label: '大师', emoji: '\uD83D\uDC51', unlocked: false, progress: 0, total: 20 },
   { level: 9, label: '宗师', emoji: '\uD83C\uDFC6', unlocked: false, progress: 0, total: 20 },
   { level: 10, label: '传奇', emoji: '\uD83D\uDC8E', unlocked: false, progress: 0, total: 20 },
@@ -61,19 +61,25 @@ const PuzzlesHomePage: React.FC = () => {
             })
             // Challenge progress is embedded in stats response as challenge_progress
             if (Array.isArray(payload.challenge_progress)) {
+              const progressMap: Record<number, any> = {}
+              for (const cp of payload.challenge_progress) {
+                progressMap[cp.level] = cp
+              }
+
               const merged = CHALLENGE_LEVELS.map((lvl) => {
-                const remote = payload.challenge_progress.find(
-                  (cp: any) => cp.level === lvl.level
-                )
-                if (remote) {
-                  return {
-                    ...lvl,
-                    unlocked: remote.solved_puzzles > 0 || lvl.unlocked,
-                    progress: remote.solved_puzzles ?? 0,
-                    total: remote.total_puzzles ?? lvl.total,
-                  }
+                const remote = progressMap[lvl.level]
+                const progress = remote?.solved_puzzles ?? 0
+                const total = remote?.total_puzzles ?? lvl.total
+
+                // Level 1 always unlocked; others unlock when previous level has any progress
+                let unlocked = lvl.level === 1
+                if (lvl.level > 1) {
+                  const prevRemote = progressMap[lvl.level - 1]
+                  const prevProgress = prevRemote?.solved_puzzles ?? 0
+                  unlocked = prevProgress > 0
                 }
-                return lvl
+
+                return { ...lvl, unlocked, progress, total }
               })
               setLevels(merged)
             }
