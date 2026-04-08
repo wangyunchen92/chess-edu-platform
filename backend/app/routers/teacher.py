@@ -8,13 +8,14 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.dependencies import get_current_user
 from app.schemas.common import APIResponse
+from app.schemas.credits import CreditBalanceResponse, TransferCreditsRequest
 from app.schemas.teacher import (
     CreateInviteCodeRequest,
     InviteCodeResponse,
     StudentDetailResponse,
     TeacherStudentListResponse,
 )
-from app.services import teacher_service
+from app.services import credit_service, teacher_service
 
 router = APIRouter()
 
@@ -136,5 +137,28 @@ def remove_student(
     except ValueError as e:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(e),
+        )
+
+
+@router.post("/credits/transfer", response_model=APIResponse[CreditBalanceResponse])
+def transfer_credits(
+    request: TransferCreditsRequest,
+    teacher_user: dict = Depends(require_teacher),
+    db: Session = Depends(get_db),
+) -> APIResponse[CreditBalanceResponse]:
+    """Transfer credits from teacher to students."""
+    try:
+        credit_service.transfer_credits(
+            db,
+            teacher_id=teacher_user["user_id"],
+            student_ids=request.student_ids,
+            amount=request.amount,
+        )
+        bal = credit_service.get_or_create_balance(db, teacher_user["user_id"])
+        return APIResponse.success(data=CreditBalanceResponse.model_validate(bal))
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
             detail=str(e),
         )

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
 import { userApi } from '@/api/user'
 import { gamificationApi } from '@/api/gamification'
+import { creditsApi } from '@/api/credits'
 import * as teacherApi from '@/api/teacher'
 import * as studentApi from '@/api/student'
 import apiClient from '@/api/client'
@@ -13,6 +14,7 @@ import RatingDisplay from '@/components/gamification/RatingDisplay'
 import StreakBadge from '@/components/gamification/StreakBadge'
 import ProgressBar from '@/components/common/ProgressBar'
 import { useUIStore } from '@/stores/uiStore'
+import type { CreditTransactionItem } from '@/types/api'
 
 interface ProfileData {
   rating: number
@@ -60,6 +62,27 @@ const ProfilePage: React.FC = () => {
   const [pwdLoading, setPwdLoading] = useState(false)
   const [pwdError, setPwdError] = useState('')
   const addToast = useUIStore((s) => s.addToast)
+
+  // Credits state
+  const [creditBalance, setCreditBalance] = useState(0)
+  const [creditTotalEarned, setCreditTotalEarned] = useState(0)
+  const [creditTotalSpent, setCreditTotalSpent] = useState(0)
+  const [creditTransactions, setCreditTransactions] = useState<CreditTransactionItem[]>([])
+
+  // Fetch credits
+  useEffect(() => {
+    creditsApi.getBalance().then((res) => {
+      const d: any = (res.data as any)?.data ?? res.data
+      setCreditBalance(d.balance ?? 0)
+      setCreditTotalEarned(d.total_earned ?? 0)
+      setCreditTotalSpent(d.total_spent ?? 0)
+    }).catch(() => {})
+
+    creditsApi.getTransactions(1, 10).then((res) => {
+      const d: any = (res.data as any)?.data ?? res.data
+      setCreditTransactions(d.items ?? [])
+    }).catch(() => {})
+  }, [])
 
   useEffect(() => {
     setLoading(true)
@@ -486,6 +509,65 @@ const ProfilePage: React.FC = () => {
           </div>
         </Card>
       )}
+
+      {/* ── Credits Section ── */}
+      <Card padding="lg" hoverable={false}>
+        <div className="flex items-center gap-3 mb-4">
+          <span className="text-xl">{'\uD83D\uDCB0'}</span>
+          <h3 className="text-[var(--text-md)] font-semibold text-[var(--text)]">我的积分</h3>
+        </div>
+
+        {/* Balance + Stats */}
+        <div className="flex items-center gap-6 mb-5">
+          <div className="text-center">
+            <p className="text-3xl font-bold text-[var(--accent)] tabular-nums">{creditBalance}</p>
+            <p className="text-[var(--text-xs)] text-[var(--text-muted)] mt-1">积分</p>
+          </div>
+          <div className="h-10 w-px bg-[var(--border)]" />
+          <div className="flex gap-6">
+            <div className="text-center">
+              <p className="text-[var(--text-sm)] font-semibold text-[var(--success)] tabular-nums">{creditTotalEarned}</p>
+              <p className="text-[var(--text-xs)] text-[var(--text-muted)]">累计获得</p>
+            </div>
+            <div className="text-center">
+              <p className="text-[var(--text-sm)] font-semibold text-[var(--danger)] tabular-nums">{creditTotalSpent}</p>
+              <p className="text-[var(--text-xs)] text-[var(--text-muted)]">累计消耗</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Recent Transactions */}
+        {creditTransactions.length > 0 ? (
+          <div>
+            <h4 className="text-[var(--text-xs)] text-[var(--text-muted)] font-medium mb-2">最近流水</h4>
+            <div className="space-y-1.5">
+              {creditTransactions.map((tx) => (
+                <div
+                  key={tx.id}
+                  className="flex items-center justify-between px-3 py-2 rounded-[var(--radius-sm)] bg-[var(--bg)]"
+                >
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[var(--text-sm)] text-[var(--text)] truncate">{tx.description}</p>
+                    <p className="text-[var(--text-xs)] text-[var(--text-muted)]">
+                      {new Date(tx.created_at).toLocaleString('zh-CN', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}
+                    </p>
+                  </div>
+                  <span
+                    className="text-[var(--text-sm)] font-semibold tabular-nums shrink-0 ml-3"
+                    style={{ color: tx.amount > 0 ? 'var(--success)' : 'var(--danger)' }}
+                  >
+                    {tx.amount > 0 ? '+' : ''}{tx.amount}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <p className="text-[var(--text-sm)] text-[var(--text-muted)] text-center py-3">
+            暂无积分流水
+          </p>
+        )}
+      </Card>
 
       {/* Password Change Modal */}
       <Modal open={showPwdModal} onClose={() => setShowPwdModal(false)} title="修改密码">

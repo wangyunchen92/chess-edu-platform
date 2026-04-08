@@ -17,7 +17,7 @@ from app.schemas.puzzles import (
     PuzzleItem,
     PuzzleStatsResponse,
 )
-from app.services import puzzle_service
+from app.services import credit_service, puzzle_service
 from app.services.gamification_service import award_xp
 from app.services.membership_service import consume_quota, get_daily_quota
 
@@ -143,6 +143,19 @@ def submit_puzzle_attempt(
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Daily puzzle limit reached",
+            )
+
+    # Theme (专项训练) puzzles cost credits
+    if request.source == "theme":
+        cost = credit_service.CREDIT_COSTS["theme_puzzle"]
+        balance = credit_service.get_balance(db, user_id)
+        if not credit_service.consume_credits(
+            db, user_id, cost, "专项训练", puzzle_id
+        ):
+            return APIResponse.error(
+                code=402,
+                message="积分不足",
+                data={"required": cost, "balance": balance},
             )
 
     try:

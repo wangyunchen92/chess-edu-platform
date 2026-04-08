@@ -2,6 +2,7 @@ import React from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { useUIStore } from '@/stores/uiStore'
 import { useAuthStore } from '@/stores/authStore'
+import CreditsBadge from '@/components/common/CreditsBadge'
 
 interface NavItem {
   path: string
@@ -158,6 +159,11 @@ const Sidebar: React.FC = () => {
             </span>
           )}
         </div>
+      </div>
+
+      {/* Credits Badge */}
+      <div className="px-3 mb-1">
+        <CreditsBadge collapsed={collapsed} />
       </div>
 
       {/* Nav Items */}

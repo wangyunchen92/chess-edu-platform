@@ -19,7 +19,7 @@ from app.schemas.learn import (
     UpdateProgressRequest,
     UpdateProgressResponse,
 )
-from app.services import course_service
+from app.services import course_service, credit_service
 from app.services.gamification_service import award_xp
 from app.services.membership_service import consume_quota
 
@@ -177,6 +177,18 @@ def ai_teach_interaction(
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Daily AI Q&A limit reached",
+        )
+
+    # Consume credits for AI interactive teaching
+    cost = credit_service.CREDIT_COSTS["ai_teaching"]
+    balance = credit_service.get_balance(db, user_id)
+    if not credit_service.consume_credits(
+        db, user_id, cost, "AI互动教学", lesson_id
+    ):
+        return APIResponse.error(
+            code=402,
+            message="积分不足",
+            data={"required": cost, "balance": balance},
         )
 
     try:

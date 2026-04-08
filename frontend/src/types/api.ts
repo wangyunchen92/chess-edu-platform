@@ -1015,3 +1015,27 @@ export interface NotificationListResponse {
   unread_count: number
   total: number
 }
+
+// ── Credits ────────────────────────────────────────────────────
+
+export interface CreditBalanceResponse {
+  balance: number
+  total_earned: number
+  total_spent: number
+}
+
+export interface CreditTransactionItem {
+  id: string
+  amount: number
+  balance_after: number
+  type: string
+  description: string
+  created_at: string
+}
+
+export interface CreditPackageItem {
+  id: string
+  name: string
+  credits: number
+  price_cents: number
+}

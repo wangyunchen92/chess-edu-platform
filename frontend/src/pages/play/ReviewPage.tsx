@@ -4,8 +4,10 @@ import { playApi } from '@/api/play'
 import Chessboard from '@/components/chess/Chessboard'
 import Card from '@/components/common/Card'
 import ProgressBar from '@/components/common/ProgressBar'
+import InsufficientCreditsModal from '@/components/common/InsufficientCreditsModal'
 import { EngineManager } from '@/engine'
 import { createGame, uciToSan } from '@/utils/chess'
+import { useCreditStore } from '@/stores/creditStore'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -173,14 +175,18 @@ function computeStats(moves: ReviewMove[]): AnalysisStats {
 // Component
 // ---------------------------------------------------------------------------
 
+const ANALYSIS_CREDIT_COST = 50
+
 const ReviewPage: React.FC = () => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
+  const { balance, fetchBalance, deduct } = useCreditStore()
 
   const [review, setReview] = useState<ReviewData | null>(null)
   const [loading, setLoading] = useState(true)
   const [currentStep, setCurrentStep] = useState(0) // 0 = initial position
   const [isPlaying, setIsPlaying] = useState(false)
+  const [showCreditsModal, setShowCreditsModal] = useState(false)
 
   // Analysis state
   const [isAnalyzing, setIsAnalyzing] = useState(false)
@@ -190,6 +196,9 @@ const ReviewPage: React.FC = () => {
   const [selectedDepth, setSelectedDepth] = useState(DEFAULT_ANALYSIS_DEPTH)
   const depthRef = useRef(DEFAULT_ANALYSIS_DEPTH)
   const analysisCancelledRef = useRef(false)
+
+  // Fetch credit balance on mount
+  useEffect(() => { fetchBalance() }, [fetchBalance])
 
   // ---------------------------------------------------------------------------
   // Fetch review data
@@ -268,10 +277,19 @@ const ReviewPage: React.FC = () => {
   const startAnalysis = useCallback(async () => {
     if (!review || review.moves.length === 0) return
 
+    // Credit check
+    if (balance < ANALYSIS_CREDIT_COST) {
+      setShowCreditsModal(true)
+      return
+    }
+
     setIsAnalyzing(true)
     setAnalysisProgress(0)
     setAnalysisError(null)
     analysisCancelledRef.current = false
+
+    // Deduct credits
+    deduct(ANALYSIS_CREDIT_COST)
 
     try {
       const engine = EngineManager.getInstance()
@@ -345,7 +363,7 @@ const ReviewPage: React.FC = () => {
     } finally {
       setIsAnalyzing(false)
     }
-  }, [review])
+  }, [review, balance, deduct])
 
   const cancelAnalysis = useCallback(() => {
     analysisCancelledRef.current = true
@@ -881,6 +899,14 @@ const ReviewPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Insufficient Credits Modal */}
+      <InsufficientCreditsModal
+        open={showCreditsModal}
+        onClose={() => setShowCreditsModal(false)}
+        required={ANALYSIS_CREDIT_COST}
+        balance={balance}
+      />
     </div>
   )
 }

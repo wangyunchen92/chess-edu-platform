@@ -8,7 +8,11 @@ import Card from '@/components/common/Card'
 import Modal from '@/components/common/Modal'
 import Loading from '@/components/common/Loading'
 import ProgressBar from '@/components/common/ProgressBar'
+import InsufficientCreditsModal from '@/components/common/InsufficientCreditsModal'
+import { useCreditStore } from '@/stores/creditStore'
 import { Chess } from 'chess.js'
+
+const THEME_PUZZLE_COST = 20
 
 // Theme name mapping
 const THEME_NAMES: Record<string, string> = {
@@ -110,7 +114,18 @@ const ThemePracticePage: React.FC = () => {
   const [totalCorrect, setTotalCorrect] = useState(0)
   const [showExitModal, setShowExitModal] = useState(false)
 
+  // Credits
+  const creditBalance = useCreditStore((s) => s.balance)
+  const fetchBalance = useCreditStore((s) => s.fetchBalance)
+  const deductCredits = useCreditStore((s) => s.deduct)
+  const [showCreditsModal, setShowCreditsModal] = useState(false)
+
   const themeName = theme ? (THEME_NAMES[theme] || theme) : '未知主题'
+
+  // Fetch credit balance on mount
+  useEffect(() => {
+    fetchBalance()
+  }, [fetchBalance])
 
   // Load puzzles
   const loadPuzzles = useCallback(async (isInitial: boolean) => {
@@ -186,6 +201,15 @@ const ThemePracticePage: React.FC = () => {
     (from: string, to: string, promotion?: string) => {
       if (!currentPuzzle || puzzleSolved || puzzleFailed) return
 
+      // Check credits on first move of this puzzle
+      if (solutionStep === 0) {
+        const currentBalance = useCreditStore.getState().balance
+        if (currentBalance < THEME_PUZZLE_COST) {
+          setShowCreditsModal(true)
+          return
+        }
+      }
+
       const userMove = `${from}${to}${promotion ?? ''}`
       const expectedMove = currentPuzzle.solution[solutionStep]
       if (!expectedMove) return
@@ -208,6 +232,7 @@ const ThemePracticePage: React.FC = () => {
             setTotalAttempted((a) => a + 1)
             setTotalCorrect((c) => c + 1)
 
+            deductCredits(THEME_PUZZLE_COST)
             puzzlesApi.submitAttempt(currentPuzzle.id, {
               user_moves: currentPuzzle.solution.join(','),
               is_correct: true,
@@ -242,6 +267,7 @@ const ThemePracticePage: React.FC = () => {
         setPuzzleFailed(true)
         setTotalAttempted((a) => a + 1)
 
+        deductCredits(THEME_PUZZLE_COST)
         puzzlesApi.submitAttempt(currentPuzzle.id, {
           user_moves: userMove,
           is_correct: false,
@@ -540,6 +566,14 @@ const ThemePracticePage: React.FC = () => {
           </div>
         </div>
       </Modal>
+
+      {/* Insufficient credits modal */}
+      <InsufficientCreditsModal
+        open={showCreditsModal}
+        onClose={() => setShowCreditsModal(false)}
+        required={THEME_PUZZLE_COST}
+        balance={creditBalance}
+      />
 
       <style>{`
         @keyframes theme-wrong {

@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useUIStore } from '@/stores/uiStore'
+import { useCreditStore } from '@/stores/creditStore'
+import { creditsApi } from '@/api/credits'
 import Card from '@/components/common/Card'
 import Button from '@/components/common/Button'
 import Avatar from '@/components/common/Avatar'
@@ -63,6 +65,13 @@ const TeacherDashboardPage: React.FC = () => {
   const [inviteCodes, setInviteCodes] = useState<InviteCodeResponse[]>([])
   const [generatingCode, setGeneratingCode] = useState(false)
   const [copiedCode, setCopiedCode] = useState<string | null>(null)
+
+  // Credits transfer modal
+  const [showTransferModal, setShowTransferModal] = useState(false)
+  const [selectedStudentIds, setSelectedStudentIds] = useState<string[]>([])
+  const [transferAmount, setTransferAmount] = useState('')
+  const [transferring, setTransferring] = useState(false)
+  const fetchBalance = useCreditStore((s) => s.fetchBalance)
 
   const loadStudents = useCallback(async () => {
     setLoading(true)
@@ -148,6 +157,44 @@ const TeacherDashboardPage: React.FC = () => {
     setShowInviteModal(true)
   }
 
+  const openTransferModal = () => {
+    setSelectedStudentIds([])
+    setTransferAmount('')
+    setShowTransferModal(true)
+  }
+
+  const toggleStudentSelection = (studentId: string) => {
+    setSelectedStudentIds((prev) =>
+      prev.includes(studentId)
+        ? prev.filter((id) => id !== studentId)
+        : [...prev, studentId]
+    )
+  }
+
+  const handleTransferCredits = async () => {
+    const amount = parseInt(transferAmount, 10)
+    if (!amount || amount <= 0) {
+      addToast('error', '请输入有效的积分数量')
+      return
+    }
+    if (selectedStudentIds.length === 0) {
+      addToast('error', '请至少选择一名学生')
+      return
+    }
+    setTransferring(true)
+    try {
+      await creditsApi.transferCredits(selectedStudentIds, amount)
+      addToast('success', `已向 ${selectedStudentIds.length} 名学生各分发 ${amount} 积分`)
+      setShowTransferModal(false)
+      fetchBalance()
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : '分发积分失败'
+      addToast('error', msg)
+    } finally {
+      setTransferring(false)
+    }
+  }
+
   if (loading) {
     return <Loading size="lg" text="加载中..." />
   }
@@ -166,9 +213,14 @@ const TeacherDashboardPage: React.FC = () => {
             </p>
           )}
         </div>
-        <Button variant="primary" size="md" onClick={openInviteModal}>
-          生成邀请码
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="secondary" size="md" onClick={openTransferModal} disabled={students.length === 0}>
+            分发积分
+          </Button>
+          <Button variant="primary" size="md" onClick={openInviteModal}>
+            生成邀请码
+          </Button>
+        </div>
       </div>
 
       {/* Error */}
@@ -352,6 +404,77 @@ const TeacherDashboardPage: React.FC = () => {
               )
             })}
           </div>
+        </div>
+      </Modal>
+
+      {/* Transfer Credits Modal */}
+      <Modal
+        open={showTransferModal}
+        onClose={() => setShowTransferModal(false)}
+        title="分发积分"
+        width="520px"
+      >
+        <div className="space-y-5">
+          <p className="text-[var(--text-sm)] text-[var(--text-sub)]">
+            选择学生并输入每人分发的积分数量
+          </p>
+
+          {/* Student checkboxes */}
+          <div className="space-y-2 max-h-[280px] overflow-y-auto">
+            {students.map((student) => (
+              <label
+                key={student.student_id}
+                className="flex items-center gap-3 px-4 py-3 rounded-[var(--radius-sm)] bg-[var(--bg)] cursor-pointer hover:bg-[var(--bg-hover)] transition-colors"
+              >
+                <input
+                  type="checkbox"
+                  checked={selectedStudentIds.includes(student.student_id)}
+                  onChange={() => toggleStudentSelection(student.student_id)}
+                  className="w-4 h-4 rounded border-[var(--border)] text-[var(--accent)] focus:ring-[var(--accent)]"
+                />
+                <Avatar
+                  src={student.avatar_url}
+                  name={student.nickname || student.username}
+                  size="sm"
+                />
+                <span className="text-[var(--text-sm)] text-[var(--text)] font-medium">
+                  {student.nickname || student.username}
+                </span>
+              </label>
+            ))}
+          </div>
+
+          {/* Amount input */}
+          <div>
+            <label className="block text-[var(--text-xs)] text-[var(--text-sub)] font-medium mb-1.5">
+              每人分发积分数
+            </label>
+            <input
+              type="number"
+              min={1}
+              value={transferAmount}
+              onChange={(e) => setTransferAmount(e.target.value)}
+              placeholder="请输入积分数量"
+              className="w-full px-4 py-2.5 rounded-[var(--radius-sm)] text-[var(--text-sm)] bg-[var(--bg)] border border-[var(--border)] text-[var(--text)] focus:border-[var(--accent)] outline-none"
+            />
+          </div>
+
+          {/* Summary + Submit */}
+          {selectedStudentIds.length > 0 && transferAmount && parseInt(transferAmount, 10) > 0 && (
+            <p className="text-[var(--text-xs)] text-[var(--text-muted)] text-center">
+              将向 {selectedStudentIds.length} 名学生各分发 {transferAmount} 积分，共计 {selectedStudentIds.length * parseInt(transferAmount, 10)} 积分
+            </p>
+          )}
+
+          <Button
+            variant="primary"
+            className="w-full"
+            onClick={handleTransferCredits}
+            loading={transferring}
+            disabled={selectedStudentIds.length === 0 || !transferAmount}
+          >
+            确认分发
+          </Button>
         </div>
       </Modal>
     </div>

@@ -5,6 +5,8 @@ import { Chess } from 'chess.js'
 import { EngineManager } from '@/engine'
 import { freePlayApi } from '@/api/freePlay'
 import { uciToSan, createGame } from '@/utils/chess'
+import InsufficientCreditsModal from '@/components/common/InsufficientCreditsModal'
+import { useCreditStore } from '@/stores/creditStore'
 import type { MoveEvaluation } from '@/engine/types'
 
 // ---------------------------------------------------------------------------
@@ -130,8 +132,15 @@ function evalToFriendlyText(cp: number): string {
 // Component
 // ---------------------------------------------------------------------------
 
+const ENGINE_ANALYSIS_CREDIT_COST = 20
+
 const BoardEditorPage: React.FC = () => {
   const navigate = useNavigate()
+  const { balance, fetchBalance, deduct } = useCreditStore()
+  const [showCreditsModal, setShowCreditsModal] = useState(false)
+
+  // Fetch credit balance on mount
+  useEffect(() => { fetchBalance() }, [fetchBalance])
 
   // Board state
   const [boardMap, setBoardMap] = useState<Record<string, string>>(() => fenToBoardMap(INITIAL_FEN))
@@ -235,8 +244,17 @@ const BoardEditorPage: React.FC = () => {
   // ---------------------------------------------------------------------------
 
   const handleAnalyze = useCallback(async () => {
+    // Credit check
+    if (balance < ENGINE_ANALYSIS_CREDIT_COST) {
+      setShowCreditsModal(true)
+      return
+    }
+
     setAnalyzing(true)
     setAnalysisError(null)
+
+    // Deduct credits
+    deduct(ENGINE_ANALYSIS_CREDIT_COST)
 
     try {
       // Validate the position first
@@ -264,7 +282,7 @@ const BoardEditorPage: React.FC = () => {
     } finally {
       setAnalyzing(false)
     }
-  }, [currentFen])
+  }, [currentFen, balance, deduct])
 
   // ---------------------------------------------------------------------------
   // Save position
@@ -655,6 +673,14 @@ const BoardEditorPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Insufficient Credits Modal */}
+      <InsufficientCreditsModal
+        open={showCreditsModal}
+        onClose={() => setShowCreditsModal(false)}
+        required={ENGINE_ANALYSIS_CREDIT_COST}
+        balance={balance}
+      />
     </div>
   )
 }
