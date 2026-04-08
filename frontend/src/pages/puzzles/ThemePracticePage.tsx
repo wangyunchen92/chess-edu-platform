@@ -1,16 +1,9 @@
-import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
 import { puzzlesApi } from '@/api/puzzles'
-import type { PuzzleItem } from '@/types/api'
-import Chessboard from '@/components/chess/Chessboard'
 import Button from '@/components/common/Button'
 import Card from '@/components/common/Card'
-import Modal from '@/components/common/Modal'
-import Loading from '@/components/common/Loading'
-import ProgressBar from '@/components/common/ProgressBar'
-import InsufficientCreditsModal from '@/components/common/InsufficientCreditsModal'
-import { useCreditStore } from '@/stores/creditStore'
-import { Chess } from 'chess.js'
+import { usePuzzleStore } from '@/stores/puzzleStore'
 
 const THEME_PUZZLE_COST = 20
 
@@ -45,617 +38,170 @@ const THEME_NAMES: Record<string, string> = {
   endgame: '残局',
 }
 
-/** Check if a move string looks like UCI format */
-function looksLikeUci(move: string): boolean {
-  return /^[a-h][1-8][a-h][1-8][qrbnQRBN]?$/.test(move)
-}
-
-/** Convert an array of SAN moves to UCI format */
-function solutionSanToUci(fen: string, sanMoves: string[]): string[] {
-  const uciMoves: string[] = []
-  const chess = new Chess(fen)
-  for (const san of sanMoves) {
-    try {
-      const move = chess.move(san)
-      if (!move) break
-      uciMoves.push(move.from + move.to + (move.promotion ?? ''))
-    } catch {
-      break
-    }
-  }
-  return uciMoves
-}
-
-interface ParsedPuzzle {
-  id: string
-  fen: string
-  solution: string[]
-}
-
-function parsePuzzleData(raw: PuzzleItem): ParsedPuzzle {
-  const fen = raw.fen ?? ''
-  let rawMoves: string[] = []
-  if (raw.solution_moves) {
-    rawMoves = Array.isArray(raw.solution_moves)
-      ? raw.solution_moves
-      : (raw.solution_moves as string).split(',')
-  }
-  rawMoves = rawMoves.map((m: string) => m.trim()).filter(Boolean)
-  const solution = rawMoves.length > 0 && !looksLikeUci(rawMoves[0])
-    ? solutionSanToUci(fen, rawMoves)
-    : rawMoves
-  return {
-    id: raw.id ?? raw.puzzle_code ?? '',
-    fen,
-    solution,
-  }
-}
-
-// Difficulty levels for theme training
-const DIFFICULTY_LEVELS = [
-  { key: 1, label: '入门', emoji: '\u2B50', color: 'var(--success)', ratingRange: '400-800' },
-  { key: 2, label: '初级', emoji: '\uD83C\uDF1F', color: 'var(--info)', ratingRange: '800-1200' },
-  { key: 3, label: '中级', emoji: '\uD83D\uDCAA', color: 'var(--warning)', ratingRange: '1200-1600' },
-  { key: 4, label: '高级', emoji: '\uD83D\uDD25', color: 'var(--danger)', ratingRange: '1600-2000' },
-  { key: 5, label: '大师', emoji: '\uD83D\uDC51', color: 'var(--rank-purple)', ratingRange: '2000+' },
+// Difficulty tabs for theme training
+const DIFFICULTY_TABS = [
+  { key: 1, label: '入门', emoji: '\u2B50', color: 'var(--success)' },
+  { key: 2, label: '初级', emoji: '\uD83C\uDF1F', color: 'var(--info)' },
+  { key: 3, label: '中级', emoji: '\uD83D\uDCAA', color: 'var(--warning)' },
+  { key: 4, label: '高级', emoji: '\uD83D\uDD25', color: 'var(--danger)' },
+  { key: 5, label: '大师', emoji: '\uD83D\uDC51', color: 'var(--rank-purple)' },
 ]
 
-// Difficulty selection page (shown when no difficulty param)
-const DifficultySelectPage: React.FC<{ theme: string; themeName: string }> = ({ theme, themeName }) => {
+const PAGE_SIZE = 20
+
+// Puzzle list page (shown when no specific puzzle selected)
+const ThemePuzzleListPage: React.FC<{ theme: string; themeName: string }> = ({ theme, themeName }) => {
   const navigate = useNavigate()
+  const [difficulty, setDifficulty] = useState(1)
+  const [puzzles, setPuzzles] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [page, setPage] = useState(1)
+  const setPuzzleList = usePuzzleStore((s: any) => s.setPuzzleList)
+
+  useEffect(() => {
+    setLoading(true)
+    setPuzzles([])
+    setPage(1)
+    puzzlesApi.getThemePuzzles(theme, PAGE_SIZE * 5, difficulty)
+      .then((res) => {
+        const payload: any = (res.data as any)?.data ?? res.data
+        const list = Array.isArray(payload) ? payload : []
+        setPuzzles(list)
+        // hasMore handled by comparing paginatedPuzzles.length < puzzles.length
+      })
+      .catch(() => setPuzzles([]))
+      .finally(() => setLoading(false))
+  }, [theme, difficulty])
+
+  const paginatedPuzzles = puzzles.slice(0, page * PAGE_SIZE)
+  const tabInfo = DIFFICULTY_TABS.find((t) => t.key === difficulty) ?? DIFFICULTY_TABS[0]
+
+  const goToPuzzle = (puzzleId: string) => {
+    if (setPuzzleList) {
+      setPuzzleList(paginatedPuzzles.map((p: any) => p.id ?? p.puzzle_code))
+    }
+    navigate(`/puzzles/solve/${puzzleId}?source=theme&theme=${theme}`)
+  }
+
   return (
     <div className="space-y-5">
+      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[var(--text-2xl)] font-bold text-[var(--text)]">
-            {'\u2694\uFE0F'} {themeName}
+          <h1 className="text-[var(--text-2xl)] font-bold text-[var(--text)] flex items-center gap-2">
+            <span>{'\u2694\uFE0F'}</span>
+            <span>{themeName}</span>
           </h1>
-          <p className="text-[var(--text-sm)] text-[var(--text-sub)] mt-1">选择难度开始训练</p>
+          <p className="text-[var(--text-sm)] text-[var(--text-sub)] mt-1">
+            选择难度，点击题目开始训练
+          </p>
         </div>
-        <Button variant="secondary" size="sm" onClick={() => navigate('/puzzles/themes')}>返回</Button>
+        <Button variant="secondary" size="sm" onClick={() => navigate('/puzzles/themes')}>
+          返回
+        </Button>
       </div>
-      <div className="space-y-2">
-        {DIFFICULTY_LEVELS.map((d) => (
-          <Card
-            key={d.key}
-            padding="md"
-            onClick={() => navigate(`/puzzles/theme/${theme}?difficulty=${d.key}`)}
+
+      {/* Difficulty tabs */}
+      <div className="flex gap-2 overflow-x-auto pb-1">
+        {DIFFICULTY_TABS.map((tab) => (
+          <button
+            key={tab.key}
+            onClick={() => { setDifficulty(tab.key); setPage(1) }}
+            className={[
+              'flex items-center gap-1.5 px-3 py-2 rounded-full text-[var(--text-sm)] font-medium whitespace-nowrap transition-colors',
+              difficulty === tab.key
+                ? 'bg-[var(--accent)] text-white'
+                : 'bg-[var(--bg)] text-[var(--text-sub)] hover:bg-[var(--bg-hover)]',
+            ].join(' ')}
           >
-            <div className="flex items-center gap-3">
-              <div className="text-2xl w-10 text-center">{d.emoji}</div>
-              <div className="flex-1">
-                <span className="text-[var(--text-md)] font-semibold text-[var(--text)]">
-                  {d.label}
-                </span>
-                <p className="text-[var(--text-xs)] text-[var(--text-muted)]">
-                  评分 {d.ratingRange}
-                </p>
-              </div>
-              <span className="inline-flex items-center gap-1 text-[var(--text-xs)] text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded-full">
-                {'\uD83D\uDCB0'} 每题 {THEME_PUZZLE_COST} 积分
-              </span>
-              <div className="text-[var(--text-muted)] text-sm">{'\u203A'}</div>
-            </div>
-          </Card>
+            <span>{tab.emoji}</span>
+            <span>{tab.label}</span>
+          </button>
         ))}
       </div>
+
+      {/* Progress */}
+      {!loading && puzzles.length > 0 && (
+        <Card padding="md" hoverable={false}>
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[var(--text-sm)] font-medium text-[var(--text)]">
+              {tabInfo.emoji} {tabInfo.label} · 共 {puzzles.length} 题
+            </span>
+            <span className="inline-flex items-center gap-1 text-[var(--text-xs)] text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded-full">
+              {'\uD83D\uDCB0'} 每题 {THEME_PUZZLE_COST} 积分
+            </span>
+          </div>
+        </Card>
+      )}
+
+      {/* Puzzle grid */}
+      {loading ? (
+        <div className="text-center py-8">
+          <div className="text-2xl animate-bounce mb-2">{'\uD83E\uDDE9'}</div>
+          <p className="text-[var(--text-muted)]">加载题目...</p>
+        </div>
+      ) : puzzles.length === 0 ? (
+        <Card padding="lg" hoverable={false}>
+          <div className="text-center py-4">
+            <p className="text-[var(--text-sub)]">该难度暂无题目</p>
+          </div>
+        </Card>
+      ) : (
+        <>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+            {paginatedPuzzles.map((puzzle, i) => {
+              const solved = puzzle.solved || puzzle.is_correct
+              return (
+                <Card
+                  key={puzzle.id ?? i}
+                  padding="md"
+                  onClick={() => goToPuzzle(puzzle.id ?? puzzle.puzzle_code)}
+                >
+                  <div className="text-center space-y-2">
+                    <div
+                      className="w-10 h-10 mx-auto rounded-full flex items-center justify-center text-lg font-bold"
+                      style={{
+                        background: solved
+                          ? 'rgba(16,185,129,0.15)'
+                          : 'var(--accent-light)',
+                        color: solved
+                          ? 'var(--success)'
+                          : 'var(--accent)',
+                      }}
+                    >
+                      {solved ? '\u2713' : i + 1}
+                    </div>
+                    <div className="text-[var(--text-xs)] text-[var(--text-muted)]">
+                      {puzzle.rating ?? ''}
+                    </div>
+                  </div>
+                </Card>
+              )
+            })}
+          </div>
+
+          {/* Load more */}
+          {paginatedPuzzles.length < puzzles.length && (
+            <div className="text-center">
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => setPage((p) => p + 1)}
+              >
+                加载更多 ({paginatedPuzzles.length}/{puzzles.length})
+              </Button>
+            </div>
+          )}
+        </>
+      )}
     </div>
   )
 }
 
 const ThemePracticePage: React.FC = () => {
   const { theme } = useParams<{ theme: string }>()
-  const [searchParams] = useSearchParams()
-  const difficulty = searchParams.get('difficulty')
-
-  // If no difficulty selected, show difficulty picker
   const themeName = theme ? (THEME_NAMES[theme] || theme) : '未知主题'
-  if (!difficulty) {
-    return <DifficultySelectPage theme={theme ?? ''} themeName={themeName} />
-  }
-
-  return <ThemePracticeContent theme={theme ?? ''} difficulty={parseInt(difficulty, 10)} />
-}
-
-const ThemePracticeContent: React.FC<{ theme: string; difficulty: number }> = ({ theme, difficulty }) => {
-  const navigate = useNavigate()
-
-  const [puzzles, setPuzzles] = useState<ParsedPuzzle[]>([])
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [loading, setLoading] = useState(true)
-  const [loadingMore, setLoadingMore] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-
-  // Puzzle solving state
-  const [currentFen, setCurrentFen] = useState('')
-  const [solutionStep, setSolutionStep] = useState(0)
-  const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null)
-  const [puzzleSolved, setPuzzleSolved] = useState(false)
-  const [puzzleFailed, setPuzzleFailed] = useState(false)
-  const startTimeRef = useRef(Date.now())
-
-  // Session stats
-  const [totalAttempted, setTotalAttempted] = useState(0)
-  const [totalCorrect, setTotalCorrect] = useState(0)
-  const [showExitModal, setShowExitModal] = useState(false)
-
-  // Credits
-  const creditBalance = useCreditStore((s) => s.balance)
-  const fetchBalance = useCreditStore((s) => s.fetchBalance)
-  const deductCredits = useCreditStore((s) => s.deduct)
-  const [showCreditsModal, setShowCreditsModal] = useState(false)
-
-  const themeName = theme ? (THEME_NAMES[theme] || theme) : '未知主题'
-
-  // Fetch credit balance on mount
-  useEffect(() => {
-    fetchBalance()
-  }, [fetchBalance])
-
-  // Load puzzles
-  const loadPuzzles = useCallback(async (isInitial: boolean) => {
-    if (!theme) return
-    if (isInitial) {
-      setLoading(true)
-    } else {
-      setLoadingMore(true)
-    }
-    setError(null)
-    try {
-      const res = await puzzlesApi.getThemePuzzles(theme, 10, difficulty)
-      const payload: any = (res.data as any)?.data ?? res.data
-      const list: PuzzleItem[] = Array.isArray(payload) ? payload : (payload?.items ?? payload?.puzzles ?? [])
-      if (list.length === 0) {
-        if (isInitial) {
-          setError('该主题暂无题目')
-        }
-        return
-      }
-      const parsed = list.map(parsePuzzleData).filter((p) => p.solution.length > 0)
-      if (parsed.length === 0) {
-        if (isInitial) {
-          setError('该主题暂无可用题目')
-        }
-        return
-      }
-      if (isInitial) {
-        setPuzzles(parsed)
-        setCurrentIndex(0)
-      } else {
-        setPuzzles((prev) => [...prev, ...parsed])
-      }
-    } catch (err) {
-      console.error('[ThemePracticePage] Failed to load puzzles:', err)
-      if (isInitial) {
-        setError('加载题目失败，请稍后重试')
-      }
-    } finally {
-      if (isInitial) {
-        setLoading(false)
-      } else {
-        setLoadingMore(false)
-      }
-    }
-  }, [theme])
-
-  useEffect(() => {
-    loadPuzzles(true)
-  }, [loadPuzzles])
-
-  // Initialize current puzzle
-  const currentPuzzle = puzzles[currentIndex] ?? null
-
-  useEffect(() => {
-    if (!currentPuzzle) return
-    setCurrentFen(currentPuzzle.fen)
-    setSolutionStep(0)
-    setFeedback(null)
-    setPuzzleSolved(false)
-    setPuzzleFailed(false)
-    startTimeRef.current = Date.now()
-  }, [currentPuzzle])
-
-  // Player color from initial FEN
-  const playerColor = useMemo(() => {
-    if (!currentPuzzle?.fen) return 'white'
-    const parts = currentPuzzle.fen.split(' ')
-    return parts[1] === 'w' ? 'white' : 'black'
-  }, [currentPuzzle?.fen])
-
-  const handleMove = useCallback(
-    (from: string, to: string, promotion?: string) => {
-      if (!currentPuzzle || puzzleSolved || puzzleFailed) return
-
-      // Check credits on first move of this puzzle
-      if (solutionStep === 0) {
-        const currentBalance = useCreditStore.getState().balance
-        if (currentBalance < THEME_PUZZLE_COST) {
-          setShowCreditsModal(true)
-          return
-        }
-      }
-
-      const userMove = `${from}${to}${promotion ?? ''}`
-      const expectedMove = currentPuzzle.solution[solutionStep]
-      if (!expectedMove) return
-
-      const isMatch = userMove === expectedMove ||
-        (`${from}${to}` === expectedMove.slice(0, 4) && expectedMove.length > 4)
-
-      if (isMatch) {
-        // Correct move
-        try {
-          const chess = new Chess(currentFen)
-          chess.move({ from, to, promotion: (promotion ?? expectedMove[4]) as any })
-          const newFen = chess.fen()
-          setCurrentFen(newFen)
-
-          if (solutionStep + 1 >= currentPuzzle.solution.length) {
-            // Puzzle complete!
-            setFeedback('correct')
-            setPuzzleSolved(true)
-            setTotalAttempted((a) => a + 1)
-            setTotalCorrect((c) => c + 1)
-
-            deductCredits(THEME_PUZZLE_COST)
-            puzzlesApi.submitAttempt(currentPuzzle.id, {
-              user_moves: currentPuzzle.solution.join(','),
-              is_correct: true,
-              time_spent_ms: Date.now() - startTimeRef.current,
-              source: 'theme',
-            }).catch((err) => console.error('[ThemePracticePage] API error:', err))
-          } else {
-            // Play opponent response
-            setSolutionStep((s) => s + 1)
-            setFeedback('correct')
-            setTimeout(() => {
-              setFeedback(null)
-              const opMove = currentPuzzle.solution[solutionStep + 1]
-              if (opMove) {
-                try {
-                  const chess2 = new Chess(newFen)
-                  const opPromo = opMove.length > 4 ? opMove[4] : undefined
-                  chess2.move({ from: opMove.slice(0, 2), to: opMove.slice(2, 4), promotion: opPromo as any })
-                  setCurrentFen(chess2.fen())
-                  setSolutionStep((s) => s + 1)
-                } catch { /* skip */ }
-              }
-            }, 600)
-          }
-        } catch {
-          setFeedback('wrong')
-          setTimeout(() => setFeedback(null), 1200)
-        }
-      } else {
-        // Wrong move
-        setFeedback('wrong')
-        setPuzzleFailed(true)
-        setTotalAttempted((a) => a + 1)
-
-        deductCredits(THEME_PUZZLE_COST)
-        puzzlesApi.submitAttempt(currentPuzzle.id, {
-          user_moves: userMove,
-          is_correct: false,
-          time_spent_ms: Date.now() - startTimeRef.current,
-          source: 'theme',
-        }).catch((err) => console.error('[ThemePracticePage] API error:', err))
-
-        setTimeout(() => setFeedback(null), 1200)
-      }
-    },
-    [currentPuzzle, currentFen, solutionStep, puzzleSolved, puzzleFailed],
-  )
-
-  const getValidMoves = useCallback(
-    (square: string): string[] => {
-      try {
-        const chess = new Chess(currentFen)
-        const moves = chess.moves({ square: square as any, verbose: true })
-        return moves.map((m) => m.to)
-      } catch {
-        return []
-      }
-    },
-    [currentFen],
-  )
-
-  const goToNextPuzzle = useCallback(() => {
-    const nextIndex = currentIndex + 1
-    // If we're near the end, load more
-    if (nextIndex >= puzzles.length - 2) {
-      loadPuzzles(false)
-    }
-    if (nextIndex < puzzles.length) {
-      setCurrentIndex(nextIndex)
-    } else {
-      // Wait for more to load
-      loadPuzzles(false).then(() => {
-        setCurrentIndex(nextIndex)
-      })
-    }
-  }, [currentIndex, puzzles.length, loadPuzzles])
-
-  const handleExit = () => {
-    setShowExitModal(true)
-  }
-
-  const confirmExit = () => {
-    setShowExitModal(false)
-    navigate('/puzzles/themes')
-  }
-
-  const accuracy = totalAttempted > 0 ? Math.round((totalCorrect / totalAttempted) * 100) : 0
-
-  if (loading) {
-    return <Loading size="lg" text={`加载${themeName}题目...`} />
-  }
-
-  if (error) {
-    return (
-      <div className="space-y-5">
-        <div className="flex items-center justify-between">
-          <h1 className="text-[var(--text-2xl)] font-bold text-[var(--text)]">
-            {themeName}
-          </h1>
-          <Button variant="secondary" size="sm" onClick={() => navigate('/puzzles/themes')}>
-            返回
-          </Button>
-        </div>
-        <Card padding="lg" hoverable={false}>
-          <div className="text-center space-y-3">
-            <div className="text-4xl">{'\uD83D\uDE1E'}</div>
-            <p className="text-[var(--text-sub)]">{error}</p>
-            <Button variant="primary" size="sm" onClick={() => loadPuzzles(true)}>
-              重新加载
-            </Button>
-          </div>
-        </Card>
-      </div>
-    )
-  }
-
-  return (
-    <div className="space-y-4">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="min-w-0">
-          <div className="flex items-center gap-2">
-            <h1 className="text-[var(--text-lg)] font-bold text-[var(--text)]">
-              {themeName}
-            </h1>
-            <span className="inline-flex items-center gap-1 text-[var(--text-xs)] text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded-full">
-              {'\uD83D\uDCB0'} 每题消耗 {THEME_PUZZLE_COST} 积分
-            </span>
-          </div>
-          <div className="flex items-center gap-3 mt-1">
-            <span className="text-[var(--text-xs)] text-[var(--text-muted)]">
-              第 {totalAttempted + 1} 题
-            </span>
-            {totalAttempted > 0 && (
-              <span className="text-[var(--text-xs)] font-semibold" style={{
-                color: accuracy >= 80 ? 'var(--success)' : accuracy >= 50 ? 'var(--warning)' : 'var(--danger)'
-              }}>
-                正确率 {accuracy}%
-              </span>
-            )}
-          </div>
-        </div>
-        <Button variant="secondary" size="sm" onClick={handleExit}>
-          退出
-        </Button>
-      </div>
-
-      {/* Session progress bar */}
-      {totalAttempted > 0 && (
-        <ProgressBar value={totalCorrect} max={totalAttempted} height={4} />
-      )}
-
-      {/* Board + controls */}
-      {currentPuzzle && (
-        <div className="flex flex-col lg:flex-row gap-5 items-start">
-          {/* Board */}
-          <div className="flex flex-col items-center gap-3 w-full lg:w-auto">
-            <div
-              className="w-full max-w-[min(100vw-32px,480px)] lg:w-auto lg:max-w-none"
-              style={{
-                animation: feedback === 'wrong'
-                  ? 'theme-wrong 0.4s ease'
-                  : 'none',
-              }}
-            >
-              <Chessboard
-                fen={currentFen}
-                onMove={handleMove}
-                getValidMoves={getValidMoves}
-                orientation={playerColor === 'black' ? 'black' : 'white'}
-                interactive={!puzzleSolved && !puzzleFailed}
-              />
-            </div>
-
-            {/* Status line */}
-            <div className="text-[var(--text-sm)] text-[var(--text-sub)]">
-              {puzzleSolved ? (
-                <span className="text-[var(--success)] font-semibold">{'\u2705'} 正确！</span>
-              ) : puzzleFailed ? (
-                <span className="text-[var(--danger)] font-semibold">{'\u274C'} 答错了</span>
-              ) : (
-                <span>{playerColor === 'white' ? '白方' : '黑方'}走，找到最佳走法</span>
-              )}
-            </div>
-          </div>
-
-          {/* Right panel */}
-          <div className="flex-1 space-y-4 min-w-0 w-full lg:w-auto">
-            {/* Stats card */}
-            <Card padding="md" hoverable={false}>
-              <div className="grid grid-cols-3 gap-3 text-center">
-                <div>
-                  <div className="text-[var(--text-lg)] font-bold text-[var(--text)]">
-                    {totalAttempted}
-                  </div>
-                  <div className="text-[var(--text-xs)] text-[var(--text-muted)]">已做</div>
-                </div>
-                <div>
-                  <div className="text-[var(--text-lg)] font-bold text-[var(--success)]">
-                    {totalCorrect}
-                  </div>
-                  <div className="text-[var(--text-xs)] text-[var(--text-muted)]">正确</div>
-                </div>
-                <div>
-                  <div className="text-[var(--text-lg)] font-bold" style={{
-                    color: accuracy >= 80 ? 'var(--success)' : accuracy >= 50 ? 'var(--warning)' : totalAttempted > 0 ? 'var(--danger)' : 'var(--text)'
-                  }}>
-                    {totalAttempted > 0 ? `${accuracy}%` : '-'}
-                  </div>
-                  <div className="text-[var(--text-xs)] text-[var(--text-muted)]">正确率</div>
-                </div>
-              </div>
-            </Card>
-
-            {/* Feedback + Next button */}
-            {feedback === 'correct' && !puzzleSolved && (
-              <div
-                className="p-3 rounded-[var(--radius-sm)] text-center"
-                style={{
-                  background: 'rgba(16,185,129,0.1)',
-                  border: '1px solid rgba(16,185,129,0.2)',
-                }}
-              >
-                <span className="text-[var(--text-sm)] text-[var(--success)]">
-                  {'\u2705'} 正确！继续...
-                </span>
-              </div>
-            )}
-
-            {puzzleSolved && (
-              <Card padding="lg" hoverable={false}>
-                <div className="text-center space-y-3">
-                  <div className="text-3xl">{'\uD83C\uDF89'}</div>
-                  <p className="text-[var(--text-md)] font-bold text-[var(--success)]">
-                    太棒了！
-                  </p>
-                  <Button
-                    variant="primary"
-                    className="w-full"
-                    onClick={goToNextPuzzle}
-                    disabled={loadingMore}
-                  >
-                    {loadingMore ? '加载中...' : '下一题'}
-                  </Button>
-                </div>
-              </Card>
-            )}
-
-            {puzzleFailed && (
-              <Card padding="lg" hoverable={false}>
-                <div className="text-center space-y-3">
-                  <div className="text-3xl">{'\uD83D\uDE14'}</div>
-                  <p className="text-[var(--text-md)] font-bold text-[var(--danger)]">
-                    没关系，继续加油！
-                  </p>
-                  <Button
-                    variant="primary"
-                    className="w-full"
-                    onClick={goToNextPuzzle}
-                    disabled={loadingMore}
-                  >
-                    {loadingMore ? '加载中...' : '下一题'}
-                  </Button>
-                </div>
-              </Card>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Loading more indicator */}
-      {loadingMore && !puzzleSolved && !puzzleFailed && (
-        <div className="text-center py-4">
-          <p className="text-[var(--text-muted)] text-sm">加载更多题目...</p>
-        </div>
-      )}
-
-      {/* Exit statistics modal */}
-      <Modal
-        open={showExitModal}
-        onClose={() => setShowExitModal(false)}
-        title="训练统计"
-      >
-        <div className="space-y-5">
-          <div className="text-center">
-            <div className="text-4xl mb-3">
-              {accuracy >= 80 ? '\uD83C\uDF1F' : accuracy >= 50 ? '\uD83D\uDC4D' : '\uD83D\uDCAA'}
-            </div>
-            <h3 className="text-[var(--text-lg)] font-bold text-[var(--text)]">
-              {themeName} 训练完成
-            </h3>
-          </div>
-
-          <div className="grid grid-cols-3 gap-4 text-center">
-            <div>
-              <div className="text-[var(--text-2xl)] font-bold text-[var(--text)]">
-                {totalAttempted}
-              </div>
-              <div className="text-[var(--text-xs)] text-[var(--text-muted)]">做题数</div>
-            </div>
-            <div>
-              <div className="text-[var(--text-2xl)] font-bold text-[var(--success)]">
-                {totalCorrect}
-              </div>
-              <div className="text-[var(--text-xs)] text-[var(--text-muted)]">正确数</div>
-            </div>
-            <div>
-              <div className="text-[var(--text-2xl)] font-bold" style={{
-                color: accuracy >= 80 ? 'var(--success)' : accuracy >= 50 ? 'var(--warning)' : totalAttempted > 0 ? 'var(--danger)' : 'var(--text)'
-              }}>
-                {totalAttempted > 0 ? `${accuracy}%` : '-'}
-              </div>
-              <div className="text-[var(--text-xs)] text-[var(--text-muted)]">正确率</div>
-            </div>
-          </div>
-
-          {totalAttempted > 0 && (
-            <ProgressBar value={totalCorrect} max={totalAttempted} height={8} />
-          )}
-
-          <div className="flex gap-3">
-            <Button
-              variant="secondary"
-              className="flex-1"
-              onClick={() => setShowExitModal(false)}
-            >
-              继续训练
-            </Button>
-            <Button
-              variant="primary"
-              className="flex-1"
-              onClick={confirmExit}
-            >
-              返回主题列表
-            </Button>
-          </div>
-        </div>
-      </Modal>
-
-      {/* Insufficient credits modal */}
-      <InsufficientCreditsModal
-        open={showCreditsModal}
-        onClose={() => setShowCreditsModal(false)}
-        required={THEME_PUZZLE_COST}
-        balance={creditBalance}
-      />
-
-      <style>{`
-        @keyframes theme-wrong {
-          0%, 100% { transform: translateX(0); }
-          20% { transform: translateX(-8px); }
-          40% { transform: translateX(8px); }
-          60% { transform: translateX(-5px); }
-          80% { transform: translateX(5px); }
-        }
-      `}</style>
-    </div>
-  )
+  return <ThemePuzzleListPage theme={theme ?? ''} themeName={themeName} />
 }
 
 export default ThemePracticePage
