@@ -1,5 +1,7 @@
 """Puzzles module router (B2-1 & B2-2)."""
 
+from typing import Optional
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select, func
 from sqlalchemy.orm import Session
@@ -39,12 +41,17 @@ def get_themes(
 def get_theme_puzzles_route(
     theme: str,
     count: int = 10,
+    difficulty: Optional[int] = None,
     current_user: dict = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    """Get puzzles for a specific theme, matched to user rating."""
+    """Get puzzles for a specific theme, optionally filtered by difficulty (1-5).
+
+    Difficulty maps to rating ranges:
+    1: 0-800, 2: 800-1200, 3: 1200-1600, 4: 1600-2000, 5: 2000+
+    """
     user_id = current_user["user_id"]
-    puzzles = puzzle_service.get_theme_puzzles(db, user_id, theme, count)
+    puzzles = puzzle_service.get_theme_puzzles(db, user_id, theme, count, difficulty=difficulty)
     return APIResponse.success(data=puzzles)
 
 

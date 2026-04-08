@@ -173,6 +173,23 @@ const PuzzlesHomePage: React.FC = () => {
         </div>
       </Card>
 
+      {/* Theme Training — above Challenge Mode */}
+      <Card padding="lg" onClick={() => navigate('/puzzles/themes')}>
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 rounded-[var(--radius-md)] flex items-center justify-center text-2xl"
+            style={{ background: 'rgba(99,102,241,0.1)' }}>
+            {'\u2694\uFE0F'}
+          </div>
+          <div className="flex-1">
+            <h3 className="text-[var(--text-md)] font-semibold text-[var(--text)]">专项训练</h3>
+            <p className="text-[var(--text-xs)] text-[var(--text-muted)]">
+              按战术主题针对性练习，提升薄弱环节
+            </p>
+          </div>
+          <div className="text-[var(--text-muted)] text-sm">{'\u203A'}</div>
+        </div>
+      </Card>
+
       {/* Challenge Mode */}
       <div>
         <h2 className="text-[var(--text-lg)] font-bold text-[var(--text)] mb-3">
@@ -222,23 +239,6 @@ const PuzzlesHomePage: React.FC = () => {
           ))}
         </div>
       </div>
-
-      {/* Theme Training */}
-      <Card padding="lg" onClick={() => navigate('/puzzles/themes')}>
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-[var(--radius-md)] flex items-center justify-center text-2xl"
-            style={{ background: 'rgba(99,102,241,0.1)' }}>
-            {'\u2694\uFE0F'}
-          </div>
-          <div className="flex-1">
-            <h3 className="text-[var(--text-md)] font-semibold text-[var(--text)]">专项训练</h3>
-            <p className="text-[var(--text-xs)] text-[var(--text-muted)]">
-              按战术主题针对性练习，提升薄弱环节
-            </p>
-          </div>
-          <div className="text-[var(--text-muted)] text-sm">{'\u203A'}</div>
-        </div>
-      </Card>
 
       {/* Mistake Book */}
       <Card padding="lg" onClick={() => navigate('/puzzles/mistakes')}>

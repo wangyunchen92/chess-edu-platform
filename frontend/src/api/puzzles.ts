@@ -36,6 +36,6 @@ export const puzzlesApi = {
   getThemes: () =>
     apiClient.get<APIResponse<ThemeItem[]>>('/puzzles/themes'),
 
-  getThemePuzzles: (theme: string, count: number = 10) =>
-    apiClient.get<APIResponse<PuzzleItem[]>>(`/puzzles/theme/${theme}?count=${count}`),
+  getThemePuzzles: (theme: string, count: number = 10, difficulty?: number) =>
+    apiClient.get<APIResponse<PuzzleItem[]>>(`/puzzles/theme/${theme}?count=${count}${difficulty ? `&difficulty=${difficulty}` : ''}`),
 }

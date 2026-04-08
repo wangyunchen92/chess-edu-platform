@@ -145,14 +145,38 @@ def get_daily_puzzles(db: Session, user_id: str) -> dict:
     }
 
 
-def get_theme_puzzles(
-    db: Session, user_id: str, theme: str, count: int = 10,
-) -> list[dict]:
-    """Get puzzles for a specific theme, matched to user's rating.
+DIFFICULTY_RATING_RANGES = {
+    1: (0, 800),
+    2: (800, 1200),
+    3: (1200, 1600),
+    4: (1600, 2000),
+    5: (2000, 9999),
+}
 
-    For future theme-based training feature.
+
+def get_theme_puzzles(
+    db: Session, user_id: str, theme: str, count: int = 10, difficulty: int | None = None,
+) -> list[dict]:
+    """Get puzzles for a specific theme.
+
+    If difficulty is provided (1-5), filter by rating range.
+    Otherwise, match to user's rating.
     """
-    puzzles = _pick_puzzles_by_rating(db, user_id, count=count, theme=theme)
+    if difficulty and difficulty in DIFFICULTY_RATING_RANGES:
+        rating_min, rating_max = DIFFICULTY_RATING_RANGES[difficulty]
+        stmt = (
+            select(Puzzle)
+            .where(
+                Puzzle.themes.ilike(f"%{theme}%"),
+                Puzzle.rating >= rating_min,
+                Puzzle.rating < rating_max,
+            )
+            .order_by(func.random())
+            .limit(count)
+        )
+        puzzles = db.execute(stmt).scalars().all()
+    else:
+        puzzles = _pick_puzzles_by_rating(db, user_id, count=count, theme=theme)
     return [_puzzle_to_dict(p) for p in puzzles]
 
 

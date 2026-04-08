@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { puzzlesApi } from '@/api/puzzles'
 import type { PuzzleItem } from '@/types/api'
 import Chessboard from '@/components/chess/Chessboard'
@@ -91,8 +91,73 @@ function parsePuzzleData(raw: PuzzleItem): ParsedPuzzle {
   }
 }
 
+// Difficulty levels for theme training
+const DIFFICULTY_LEVELS = [
+  { key: 1, label: '入门', emoji: '\u2B50', color: 'var(--success)', ratingRange: '400-800' },
+  { key: 2, label: '初级', emoji: '\uD83C\uDF1F', color: 'var(--info)', ratingRange: '800-1200' },
+  { key: 3, label: '中级', emoji: '\uD83D\uDCAA', color: 'var(--warning)', ratingRange: '1200-1600' },
+  { key: 4, label: '高级', emoji: '\uD83D\uDD25', color: 'var(--danger)', ratingRange: '1600-2000' },
+  { key: 5, label: '大师', emoji: '\uD83D\uDC51', color: 'var(--rank-purple)', ratingRange: '2000+' },
+]
+
+// Difficulty selection page (shown when no difficulty param)
+const DifficultySelectPage: React.FC<{ theme: string; themeName: string }> = ({ theme, themeName }) => {
+  const navigate = useNavigate()
+  return (
+    <div className="space-y-5">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-[var(--text-2xl)] font-bold text-[var(--text)]">
+            {'\u2694\uFE0F'} {themeName}
+          </h1>
+          <p className="text-[var(--text-sm)] text-[var(--text-sub)] mt-1">选择难度开始训练</p>
+        </div>
+        <Button variant="secondary" size="sm" onClick={() => navigate('/puzzles/themes')}>返回</Button>
+      </div>
+      <div className="space-y-2">
+        {DIFFICULTY_LEVELS.map((d) => (
+          <Card
+            key={d.key}
+            padding="md"
+            onClick={() => navigate(`/puzzles/theme/${theme}?difficulty=${d.key}`)}
+          >
+            <div className="flex items-center gap-3">
+              <div className="text-2xl w-10 text-center">{d.emoji}</div>
+              <div className="flex-1">
+                <span className="text-[var(--text-md)] font-semibold text-[var(--text)]">
+                  {d.label}
+                </span>
+                <p className="text-[var(--text-xs)] text-[var(--text-muted)]">
+                  评分 {d.ratingRange}
+                </p>
+              </div>
+              <span className="inline-flex items-center gap-1 text-[var(--text-xs)] text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded-full">
+                {'\uD83D\uDCB0'} 每题 {THEME_PUZZLE_COST} 积分
+              </span>
+              <div className="text-[var(--text-muted)] text-sm">{'\u203A'}</div>
+            </div>
+          </Card>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 const ThemePracticePage: React.FC = () => {
   const { theme } = useParams<{ theme: string }>()
+  const [searchParams] = useSearchParams()
+  const difficulty = searchParams.get('difficulty')
+
+  // If no difficulty selected, show difficulty picker
+  const themeName = theme ? (THEME_NAMES[theme] || theme) : '未知主题'
+  if (!difficulty) {
+    return <DifficultySelectPage theme={theme ?? ''} themeName={themeName} />
+  }
+
+  return <ThemePracticeContent theme={theme ?? ''} difficulty={parseInt(difficulty, 10)} />
+}
+
+const ThemePracticeContent: React.FC<{ theme: string; difficulty: number }> = ({ theme, difficulty }) => {
   const navigate = useNavigate()
 
   const [puzzles, setPuzzles] = useState<ParsedPuzzle[]>([])
@@ -137,7 +202,7 @@ const ThemePracticePage: React.FC = () => {
     }
     setError(null)
     try {
-      const res = await puzzlesApi.getThemePuzzles(theme, 10)
+      const res = await puzzlesApi.getThemePuzzles(theme, 10, difficulty)
       const payload: any = (res.data as any)?.data ?? res.data
       const list: PuzzleItem[] = Array.isArray(payload) ? payload : (payload?.items ?? payload?.puzzles ?? [])
       if (list.length === 0) {
