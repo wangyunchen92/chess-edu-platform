@@ -175,6 +175,11 @@ const InteractiveTeachPage: React.FC = () => {
                   发送
                 </Button>
               </div>
+              <div className="flex items-center gap-2 mt-2">
+                <span className="inline-flex items-center gap-1 text-[var(--text-xs)] text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded-full">
+                  {'\uD83D\uDCB0'} 每次提问消耗 10 积分
+                </span>
+              </div>
               {/* Quick prompts */}
               <div className="flex flex-wrap gap-2 mt-2">
                 {['什么是开局三原则？', '教我叉子战术', '残局怎么下？'].map((q) => (

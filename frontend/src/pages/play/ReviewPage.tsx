@@ -551,6 +551,9 @@ const ReviewPage: React.FC = () => {
               >
                 {'\uD83D\uDD2C'} 分析
               </button>
+              <span className="inline-flex items-center gap-1 text-[10px] text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full">
+                {'\uD83D\uDCB0'} 消耗 {ANALYSIS_CREDIT_COST} 积分
+              </span>
             </>
           )}
           {isAnalyzing && (

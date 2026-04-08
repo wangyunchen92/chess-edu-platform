@@ -376,14 +376,19 @@ const DiagnosisPage: React.FC = () => {
           <Badge color={profile.confidence === 'high' ? 'success' : profile.confidence === 'medium' ? 'warning' : 'neutral'}>
             {profile.confidence === 'high' ? '高可信度' : profile.confidence === 'medium' ? '基本可信' : '数据不足'}
           </Badge>
-          <Button
-            variant="secondary"
-            size="sm"
-            loading={analyzing}
-            onClick={handleAnalyze}
-          >
-            重新分析
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="secondary"
+              size="sm"
+              loading={analyzing}
+              onClick={handleAnalyze}
+            >
+              重新分析
+            </Button>
+            <span className="inline-flex items-center gap-1 text-[var(--text-xs)] text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded-full">
+              {'\uD83D\uDCB0'} 消耗 30 积分
+            </span>
+          </div>
         </div>
       </div>
 

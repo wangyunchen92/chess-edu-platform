@@ -306,9 +306,14 @@ const DailyPuzzlePage: React.FC = () => {
 
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[var(--text-2xl)] font-bold text-[var(--text)]">
-            {'\u2600\uFE0F'} 每日谜题
-          </h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-[var(--text-2xl)] font-bold text-[var(--text)]">
+              {'\u2600\uFE0F'} 每日谜题
+            </h1>
+            <span className="inline-flex items-center gap-1 text-[var(--text-xs)] text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+              {'\uD83C\uDF81'} 全部答对 +15 积分
+            </span>
+          </div>
           <p className="text-[var(--text-sm)] text-[var(--text-sub)] mt-1">
             第 {currentIdx + 1}/{puzzles.length} 题
           </p>

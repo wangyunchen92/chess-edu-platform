@@ -571,18 +571,23 @@ const BoardEditorPage: React.FC = () => {
                 <h3 className="text-sm font-medium text-slate-300">
                   引擎分析
                 </h3>
-                <button
-                  onClick={handleAnalyze}
-                  disabled={analyzing}
-                  className={[
-                    'px-3 py-1.5 rounded text-xs font-medium transition-colors',
-                    analyzing
-                      ? 'bg-blue-600/50 text-white/60 cursor-not-allowed'
-                      : 'bg-blue-600 text-white hover:bg-blue-500',
-                  ].join(' ')}
-                >
-                  {analyzing ? '分析中...' : '分析局面'}
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={handleAnalyze}
+                    disabled={analyzing}
+                    className={[
+                      'px-3 py-1.5 rounded text-xs font-medium transition-colors',
+                      analyzing
+                        ? 'bg-blue-600/50 text-white/60 cursor-not-allowed'
+                        : 'bg-blue-600 text-white hover:bg-blue-500',
+                    ].join(' ')}
+                  >
+                    {analyzing ? '分析中...' : '分析局面'}
+                  </button>
+                  <span className="inline-flex items-center gap-1 text-[10px] text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full">
+                    {'\uD83D\uDCB0'} 消耗 {ENGINE_ANALYSIS_CREDIT_COST} 积分
+                  </span>
+                </div>
               </div>
 
               {analysisError && (

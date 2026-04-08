@@ -354,9 +354,14 @@ const ThemePracticePage: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="min-w-0">
-          <h1 className="text-[var(--text-lg)] font-bold text-[var(--text)]">
-            {themeName}
-          </h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-[var(--text-lg)] font-bold text-[var(--text)]">
+              {themeName}
+            </h1>
+            <span className="inline-flex items-center gap-1 text-[var(--text-xs)] text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded-full">
+              {'\uD83D\uDCB0'} 每题消耗 {THEME_PUZZLE_COST} 积分
+            </span>
+          </div>
           <div className="flex items-center gap-3 mt-1">
             <span className="text-[var(--text-xs)] text-[var(--text-muted)]">
               第 {totalAttempted + 1} 题

@@ -95,9 +95,14 @@ const DailyPlanPage: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[var(--text-2xl)] font-bold text-[var(--text)]">
-            {'\uD83C\uDFAF'} 今日训练
-          </h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-[var(--text-2xl)] font-bold text-[var(--text)]">
+              {'\uD83C\uDFAF'} 今日训练
+            </h1>
+            <span className="inline-flex items-center gap-1 text-[var(--text-xs)] text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+              {'\uD83C\uDF81'} 完成训练 +10 积分
+            </span>
+          </div>
           <p className="text-[var(--text-sm)] text-[var(--text-sub)] mt-1">
             每天坚持训练，棋力稳步提升！
           </p>

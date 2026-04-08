@@ -231,9 +231,14 @@ const DashboardPage: React.FC = () => {
 
       {/* ── Daily Todo Checklist ── */}
       <Card padding="lg">
-        <h3 className="text-[var(--text-md)] font-semibold text-[var(--text)] mb-3">
-          {'\uD83D\uDCCB'} 今日待办
-        </h3>
+        <div className="flex items-center gap-2 mb-3">
+          <h3 className="text-[var(--text-md)] font-semibold text-[var(--text)]">
+            {'\uD83D\uDCCB'} 今日待办
+          </h3>
+          <span className="inline-flex items-center gap-1 text-[var(--text-xs)] text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+            {'\uD83C\uDF81'} 今日已登录 +5 积分
+          </span>
+        </div>
         <div className="space-y-2">
           {[
             {
