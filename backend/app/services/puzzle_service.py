@@ -177,7 +177,28 @@ def get_theme_puzzles(
         puzzles = db.execute(stmt).scalars().all()
     else:
         puzzles = _pick_puzzles_by_rating(db, user_id, count=count, theme=theme)
-    return [_puzzle_to_dict(p) for p in puzzles]
+
+    # Batch-query user's correct attempts for these puzzles
+    puzzle_ids = [p.id for p in puzzles]
+    solved_ids: set[str] = set()
+    if puzzle_ids:
+        solved_rows = db.execute(
+            select(PuzzleAttempt.puzzle_id)
+            .where(
+                PuzzleAttempt.user_id == user_id,
+                PuzzleAttempt.puzzle_id.in_(puzzle_ids),
+                PuzzleAttempt.is_correct.is_(True),
+            )
+            .distinct()
+        ).scalars().all()
+        solved_ids = set(solved_rows)
+
+    results = []
+    for p in puzzles:
+        d = _puzzle_to_dict(p)
+        d["solved"] = p.id in solved_ids
+        results.append(d)
+    return results
 
 
 def get_available_themes(db: Session) -> list[dict]:
