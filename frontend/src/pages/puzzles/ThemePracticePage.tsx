@@ -66,6 +66,8 @@ const ThemePuzzleListPage: React.FC<{ theme: string; themeName: string }> = ({ t
       .then((res) => {
         const payload: any = (res.data as any)?.data ?? res.data
         const list = Array.isArray(payload) ? payload : []
+        // Sort by rating then id for stable ordering
+        list.sort((a: any, b: any) => (a.rating ?? 0) - (b.rating ?? 0) || (a.id ?? '').localeCompare(b.id ?? ''))
         setPuzzles(list)
         // hasMore handled by comparing paginatedPuzzles.length < puzzles.length
       })

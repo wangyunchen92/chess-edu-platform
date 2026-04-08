@@ -171,7 +171,7 @@ def get_theme_puzzles(
                 Puzzle.rating >= rating_min,
                 Puzzle.rating < rating_max,
             )
-            .order_by(func.random())
+            .order_by(Puzzle.rating, Puzzle.id)
             .limit(count)
         )
         puzzles = db.execute(stmt).scalars().all()
