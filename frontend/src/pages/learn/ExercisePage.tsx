@@ -51,7 +51,30 @@ const ExercisePage: React.FC = () => {
     learnApi.getExercises(id)
       .then((res) => {
         const payload = (res.data as any)?.data ?? res.data
-        if (payload) setExerciseSet(payload)
+        // API returns array directly; wrap into ExerciseSet format
+        if (Array.isArray(payload)) {
+          const exercises: Exercise[] = payload.map((e: any) => ({
+            id: e.id,
+            type: e.exercise_type === 'board' ? 'board' : 'quiz',
+            question: e.question_text,
+            options: e.options,
+            correctIndex: e.correct_answer != null ? parseInt(e.correct_answer, 10) : undefined,
+            fen: e.fen,
+            instruction: e.question_text,
+            expectedMove: e.correct_answer,
+            explanation: e.explanation,
+          }))
+          setExerciseSet({
+            id: id,
+            lessonId: id,
+            title: `课后练习`,
+            exercises,
+          })
+        } else if (payload?.exercises) {
+          setExerciseSet(payload)
+        } else if (payload) {
+          setExerciseSet(payload)
+        }
       })
       .catch((err) => { console.error('[ExercisePage] Failed to load exercises:', err); setExerciseSet(null) })
       .finally(() => setLoading(false))
