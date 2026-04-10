@@ -106,6 +106,9 @@ const ExercisePage: React.FC = () => {
         } catch { /* */ }
         setBoardSuccess(true)
         setAnswers((prev) => ({ ...prev, [current.id]: move }))
+        // Submit immediately
+        learnApi.submitExercise(current.id, { user_answer: move })
+          .catch((err) => console.error('[ExercisePage] submit error:', err))
       }
     },
     [current, boardFen, boardSuccess],
@@ -126,11 +129,11 @@ const ExercisePage: React.FC = () => {
   const handleQuizSubmit = useCallback(() => {
     if (selectedAnswer === null || !current) return
     setQuizSubmitted(true)
-    // Store the selected index as string (matches backend correct_answer format)
-    setAnswers((prev) => ({
-      ...prev,
-      [current.id]: String(selectedAnswer),
-    }))
+    const answerStr = String(selectedAnswer)
+    setAnswers((prev) => ({ ...prev, [current.id]: answerStr }))
+    // Submit immediately
+    learnApi.submitExercise(current.id, { user_answer: answerStr })
+      .catch((err) => console.error('[ExercisePage] submit error:', err))
   }, [selectedAnswer, current])
 
   const canProceed = current?.type === 'quiz' ? quizSubmitted : boardSuccess
@@ -146,14 +149,7 @@ const ExercisePage: React.FC = () => {
         return ans != null && parseInt(ans, 10) === ex.correctIndex
       }).length
       setScore(correct)
-
-      // Submit
-      if (id) {
-        // Submit each exercise answer individually
-        Object.entries(answers).forEach(([exId, result]) => {
-          learnApi.submitExercise(exId, { user_answer: result }).catch((err) => console.error('[ExercisePage] API error:', err))
-        })
-      }
+      // Answers already submitted per-question, no batch submit needed
     }
   }, [currentIdx, totalExercises, answers, id])
 
