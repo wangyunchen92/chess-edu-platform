@@ -127,11 +127,13 @@ const KidsRecognizePage: React.FC = () => {
         const raw = res?.data as any
         const data = raw?.data ?? raw
         if (Array.isArray(data)) {
-          const rec = data.find((p: any) => p.game === 'recognize')
-          if (rec) {
-            setCompletedLevels(rec.completed_levels ?? [])
-            setStarsMap(rec.stars ?? {})
-          }
+          // API returns flat array [{game_type, level, completed, stars}]
+          const items = data.filter((p: any) => p.game_type === 'recognize' && p.completed)
+          // Convert 1-indexed API levels to 0-indexed frontend
+          setCompletedLevels(items.map((p: any) => p.level - 1))
+          const stars: Record<number, number> = {}
+          items.forEach((p: any) => { stars[p.level - 1] = p.stars })
+          setStarsMap(stars)
         }
       })
       .catch(() => {})
@@ -202,7 +204,7 @@ const KidsRecognizePage: React.FC = () => {
           setStarsMap(newStars)
           learnApi.updateKidsProgress({
             game_type: 'recognize',
-            level: currentLevel,
+            level: currentLevel + 1,  // API expects 1-indexed
             stars,
           }).catch(() => {})
         } else {

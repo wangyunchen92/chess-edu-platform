@@ -59,7 +59,7 @@ const CAPTURE_GROUPS: GroupConfig[] = [
     image: 'wB',
     levels: [
       { level: 1, fen: '4k3/8/8/8/8/8/1p6/B3K3 w - - 0 1', targets: ['b2'], minMoves: 1 },
-      { level: 2, fen: '4k3/8/8/8/3p4/8/8/1B2K3 w - - 0 1', targets: ['d4'], minMoves: 1 },
+      { level: 2, fen: '4k3/8/8/8/4p3/8/8/1B2K3 w - - 0 1', targets: ['e4'], minMoves: 1 },
       { level: 3, fen: '4k3/8/5p2/8/8/8/8/B3K3 w - - 0 1', targets: ['f6'], minMoves: 1 },
     ],
   },
@@ -71,7 +71,7 @@ const CAPTURE_GROUPS: GroupConfig[] = [
     levels: [
       { level: 1, fen: '4k3/8/8/p7/8/8/8/Q3K3 w - - 0 1', targets: ['a5'], minMoves: 1 },
       { level: 2, fen: '4k3/8/8/8/3p4/8/8/Q3K3 w - - 0 1', targets: ['d4'], minMoves: 1 },
-      { level: 3, fen: '4k3/8/8/8/8/5p2/8/Q3K3 w - - 0 1', targets: ['f3'], minMoves: 1 },
+      { level: 3, fen: '4k3/8/8/8/8/2p5/8/Q3K3 w - - 0 1', targets: ['c3'], minMoves: 1 },
     ],
   },
   {
@@ -80,7 +80,7 @@ const CAPTURE_GROUPS: GroupConfig[] = [
     emoji: '\u2658',
     image: 'wN',
     levels: [
-      { level: 1, fen: '4k3/8/8/8/8/8/2p5/4K1N1 w - - 0 1', targets: ['c2'], minMoves: 1 },
+      { level: 1, fen: '4k3/8/8/8/8/5p2/8/4K1N1 w - - 0 1', targets: ['f3'], minMoves: 1 },
       { level: 2, fen: '4k3/8/8/8/8/1p6/8/2N1K3 w - - 0 1', targets: ['b3'], minMoves: 1 },
       { level: 3, fen: '4k3/8/8/8/8/2p5/8/1N2K3 w - - 0 1', targets: ['c3'], minMoves: 1 },
     ],
@@ -121,11 +121,12 @@ const KidsCapturePage: React.FC = () => {
         const raw = res?.data as any
         const data = raw?.data ?? raw
         if (Array.isArray(data)) {
-          const rec = data.find((p: any) => p.game === 'capture')
-          if (rec) {
-            setCompletedLevels(rec.completed_levels ?? [])
-            setStarsMap(rec.stars ?? {})
-          }
+          // API returns flat array [{game_type, level, completed, stars}], level is 1-indexed
+          const items = data.filter((p: any) => p.game_type === 'capture' && p.completed)
+          setCompletedLevels(items.map((p: any) => p.level - 1))  // Convert to 0-indexed
+          const stars: Record<number, number> = {}
+          items.forEach((p: any) => { stars[p.level - 1] = p.stars })
+          setStarsMap(stars)
         }
       })
       .catch(() => {})
@@ -211,7 +212,7 @@ const KidsCapturePage: React.FC = () => {
 
         learnApi.updateKidsProgress({
           game_type: 'capture',
-          level: currentGlobal,
+          level: currentGlobal + 1,  // API expects 1-indexed
           stars,
         }).catch(() => {})
 
