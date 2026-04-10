@@ -143,15 +143,18 @@ const ExercisePage: React.FC = () => {
       setCurrentIdx((i) => i + 1)
     } else {
       // Calculate score
-      // Count correct: compare stored answer index with exercise correctIndex
       const correct = exercises.filter((ex) => {
         const ans = answers[ex.id]
-        return ans != null && parseInt(ans, 10) === ex.correctIndex
+        if (ans == null) return false
+        if (ex.type === 'quiz') {
+          return parseInt(ans, 10) === ex.correctIndex
+        }
+        // board type: answer is the move string, matches expectedMove
+        return ans === ex.expectedMove
       }).length
       setScore(correct)
-      // Answers already submitted per-question, no batch submit needed
     }
-  }, [currentIdx, totalExercises, answers, id])
+  }, [currentIdx, totalExercises, exercises, answers])
 
   if (loading) {
     return (

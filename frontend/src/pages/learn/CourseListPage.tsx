@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { learnApi } from '@/api/learn'
 import Card from '@/components/common/Card'
 import Badge from '@/components/common/Badge'
@@ -308,7 +308,16 @@ const ExercisesOverview: React.FC = () => {
 
 const CourseListPage: React.FC = () => {
   const navigate = useNavigate()
-  const [activeTab, setActiveTab] = useState<TabType>('courses')
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [activeTab, setActiveTab] = useState<TabType>(() => {
+    const tab = searchParams.get('tab')
+    return tab === 'exercises' ? 'exercises' : 'courses'
+  })
+
+  const handleTabChange = (tab: TabType) => {
+    setActiveTab(tab)
+    setSearchParams(tab === 'courses' ? {} : { tab }, { replace: true })
+  }
   const [courses, setCourses] = useState<Course[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -466,7 +475,7 @@ const CourseListPage: React.FC = () => {
       ]).map((tab) => (
         <button
           key={tab.key}
-          onClick={() => setActiveTab(tab.key)}
+          onClick={() => handleTabChange(tab.key)}
           className={[
             'relative px-5 py-2.5 text-[var(--text-sm)] font-semibold transition-colors',
             activeTab === tab.key
