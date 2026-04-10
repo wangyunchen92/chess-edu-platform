@@ -105,7 +105,7 @@ const ExercisePage: React.FC = () => {
           setBoardFen(chess.fen())
         } catch { /* */ }
         setBoardSuccess(true)
-        setAnswers((prev) => ({ ...prev, [current.id]: 'correct' }))
+        setAnswers((prev) => ({ ...prev, [current.id]: move }))
       }
     },
     [current, boardFen, boardSuccess],
@@ -126,9 +126,10 @@ const ExercisePage: React.FC = () => {
   const handleQuizSubmit = useCallback(() => {
     if (selectedAnswer === null || !current) return
     setQuizSubmitted(true)
+    // Store the selected index as string (matches backend correct_answer format)
     setAnswers((prev) => ({
       ...prev,
-      [current.id]: selectedAnswer === current.correctIndex ? 'correct' : 'wrong',
+      [current.id]: String(selectedAnswer),
     }))
   }, [selectedAnswer, current])
 
@@ -139,7 +140,11 @@ const ExercisePage: React.FC = () => {
       setCurrentIdx((i) => i + 1)
     } else {
       // Calculate score
-      const correct = Object.values(answers).filter((a) => a === 'correct').length
+      // Count correct: compare stored answer index with exercise correctIndex
+      const correct = exercises.filter((ex) => {
+        const ans = answers[ex.id]
+        return ans != null && parseInt(ans, 10) === ex.correctIndex
+      }).length
       setScore(correct)
 
       // Submit
