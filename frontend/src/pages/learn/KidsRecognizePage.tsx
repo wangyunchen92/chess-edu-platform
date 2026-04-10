@@ -201,7 +201,7 @@ const KidsRecognizePage: React.FC = () => {
           setCompletedLevels(newCompleted)
           setStarsMap(newStars)
           learnApi.updateKidsProgress({
-            game: 'recognize',
+            game_type: 'recognize',
             level: currentLevel,
             stars,
           }).catch(() => {})

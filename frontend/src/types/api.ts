@@ -675,7 +675,7 @@ export interface KidsProgressItem {
 }
 
 export interface UpdateKidsProgressRequest {
-  game: string
+  game_type: string
   level: number
   stars: number
 }
