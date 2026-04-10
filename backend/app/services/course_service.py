@@ -268,6 +268,8 @@ def get_lesson_exercises(db: Session, lesson_id: str, user_id: str) -> list[dict
             "question_text": e.question_text,
             "fen": e.fen,
             "options": e.options,
+            "correct_answer": e.correct_answer,
+            "explanation": e.explanation,
             "attempted": att is not None,
             "is_correct": att.is_correct if att else None,
         })

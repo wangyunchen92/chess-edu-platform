@@ -108,6 +108,8 @@ class ExerciseItem(BaseModel):
     question_text: str
     fen: Optional[str] = None
     options: Optional[Any] = None
+    correct_answer: Optional[str] = None
+    explanation: Optional[str] = None
     attempted: bool = False
     is_correct: Optional[bool] = None
 
