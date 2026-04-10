@@ -59,7 +59,7 @@ const KidsPlayground: React.FC = () => {
       gradient: 'from-green-200 via-emerald-100 to-teal-50',
       border: 'border-green-200',
       shadow: 'shadow-green-100/50',
-      totalLevels: 12,
+      totalLevels: 40,
       completedLevels: captureCompleted,
       route: '/learn/kids/capture',
     },
