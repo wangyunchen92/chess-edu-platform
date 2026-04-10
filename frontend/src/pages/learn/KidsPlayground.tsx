@@ -31,12 +31,8 @@ const KidsPlayground: React.FC = () => {
   }, [])
 
   // Count completed levels per game_type
-  const recognizeCompleted = progressItems.filter(
-    (p) => p.game_type === 'recognize' && p.completed
-  ).length
-  const captureCompleted = progressItems.filter(
-    (p) => p.game_type === 'capture' && p.completed
-  ).length
+  const getCompleted = (gameType: string) =>
+    progressItems.filter((p) => p.game_type === gameType && p.completed).length
 
   const games = [
     {
@@ -48,7 +44,7 @@ const KidsPlayground: React.FC = () => {
       border: 'border-pink-200',
       shadow: 'shadow-pink-100/50',
       totalLevels: 6,
-      completedLevels: recognizeCompleted,
+      completedLevels: getCompleted('recognize'),
       route: '/learn/kids/recognize',
     },
     {
@@ -60,8 +56,44 @@ const KidsPlayground: React.FC = () => {
       border: 'border-green-200',
       shadow: 'shadow-green-100/50',
       totalLevels: 40,
-      completedLevels: captureCompleted,
+      completedLevels: getCompleted('capture'),
       route: '/learn/kids/capture',
+    },
+    {
+      key: 'maze',
+      title: '棋子迷宫',
+      emoji: '\uD83C\uDFF0',
+      subtitle: '操控棋子走到终点',
+      gradient: 'from-indigo-200 via-purple-100 to-blue-50',
+      border: 'border-indigo-200',
+      shadow: 'shadow-indigo-100/50',
+      totalLevels: 10,
+      completedLevels: getCompleted('maze'),
+      route: '/learn/kids/maze',
+    },
+    {
+      key: 'safety',
+      title: '安全格子',
+      emoji: '\uD83D\uDEE1\uFE0F',
+      subtitle: '把棋子放到安全的地方',
+      gradient: 'from-cyan-200 via-blue-100 to-teal-50',
+      border: 'border-cyan-200',
+      shadow: 'shadow-cyan-100/50',
+      totalLevels: 10,
+      completedLevels: getCompleted('safety'),
+      route: '/learn/kids/safety',
+    },
+    {
+      key: 'counting',
+      title: '数一数',
+      emoji: '\uD83D\uDD22',
+      subtitle: '观察棋盘回答问题',
+      gradient: 'from-amber-200 via-orange-100 to-yellow-50',
+      border: 'border-orange-200',
+      shadow: 'shadow-orange-100/50',
+      totalLevels: 10,
+      completedLevels: getCompleted('counting'),
+      route: '/learn/kids/counting',
     },
   ]
 

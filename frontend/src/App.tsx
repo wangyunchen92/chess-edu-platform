@@ -41,6 +41,9 @@ const InteractiveTeachPage = React.lazy(() => import('@/pages/learn/InteractiveT
 const ExercisePage = React.lazy(() => import('@/pages/learn/ExercisePage'))
 const KidsRecognizePage = React.lazy(() => import('@/pages/learn/KidsRecognizePage'))
 const KidsCapturePage = React.lazy(() => import('@/pages/learn/KidsCapturePage'))
+const KidsMazePage = React.lazy(() => import('@/pages/learn/KidsMazePage'))
+const KidsSafetyPage = React.lazy(() => import('@/pages/learn/KidsSafetyPage'))
+const KidsCountingPage = React.lazy(() => import('@/pages/learn/KidsCountingPage'))
 
 // Diagnosis
 const DiagnosisPage = React.lazy(() => import('@/pages/diagnosis/DiagnosisPage'))
@@ -192,6 +195,9 @@ function App() {
             <Route path="/learn/exercise/:id" element={<SuspenseWrapper><ExercisePage /></SuspenseWrapper>} />
             <Route path="/learn/kids/recognize" element={<SuspenseWrapper><KidsRecognizePage /></SuspenseWrapper>} />
             <Route path="/learn/kids/capture" element={<SuspenseWrapper><KidsCapturePage /></SuspenseWrapper>} />
+            <Route path="/learn/kids/maze" element={<SuspenseWrapper><KidsMazePage /></SuspenseWrapper>} />
+            <Route path="/learn/kids/safety" element={<SuspenseWrapper><KidsSafetyPage /></SuspenseWrapper>} />
+            <Route path="/learn/kids/counting" element={<SuspenseWrapper><KidsCountingPage /></SuspenseWrapper>} />
 
             {/* Diagnosis */}
             <Route path="/diagnosis" element={<SuspenseWrapper><DiagnosisPage /></SuspenseWrapper>} />
