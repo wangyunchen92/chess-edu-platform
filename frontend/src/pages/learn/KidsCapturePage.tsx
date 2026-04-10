@@ -43,8 +43,8 @@ type GamePhase = 'select' | 'play' | 'result'
 const CAPTURE_GROUPS: GroupConfig[] = [
   {
     key: 'rook',
-    name: '\u8F66',
-    emoji: '\u2656',
+    name: '\u5C0F\u6C7D\u8F66',
+    emoji: '\uD83D\uDE97',
     image: 'wR',
     levels: [
       // 1-3: 单目标一步吃
@@ -63,8 +63,8 @@ const CAPTURE_GROUPS: GroupConfig[] = [
   },
   {
     key: 'bishop',
-    name: '\u8C61',
-    emoji: '\u2657',
+    name: '\u72EC\u89D2\u517D',
+    emoji: '\uD83E\uDD84',
     image: 'wB',
     levels: [
       { level: 1, fen: '4k3/8/8/8/8/8/1p6/B6K w - - 0 1', targets: ['b2'], minMoves: 1 },
@@ -81,8 +81,8 @@ const CAPTURE_GROUPS: GroupConfig[] = [
   },
   {
     key: 'queen',
-    name: '\u540E',
-    emoji: '\u2655',
+    name: '\u516C\u4E3B',
+    emoji: '\uD83D\uDC78',
     image: 'wQ',
     levels: [
       { level: 1, fen: '4k3/8/8/p7/8/8/8/Q6K w - - 0 1', targets: ['a5'], minMoves: 1 },
@@ -99,8 +99,8 @@ const CAPTURE_GROUPS: GroupConfig[] = [
   },
   {
     key: 'knight',
-    name: '\u9A6C',
-    emoji: '\u2658',
+    name: '\u5C0F\u6050\u9F99',
+    emoji: '\uD83E\uDD8E',
     image: 'wN',
     levels: [
       { level: 1, fen: '4k3/8/8/8/8/5p2/8/5KN1 w - - 0 1', targets: ['f3'], minMoves: 1 },
@@ -121,6 +121,16 @@ const CAPTURE_GROUPS: GroupConfig[] = [
 
 const BASE = import.meta.env.BASE_URL || '/'
 const pieceSvg = (key: string) => `${BASE}assets/pieces/${key}.svg`
+
+/** Cartoon emoji overrides for kids capture game */
+const CARTOON_PIECES: Record<string, string> = {
+  R: '\uD83D\uDE97',  // 车→小汽车🚗
+  B: '\uD83E\uDD84',  // 象→独角兽🦄
+  Q: '\uD83D\uDC78',  // 后→公主👸
+  N: '\uD83E\uDD8E',  // 马→小恐龙🦎
+  p: '\uD83C\uDF6D',  // 黑兵(目标)→棒棒糖🍭
+  // K, k 被 hideKingsFromFen 移除不会显示
+}
 
 /** Remove kings from FEN for display (chess.js needs them but kids don't) */
 function hideKingsFromFen(fen: string): string {
@@ -529,7 +539,7 @@ const KidsCapturePage: React.FC = () => {
         </div>
       </div>
 
-      {/* Chessboard — hide kings from display */}
+      {/* Chessboard — cartoon pieces for kids */}
       <div className="flex justify-center mb-4">
         <Chessboard
           fen={hideKingsFromFen(fen)}
@@ -541,6 +551,7 @@ const KidsCapturePage: React.FC = () => {
           highlights={targetHighlights}
           interactive={true}
           orientation="white"
+          pieceOverrides={CARTOON_PIECES}
         />
       </div>
 

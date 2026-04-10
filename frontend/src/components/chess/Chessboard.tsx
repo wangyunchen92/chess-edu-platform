@@ -17,6 +17,8 @@ interface ChessboardProps {
   orientation?: 'white' | 'black'
   highlights?: string[]
   interactive?: boolean
+  /** Override piece rendering: FEN char → emoji/image URL. Unmatched chars use default SVG. */
+  pieceOverrides?: Record<string, string>
 }
 
 // ---------------------------------------------------------------------------
@@ -74,6 +76,7 @@ const Chessboard: React.FC<ChessboardProps> = ({
   orientation = 'white',
   highlights = [],
   interactive = true,
+  pieceOverrides,
 }) => {
   const [selectedSquare, setSelectedSquare] = useState<string | null>(null)
   const [computedValidMoves, setComputedValidMoves] = useState<string[]>([])
@@ -210,7 +213,21 @@ const Chessboard: React.FC<ChessboardProps> = ({
                   onClick={() => handleSquareClick(square)}
                 >
                   {/* Piece — with CSS transition for smooth movement appearance */}
-                  {piece && (
+                  {piece && pieceOverrides?.[piece] ? (
+                    <span
+                      className="pointer-events-none select-none"
+                      style={{
+                        fontSize: 'min(5vw, 36px)',
+                        lineHeight: 1,
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                      }}
+                    >
+                      {pieceOverrides[piece]}
+                    </span>
+                  ) : piece && (
                     <img
                       src={PIECE_SVG[piece]}
                       alt={piece}
