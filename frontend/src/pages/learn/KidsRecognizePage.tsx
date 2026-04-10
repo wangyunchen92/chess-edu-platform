@@ -144,7 +144,7 @@ const KidsRecognizePage: React.FC = () => {
   const levels: LevelInfo[] = useMemo(() => {
     return PIECES.map((piece, i) => {
       const isCompleted = completedLevels.includes(i)
-      const isAvailable = i === 0 || completedLevels.includes(i - 1)
+      const isAvailable = true  // All levels available, no lock
       return {
         index: i,
         piece,

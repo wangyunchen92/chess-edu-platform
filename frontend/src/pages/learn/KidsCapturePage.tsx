@@ -170,7 +170,7 @@ const KidsCapturePage: React.FC = () => {
     CAPTURE_GROUPS.forEach((group, gi) => {
       group.levels.forEach((lvl, li) => {
         const isCompleted = completedLevels.includes(globalIdx)
-        const isAvailable = globalIdx === 0 || completedLevels.includes(globalIdx - 1)
+        const isAvailable = true  // All levels available, no lock
         result.push({
           groupIndex: gi,
           levelIndex: li,
