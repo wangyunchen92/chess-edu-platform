@@ -104,15 +104,43 @@ for (const group of CAPTURE_GROUPS) {
       }
     }
 
-    // For L1-3 (single target), verify one-move reachability
-    if (level.targets.length === 1) {
-      const moves = chess.moves({ square: pieceSquare, verbose: true })
-      const reachable = moves.map(m => m.to)
-      if (!reachable.includes(level.targets[0])) {
-        console.log(`  FAIL ${label}: ${pieceSquare}→${level.targets[0]} 一步不可达（合法: ${reachable.join(',')})`)
-        allOk = false
-        failed++
+    // Verify reachability: simulate eating all targets one by one
+    // The piece must be able to reach at least one target from current position,
+    // eat it, then from new position reach another, etc.
+    function canEatAll(chess, pieceSquare, targets, pieceType) {
+      if (targets.length === 0) return true
+      // Force white's turn
+      const fenParts = chess.fen().split(' ')
+      if (fenParts[1] !== 'w') {
+        fenParts[1] = 'w'
+        chess.load(fenParts.join(' '))
       }
+      const moves = chess.moves({ square: pieceSquare, verbose: true })
+      const reachableTargets = targets.filter(t => moves.some(m => m.to === t))
+      if (reachableTargets.length === 0) return false
+
+      // Try each reachable target
+      for (const target of reachableTargets) {
+        const saved = chess.fen()
+        chess.move({ from: pieceSquare, to: target })
+        // Force white's turn again
+        const fp = chess.fen().split(' ')
+        fp[1] = 'w'
+        chess.load(fp.join(' '))
+        const remaining = targets.filter(t => t !== target)
+        if (canEatAll(chess, target, remaining, pieceType)) {
+          chess.load(saved)
+          return true
+        }
+        chess.load(saved)
+      }
+      return false
+    }
+
+    if (!canEatAll(new Chess(level.fen), pieceSquare, [...level.targets], group.piece)) {
+      console.log(`  FAIL ${label}: 无法依次吃完所有目标 [${level.targets.join(',')}]`)
+      allOk = false
+      failed++
     }
 
     if (allOk) {

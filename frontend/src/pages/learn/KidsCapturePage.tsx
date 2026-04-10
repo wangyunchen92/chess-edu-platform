@@ -70,13 +70,13 @@ const CAPTURE_GROUPS: GroupConfig[] = [
       { level: 1, fen: '4k3/8/8/8/8/8/1p6/B3K3 w - - 0 1', targets: ['b2'], minMoves: 1 },
       { level: 2, fen: '4k3/8/8/8/4p3/8/8/1B2K3 w - - 0 1', targets: ['e4'], minMoves: 1 },
       { level: 3, fen: '4k3/8/5p2/8/8/8/8/B3K3 w - - 0 1', targets: ['f6'], minMoves: 1 },
-      { level: 4, fen: '4k3/8/8/8/8/8/1p4p1/B3K3 w - - 0 1', targets: ['b2', 'g2'], minMoves: 2 },
-      { level: 5, fen: '4k3/8/5p2/8/3p4/8/8/B3K3 w - - 0 1', targets: ['d4', 'f6'], minMoves: 2 },
-      { level: 6, fen: '4k3/8/5p2/8/3p4/8/1p6/B3K3 w - - 0 1', targets: ['b2', 'd4', 'f6'], minMoves: 3 },
-      { level: 7, fen: '4k3/8/8/4p3/8/2p5/8/B3K3 w - - 0 1', targets: ['c3', 'e5'], minMoves: 2 },
+      { level: 4, fen: '4k3/8/8/8/3p4/2p5/8/B3K3 w - - 0 1', targets: ['c3', 'd4'], minMoves: 2 },
+      { level: 5, fen: '4k3/8/5p2/4p3/8/8/8/B3K3 w - - 0 1', targets: ['e5', 'f6'], minMoves: 2 },
+      { level: 6, fen: '4k3/8/5p2/4p3/3p4/8/8/B3K3 w - - 0 1', targets: ['d4', 'e5', 'f6'], minMoves: 3 },
+      { level: 7, fen: '4k3/8/8/4p3/3p4/2p5/8/B3K3 w - - 0 1', targets: ['c3', 'd4', 'e5'], minMoves: 3 },
       { level: 8, fen: '4k3/8/5p2/4p3/3p4/2p5/1p6/B3K3 w - - 0 1', targets: ['b2', 'c3', 'd4', 'e5', 'f6'], minMoves: 5 },
-      { level: 9, fen: '4k3/7p/6p1/8/8/8/1p6/B3K3 w - - 0 1', targets: ['b2', 'g6', 'h7'], minMoves: 3 },
-      { level: 10, fen: '4k3/7p/6p1/5p2/8/2p5/1p6/B3K3 w - - 0 1', targets: ['b2', 'c3', 'f5', 'g6', 'h7'], minMoves: 5 },
+      { level: 9, fen: '4k3/8/5p2/4p3/3p4/2p5/8/B3K3 w - - 0 1', targets: ['c3', 'd4', 'e5', 'f6'], minMoves: 4 },
+      { level: 10, fen: '4k3/6p1/5p2/4p3/3p4/2p5/1p6/B3K3 w - - 0 1', targets: ['b2', 'c3', 'd4', 'e5', 'f6', 'g7'], minMoves: 6 },
     ],
   },
   {
@@ -89,7 +89,7 @@ const CAPTURE_GROUPS: GroupConfig[] = [
       { level: 2, fen: '4k3/8/8/8/3p4/8/8/Q3K3 w - - 0 1', targets: ['d4'], minMoves: 1 },
       { level: 3, fen: '4k3/8/8/8/8/2p5/8/Q3K3 w - - 0 1', targets: ['c3'], minMoves: 1 },
       { level: 4, fen: '4k3/8/8/p7/8/2p5/8/Q3K3 w - - 0 1', targets: ['a5', 'c3'], minMoves: 2 },
-      { level: 5, fen: '4k3/8/8/p7/3p4/8/8/Q3K3 w - - 0 1', targets: ['a5', 'd4'], minMoves: 2 },
+      { level: 5, fen: '4k3/8/8/p7/p7/8/8/Q3K3 w - - 0 1', targets: ['a4', 'a5'], minMoves: 2 },
       { level: 6, fen: '4k3/8/8/p7/3p4/2p5/8/Q3K3 w - - 0 1', targets: ['c3', 'd4', 'a5'], minMoves: 3 },
       { level: 7, fen: '4k3/p7/8/8/3p4/8/1p6/Q3K3 w - - 0 1', targets: ['b2', 'd4', 'a7'], minMoves: 3 },
       { level: 8, fen: '4k3/p7/8/p7/3p4/2p5/8/Q3K3 w - - 0 1', targets: ['c3', 'd4', 'a5', 'a7'], minMoves: 4 },
@@ -106,19 +106,46 @@ const CAPTURE_GROUPS: GroupConfig[] = [
       { level: 1, fen: '4k3/8/8/8/8/5p2/8/4K1N1 w - - 0 1', targets: ['f3'], minMoves: 1 },
       { level: 2, fen: '4k3/8/8/8/8/1p6/8/2N1K3 w - - 0 1', targets: ['b3'], minMoves: 1 },
       { level: 3, fen: '4k3/8/8/8/8/2p5/8/1N2K3 w - - 0 1', targets: ['c3'], minMoves: 1 },
-      { level: 4, fen: '4k3/8/8/8/8/1p3p2/8/2N1K3 w - - 0 1', targets: ['b3', 'f3'], minMoves: 2 },
-      { level: 5, fen: '4k3/8/8/8/2p5/1p6/8/2N1K3 w - - 0 1', targets: ['b3', 'c4'], minMoves: 2 },
-      { level: 6, fen: '4k3/8/8/3p4/2p5/1p6/8/2N1K3 w - - 0 1', targets: ['b3', 'c4', 'd5'], minMoves: 3 },
-      { level: 7, fen: '4k3/8/8/3p4/8/1p6/3p4/2N1K3 w - - 0 1', targets: ['b3', 'd2', 'd5'], minMoves: 3 },
-      { level: 8, fen: '4k3/8/4p3/3p4/2p5/1p6/8/2N1K3 w - - 0 1', targets: ['b3', 'c4', 'd5', 'e6'], minMoves: 4 },
-      { level: 9, fen: '4k3/8/4p3/3p4/2p5/1p3p2/8/2N1K3 w - - 0 1', targets: ['b3', 'c4', 'd5', 'e6', 'f3'], minMoves: 5 },
-      { level: 10, fen: '4k3/8/4p3/3p4/2p5/1p3p2/3p4/2N1K3 w - - 0 1', targets: ['b3', 'c4', 'd2', 'd5', 'e6', 'f3'], minMoves: 6 },
+      // 马的多目标：使用验证过的L形连吃链
+      // c1→a2→b4, c1→b3→a5, c1→a2→b4→d3, etc.
+      { level: 4, fen: '4k3/8/8/8/1p6/8/p7/2N1K3 w - - 0 1', targets: ['a2', 'b4'], minMoves: 2 },
+      { level: 5, fen: '4k3/8/8/p7/8/1p6/8/2N1K3 w - - 0 1', targets: ['b3', 'a5'], minMoves: 2 },
+      { level: 6, fen: '4k3/8/8/8/1p6/3p4/p7/2N1K3 w - - 0 1', targets: ['a2', 'b4', 'd3'], minMoves: 3 },
+      { level: 7, fen: '4k3/8/p7/8/1p6/8/p7/2N1K3 w - - 0 1', targets: ['a2', 'b4', 'a6'], minMoves: 3 },
+      { level: 8, fen: '4k3/8/p7/2p5/1p6/8/p7/2N1K3 w - - 0 1', targets: ['a2', 'b4', 'a6', 'c5'], minMoves: 4 },
+      { level: 9, fen: '4k3/8/p7/2p5/pp6/8/p7/2N1K3 w - - 0 1', targets: ['a2', 'b4', 'a6', 'c5', 'a4'], minMoves: 5 },
+      { level: 10, fen: '4k3/8/p7/2p5/pp6/8/pp6/2N1K3 w - - 0 1', targets: ['a2', 'b4', 'a6', 'c5', 'a4', 'b2'], minMoves: 6 },
     ],
   },
 ]
 
 const BASE = import.meta.env.BASE_URL || '/'
 const pieceSvg = (key: string) => `${BASE}assets/pieces/${key}.svg`
+
+/** Remove kings from FEN for display (chess.js needs them but kids don't) */
+function hideKingsFromFen(fen: string): string {
+  const parts = fen.split(' ')
+  // Process only the board part (first segment)
+  const rows = parts[0].split('/')
+  const cleaned = rows.map((row) => {
+    // Replace K and k with empty squares, then merge consecutive numbers
+    let result = ''
+    for (const ch of row) {
+      if (ch === 'K' || ch === 'k') {
+        result += '1'
+      } else {
+        result += ch
+      }
+    }
+    // Merge consecutive digits: "112" -> "4", etc.
+    return result.replace(/\d+/g, (match) => {
+      const sum = match.split('').reduce((s, d) => s + parseInt(d), 0)
+      return String(sum)
+    })
+  })
+  parts[0] = cleaned.join('/')
+  return parts.join(' ')
+}
 
 // ---------------------------------------------------------------------------
 // Component
@@ -202,9 +229,18 @@ const KidsCapturePage: React.FC = () => {
     setPhase('play')
   }, [allLevels])
 
-  // Get valid moves for a square
+  // Get valid moves for a square (always from white's perspective)
   const getValidMoves = useCallback((square: string): string[] => {
     if (!game) return []
+    // Ensure it's white's turn for move generation
+    const fen = game.fen()
+    const parts = fen.split(' ')
+    if (parts[1] !== 'w') {
+      parts[1] = 'w'
+      game.load(parts.join(' '))
+    }
+    const piece = game.get(square as any)
+    if (!piece || piece.color !== 'w' || piece.type === 'k') return [] // Hide king moves
     const moves = game.moves({ square: square as any, verbose: true })
     return moves.map((m) => m.to)
   }, [game])
@@ -214,12 +250,26 @@ const KidsCapturePage: React.FC = () => {
     if (!game) return
 
     try {
+      // Ensure white's turn
+      const fenParts = game.fen().split(' ')
+      if (fenParts[1] !== 'w') {
+        fenParts[1] = 'w'
+        game.load(fenParts.join(' '))
+      }
+
       const move = game.move({ from, to })
       if (!move) return
 
       const newMoveCount = moveCount + 1
       setMoveCount(newMoveCount)
-      setFen(game.fen())
+
+      // After move, force it back to white's turn so white can continue
+      const newFenParts = game.fen().split(' ')
+      newFenParts[1] = 'w'
+      const forcedFen = newFenParts.join(' ')
+      game.load(forcedFen)
+      setFen(forcedFen)
+
       setLastMove({ from, to })
       setSelectedSquare(null)
       setValidMoves([])
@@ -479,10 +529,10 @@ const KidsCapturePage: React.FC = () => {
         </div>
       </div>
 
-      {/* Chessboard */}
+      {/* Chessboard — hide kings from display */}
       <div className="flex justify-center mb-4">
         <Chessboard
-          fen={fen}
+          fen={hideKingsFromFen(fen)}
           onMove={handleMove}
           onSquareClick={handleSquareClick}
           lastMove={lastMove}
