@@ -102,21 +102,41 @@ function computeSafeSquares(
 // ---------------------------------------------------------------------------
 
 const SAFETY_LEVELS_RAW: Omit<SafetyLevel, 'safeSquares'>[] = [
-  // L1-2: Dodge rook
+  // ===== L1-6: Dodge rook =====
   { level: 1, gridSize: 6, enemies: [{ piece: 'rook', pos: [2, 3] }] },
   { level: 2, gridSize: 6, enemies: [{ piece: 'rook', pos: [0, 0] }] },
-  // L3-4: Dodge bishop
-  { level: 3, gridSize: 6, enemies: [{ piece: 'bishop', pos: [3, 3] }] },
-  { level: 4, gridSize: 6, enemies: [{ piece: 'bishop', pos: [1, 4] }] },
-  // L5-6: Dodge queen
-  { level: 5, gridSize: 6, enemies: [{ piece: 'queen', pos: [3, 3] }] },
-  { level: 6, gridSize: 6, enemies: [{ piece: 'queen', pos: [0, 5] }] },
-  // L7-8: Dodge knight
-  { level: 7, gridSize: 6, enemies: [{ piece: 'knight', pos: [3, 3] }] },
-  { level: 8, gridSize: 6, enemies: [{ piece: 'knight', pos: [2, 2] }] },
-  // L9-10: Multiple enemies
-  { level: 9, gridSize: 6, enemies: [{ piece: 'rook', pos: [0, 0] }, { piece: 'bishop', pos: [5, 5] }] },
-  { level: 10, gridSize: 6, enemies: [{ piece: 'queen', pos: [2, 2] }, { piece: 'knight', pos: [5, 0] }] },
+  { level: 3, gridSize: 6, enemies: [{ piece: 'rook', pos: [3, 3] }] },
+  { level: 4, gridSize: 6, enemies: [{ piece: 'rook', pos: [5, 2] }] },
+  { level: 5, gridSize: 6, enemies: [{ piece: 'rook', pos: [0, 0] }, { piece: 'rook', pos: [5, 5] }] },
+  { level: 6, gridSize: 6, enemies: [{ piece: 'rook', pos: [2, 0] }, { piece: 'rook', pos: [4, 5] }] },
+  // ===== L7-12: Dodge bishop =====
+  { level: 7, gridSize: 6, enemies: [{ piece: 'bishop', pos: [3, 3] }] },
+  { level: 8, gridSize: 6, enemies: [{ piece: 'bishop', pos: [1, 4] }] },
+  { level: 9, gridSize: 6, enemies: [{ piece: 'bishop', pos: [0, 0] }] },
+  { level: 10, gridSize: 6, enemies: [{ piece: 'bishop', pos: [2, 5] }] },
+  { level: 11, gridSize: 6, enemies: [{ piece: 'bishop', pos: [0, 0] }, { piece: 'bishop', pos: [5, 5] }] },
+  { level: 12, gridSize: 6, enemies: [{ piece: 'bishop', pos: [1, 1] }, { piece: 'bishop', pos: [4, 4] }] },
+  // ===== L13-18: Dodge queen =====
+  { level: 13, gridSize: 6, enemies: [{ piece: 'queen', pos: [3, 3] }] },
+  { level: 14, gridSize: 6, enemies: [{ piece: 'queen', pos: [0, 5] }] },
+  { level: 15, gridSize: 6, enemies: [{ piece: 'queen', pos: [5, 0] }] },
+  { level: 16, gridSize: 6, enemies: [{ piece: 'queen', pos: [2, 4] }] },
+  { level: 17, gridSize: 6, enemies: [{ piece: 'queen', pos: [0, 0] }] },
+  { level: 18, gridSize: 6, enemies: [{ piece: 'queen', pos: [3, 2] }] },
+  // ===== L19-24: Dodge knight =====
+  { level: 19, gridSize: 6, enemies: [{ piece: 'knight', pos: [3, 3] }] },
+  { level: 20, gridSize: 6, enemies: [{ piece: 'knight', pos: [2, 2] }] },
+  { level: 21, gridSize: 6, enemies: [{ piece: 'knight', pos: [1, 1] }] },
+  { level: 22, gridSize: 6, enemies: [{ piece: 'knight', pos: [4, 4] }] },
+  { level: 23, gridSize: 6, enemies: [{ piece: 'knight', pos: [2, 3] }, { piece: 'knight', pos: [4, 1] }] },
+  { level: 24, gridSize: 6, enemies: [{ piece: 'knight', pos: [1, 2] }, { piece: 'knight', pos: [3, 4] }] },
+  // ===== L25-30: Multiple enemies combo =====
+  { level: 25, gridSize: 6, enemies: [{ piece: 'rook', pos: [0, 0] }, { piece: 'bishop', pos: [5, 5] }] },
+  { level: 26, gridSize: 6, enemies: [{ piece: 'queen', pos: [2, 2] }, { piece: 'knight', pos: [5, 0] }] },
+  { level: 27, gridSize: 6, enemies: [{ piece: 'rook', pos: [0, 3] }, { piece: 'knight', pos: [4, 1] }] },
+  { level: 28, gridSize: 6, enemies: [{ piece: 'bishop', pos: [1, 1] }, { piece: 'queen', pos: [4, 5] }] },
+  { level: 29, gridSize: 6, enemies: [{ piece: 'rook', pos: [0, 2] }, { piece: 'bishop', pos: [5, 0] }, { piece: 'knight', pos: [3, 4] }] },
+  { level: 30, gridSize: 6, enemies: [{ piece: 'queen', pos: [0, 0] }, { piece: 'knight', pos: [3, 3] }, { piece: 'rook', pos: [5, 5] }] },
 ]
 
 // Pre-compute safe squares

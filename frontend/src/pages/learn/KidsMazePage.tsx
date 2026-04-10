@@ -24,7 +24,7 @@ type GamePhase = 'select' | 'play' | 'result'
 // ---------------------------------------------------------------------------
 
 const MAZE_LEVELS: MazeLevel[] = [
-  // L1-2: Rook (straight lines)
+  // ===== L1-6: Rook maze (straight lines, increasing obstacles) =====
   {
     level: 1,
     piece: 'rook',
@@ -41,11 +41,47 @@ const MAZE_LEVELS: MazeLevel[] = [
     start: [5, 0],
     end: [5, 5],
     obstacles: [[5, 3], [3, 0], [1, 2]],
-    minMoves: 2,
+    minMoves: 3,
   },
-  // L3-4: Bishop (diagonals)
   {
     level: 3,
+    piece: 'rook',
+    gridSize: 6,
+    start: [5, 0],
+    end: [0, 5],
+    obstacles: [[5, 3], [3, 0], [0, 2], [2, 5]],
+    minMoves: 4,
+  },
+  {
+    level: 4,
+    piece: 'rook',
+    gridSize: 6,
+    start: [5, 0],
+    end: [0, 5],
+    obstacles: [[5, 2], [3, 0], [0, 3], [2, 5], [4, 4]],
+    minMoves: 4,
+  },
+  {
+    level: 5,
+    piece: 'rook',
+    gridSize: 6,
+    start: [5, 0],
+    end: [0, 5],
+    obstacles: [[5, 3], [3, 0], [0, 2], [2, 5], [4, 4], [1, 1]],
+    minMoves: 4,
+  },
+  {
+    level: 6,
+    piece: 'rook',
+    gridSize: 6,
+    start: [5, 0],
+    end: [0, 5],
+    obstacles: [[5, 2], [3, 0], [0, 3], [2, 5], [4, 4], [1, 1], [3, 3]],
+    minMoves: 5,
+  },
+  // ===== L7-12: Bishop maze (diagonals, increasing obstacles) =====
+  {
+    level: 7,
     piece: 'bishop',
     gridSize: 6,
     start: [5, 0],
@@ -54,7 +90,7 @@ const MAZE_LEVELS: MazeLevel[] = [
     minMoves: 1,
   },
   {
-    level: 4,
+    level: 8,
     piece: 'bishop',
     gridSize: 6,
     start: [5, 0],
@@ -62,18 +98,59 @@ const MAZE_LEVELS: MazeLevel[] = [
     obstacles: [[3, 1], [4, 3], [2, 3]],
     minMoves: 2,
   },
-  // L5-6: Queen (straight + diag)
   {
-    level: 5,
+    // Bishop L9: (5,0)->(4,1)->(3,0)->(0,3) = 3 moves. Obs (3,2) blocks direct diag.
+    level: 9,
+    piece: 'bishop',
+    gridSize: 6,
+    start: [5, 0],
+    end: [0, 3],
+    obstacles: [[3, 2]],
+    minMoves: 3,
+  },
+  {
+    // Bishop L10: (5,0)->(4,1)->(5,2)->(2,5) = 3 moves (sliding through (4,3)(3,4)(2,5))
+    level: 10,
+    piece: 'bishop',
+    gridSize: 6,
+    start: [5, 0],
+    end: [2, 5],
+    obstacles: [[3, 2], [1, 4]],
+    minMoves: 3,
+  },
+  {
+    // Bishop L11: block (3,2) and (4,3) to force longer detour
+    // (5,0)->(4,1)->(3,0)->(0,3)->(1,4)->(0,5) = 5 moves
+    level: 11,
+    piece: 'bishop',
+    gridSize: 6,
+    start: [5, 0],
+    end: [0, 5],
+    obstacles: [[3, 2], [4, 3]],
+    minMoves: 5,
+  },
+  {
+    // Bishop L12: same as L11 but more visual obstacles (not blocking path)
+    level: 12,
+    piece: 'bishop',
+    gridSize: 6,
+    start: [5, 0],
+    end: [0, 5],
+    obstacles: [[3, 2], [4, 3], [5, 3]],
+    minMoves: 5,
+  },
+  // ===== L13-18: Queen maze (combined, complex routes) =====
+  {
+    level: 13,
     piece: 'queen',
     gridSize: 6,
     start: [5, 0],
     end: [0, 5],
     obstacles: [[3, 2], [2, 3], [4, 4]],
-    minMoves: 1,
+    minMoves: 2,
   },
   {
-    level: 6,
+    level: 14,
     piece: 'queen',
     gridSize: 6,
     start: [5, 0],
@@ -81,9 +158,45 @@ const MAZE_LEVELS: MazeLevel[] = [
     obstacles: [[4, 1], [3, 2], [2, 3], [1, 4]],
     minMoves: 2,
   },
-  // L7-10: Knight (L-shape maze)
   {
-    level: 7,
+    level: 15,
+    piece: 'queen',
+    gridSize: 6,
+    start: [5, 0],
+    end: [0, 5],
+    obstacles: [[4, 1], [3, 2], [2, 3], [1, 4], [5, 3]],
+    minMoves: 2,
+  },
+  {
+    level: 16,
+    piece: 'queen',
+    gridSize: 6,
+    start: [5, 0],
+    end: [0, 5],
+    obstacles: [[4, 1], [3, 2], [2, 3], [1, 4], [5, 3], [0, 2]],
+    minMoves: 3,
+  },
+  {
+    level: 17,
+    piece: 'queen',
+    gridSize: 6,
+    start: [5, 0],
+    end: [0, 5],
+    obstacles: [[4, 1], [3, 2], [2, 3], [1, 4], [5, 3], [0, 2], [3, 5]],
+    minMoves: 3,
+  },
+  {
+    level: 18,
+    piece: 'queen',
+    gridSize: 6,
+    start: [5, 0],
+    end: [0, 5],
+    obstacles: [[4, 1], [3, 2], [2, 3], [1, 4], [5, 3], [0, 2], [3, 5], [2, 0]],
+    minMoves: 3,
+  },
+  // ===== L19-30: Knight maze (L-shape, most fun, many obstacles) =====
+  {
+    level: 19,
     piece: 'knight',
     gridSize: 6,
     start: [5, 0],
@@ -92,31 +205,113 @@ const MAZE_LEVELS: MazeLevel[] = [
     minMoves: 1,
   },
   {
-    level: 8,
+    // From (5,0): can go (3,1) or (4,2). (3,1)->(1,0) or (1,2). (1,2)->(3,1) back.
+    // (3,1)->(1,0)->(2,2)->(0,1)? No, target is (1,1).
+    // (5,0)->(3,1)->(1,2)->(3,3)? or (5,0)->(4,2)->(2,1)? then (2,1) targets (0,0)(0,2)(1,3)(3,3)(4,3).
+    // Simplest: (5,0)->(3,1)->(1,2) = 2 if target (1,2). Let me pick easy targets.
+    level: 20,
     piece: 'knight',
     gridSize: 6,
     start: [5, 0],
-    end: [1, 1],
-    obstacles: [[4, 2], [2, 0], [3, 3]],
+    end: [1, 2],
+    obstacles: [[4, 2]],
     minMoves: 2,
   },
   {
-    level: 9,
+    // (5,0)->(3,1)->(1,2)->(0,4) = 3
+    level: 21,
+    piece: 'knight',
+    gridSize: 6,
+    start: [5, 0],
+    end: [0, 4],
+    obstacles: [[4, 2], [2, 0]],
+    minMoves: 3,
+  },
+  {
+    // (5,0)->(3,1)->(1,2)->(3,3) or (5,0)->(3,1)->(4,3)->(2,2) = 3
+    level: 22,
+    piece: 'knight',
+    gridSize: 6,
+    start: [5, 0],
+    end: [2, 2],
+    obstacles: [[4, 2], [1, 1]],
+    minMoves: 3,
+  },
+  {
+    // Block (4,2), force through (3,1). To (0,2): (5,0)->(3,1)->(1,0)->(0,2) = 3
+    level: 23,
     piece: 'knight',
     gridSize: 6,
     start: [5, 0],
     end: [0, 2],
-    obstacles: [[4, 2], [3, 3], [1, 1], [2, 4]],
+    obstacles: [[4, 2], [3, 3]],
     minMoves: 3,
   },
   {
-    level: 10,
+    // (5,0)->(3,1)->(1,2)->(0,4)->(2,5) or (5,0)->(3,1)->(4,3)->(2,4)->(0,5) = 4
+    // Let me just pick target (0,5) with obs blocking short routes
+    level: 24,
     piece: 'knight',
     gridSize: 6,
     start: [5, 0],
     end: [0, 5],
-    obstacles: [[4, 2], [3, 3], [1, 1], [2, 4], [0, 3], [3, 0]],
+    obstacles: [[4, 2], [2, 3]],
     minMoves: 4,
+  },
+  {
+    // More obstacles, target (0, 1)
+    level: 25,
+    piece: 'knight',
+    gridSize: 6,
+    start: [5, 0],
+    end: [0, 1],
+    obstacles: [[4, 2], [3, 3], [2, 0]],
+    minMoves: 4,
+  },
+  {
+    level: 26,
+    piece: 'knight',
+    gridSize: 6,
+    start: [5, 0],
+    end: [0, 0],
+    obstacles: [[4, 2], [1, 4], [2, 3]],
+    minMoves: 3,
+  },
+  {
+    level: 27,
+    piece: 'knight',
+    gridSize: 6,
+    start: [5, 0],
+    end: [0, 5],
+    obstacles: [[4, 2], [3, 3], [1, 1]],
+    minMoves: 4,
+  },
+  {
+    level: 28,
+    piece: 'knight',
+    gridSize: 6,
+    start: [5, 0],
+    end: [0, 5],
+    obstacles: [[4, 2], [3, 3], [1, 1], [0, 3]],
+    minMoves: 4,
+  },
+  {
+    level: 29,
+    piece: 'knight',
+    gridSize: 6,
+    start: [5, 0],
+    end: [0, 5],
+    obstacles: [[4, 2], [3, 3], [1, 1], [0, 3], [2, 4]],
+    minMoves: 6,
+  },
+  {
+    level: 30,
+    piece: 'knight',
+    gridSize: 6,
+    start: [5, 0],
+    end: [0, 5],
+    obstacles: [[4, 2], [3, 3], [1, 1], [0, 3], [2, 4], [5, 4]],
+    minMoves: 6,
   },
 ]
 
