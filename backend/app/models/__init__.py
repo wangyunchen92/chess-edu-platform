@@ -6,6 +6,7 @@ from app.models.adventure import PromotionChallenge
 from app.models.character import Character, CharacterDialogue, UserCharacterRelation
 from app.models.course import Course, Exercise, ExerciseAttempt, Lesson, LessonProgress
 from app.models.credits import CreditBalance, CreditPackage, CreditTransaction
+from app.models.kids import KidsGameProgress
 from app.models.diagnosis import UserWeaknessProfile, WeaknessRecommendation
 from app.models.game import Game, GameMove
 from app.models.gamification import RatingHistory, UserRating, UserStreak
@@ -66,4 +67,6 @@ __all__ = [
     "CreditBalance",
     "CreditTransaction",
     "CreditPackage",
+    # Kids
+    "KidsGameProgress",
 ]

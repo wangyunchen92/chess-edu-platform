@@ -10,6 +10,8 @@ import type {
   ExerciseAttemptResponse,
   AITeachResponse,
   ExerciseOverviewResponse,
+  KidsProgressItem,
+  UpdateKidsProgressRequest,
 } from '@/types/api'
 
 export const learnApi = {
@@ -36,4 +38,10 @@ export const learnApi = {
 
   getExercisesOverview: () =>
     apiClient.get<APIResponse<ExerciseOverviewResponse>>('/learn/exercises/overview'),
+
+  getKidsProgress: () =>
+    apiClient.get<APIResponse<KidsProgressItem[]>>('/learn/kids/progress'),
+
+  updateKidsProgress: (data: UpdateKidsProgressRequest) =>
+    apiClient.post<APIResponse<KidsProgressItem>>('/learn/kids/progress', data),
 }

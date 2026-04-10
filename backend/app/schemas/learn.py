@@ -159,6 +159,25 @@ class ExerciseOverviewCourse(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class KidsProgressItem(BaseModel):
+    """A single kids game progress entry."""
+
+    game_type: str
+    level: int
+    completed: bool = False
+    stars: int = 0
+
+    model_config = {"from_attributes": True}
+
+
+class UpdateKidsProgressRequest(BaseModel):
+    """Request to update kids game progress."""
+
+    game_type: str = Field(..., description="Game type: recognize or capture")
+    level: int = Field(..., ge=1, description="Level number")
+    stars: int = Field(..., ge=0, le=3, description="Stars earned (0-3)")
+
+
 class AITeachRequest(BaseModel):
     """AI interactive teaching request."""
 

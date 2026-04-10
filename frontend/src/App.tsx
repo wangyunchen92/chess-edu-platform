@@ -39,6 +39,8 @@ const CourseListPage = React.lazy(() => import('@/pages/learn/CourseListPage'))
 const LessonPage = React.lazy(() => import('@/pages/learn/LessonPage'))
 const InteractiveTeachPage = React.lazy(() => import('@/pages/learn/InteractiveTeachPage'))
 const ExercisePage = React.lazy(() => import('@/pages/learn/ExercisePage'))
+const KidsRecognizePage = React.lazy(() => import('@/pages/learn/KidsRecognizePage'))
+const KidsCapturePage = React.lazy(() => import('@/pages/learn/KidsCapturePage'))
 
 // Diagnosis
 const DiagnosisPage = React.lazy(() => import('@/pages/diagnosis/DiagnosisPage'))
@@ -188,6 +190,8 @@ function App() {
             <Route path="/learn" element={<SuspenseWrapper><CourseListPage /></SuspenseWrapper>} />
             <Route path="/learn/ai-teach/:id" element={<SuspenseWrapper><InteractiveTeachPage /></SuspenseWrapper>} />
             <Route path="/learn/exercise/:id" element={<SuspenseWrapper><ExercisePage /></SuspenseWrapper>} />
+            <Route path="/learn/kids/recognize" element={<SuspenseWrapper><KidsRecognizePage /></SuspenseWrapper>} />
+            <Route path="/learn/kids/capture" element={<SuspenseWrapper><KidsCapturePage /></SuspenseWrapper>} />
 
             {/* Diagnosis */}
             <Route path="/diagnosis" element={<SuspenseWrapper><DiagnosisPage /></SuspenseWrapper>} />

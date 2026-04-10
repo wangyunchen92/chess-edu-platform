@@ -6,6 +6,7 @@ import Badge from '@/components/common/Badge'
 import Button from '@/components/common/Button'
 import ProgressBar from '@/components/common/ProgressBar'
 import type { ExerciseOverviewResponse, ExerciseOverviewLesson } from '@/types/api'
+import KidsPlayground from './KidsPlayground'
 
 interface Lesson {
   id: string
@@ -62,7 +63,7 @@ function getLockReason(level: number): string {
   return '未解锁'
 }
 
-type TabType = 'courses' | 'exercises'
+type TabType = 'courses' | 'exercises' | 'kids'
 
 // ────────────────────────────────────────────────────────────────
 // Exercise Overview Sub-view
@@ -311,7 +312,7 @@ const CourseListPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const [activeTab, setActiveTab] = useState<TabType>(() => {
     const tab = searchParams.get('tab')
-    return tab === 'exercises' ? 'exercises' : 'courses'
+    return tab === 'exercises' ? 'exercises' : tab === 'kids' ? 'kids' : 'courses'
   })
 
   const handleTabChange = (tab: TabType) => {
@@ -472,6 +473,7 @@ const CourseListPage: React.FC = () => {
       {([
         { key: 'courses' as TabType, label: '课程' },
         { key: 'exercises' as TabType, label: '课后练习' },
+        { key: 'kids' as TabType, label: '儿童乐园' },
       ]).map((tab) => (
         <button
           key={tab.key}
@@ -582,6 +584,8 @@ const CourseListPage: React.FC = () => {
       )}
 
       {activeTab === 'exercises' && <ExercisesOverview />}
+
+      {activeTab === 'kids' && <KidsPlayground />}
     </div>
   )
 }

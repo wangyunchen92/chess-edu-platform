@@ -15,7 +15,9 @@ from app.schemas.learn import (
     ExerciseAttemptResponse,
     ExerciseItem,
     ExerciseOverviewCourse,
+    KidsProgressItem,
     LessonContent,
+    UpdateKidsProgressRequest,
     UpdateProgressRequest,
     UpdateProgressResponse,
 )
@@ -63,6 +65,86 @@ def get_exercises_overview(
     user_id = current_user["user_id"]
     data = course_service.get_exercises_overview(db, user_id)
     return APIResponse.success(data=data)
+
+
+@router.get("/kids/progress", response_model=APIResponse[list[KidsProgressItem]])
+def get_kids_progress(
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> APIResponse[list[KidsProgressItem]]:
+    """Get all kids game progress for current user."""
+    from app.models.kids import KidsGameProgress
+
+    user_id = current_user["user_id"]
+    rows = (
+        db.query(KidsGameProgress)
+        .filter(KidsGameProgress.user_id == user_id)
+        .order_by(KidsGameProgress.game_type, KidsGameProgress.level)
+        .all()
+    )
+    items = [
+        KidsProgressItem(
+            game_type=r.game_type,
+            level=r.level,
+            completed=r.completed,
+            stars=r.stars,
+        )
+        for r in rows
+    ]
+    return APIResponse.success(data=items)
+
+
+@router.post("/kids/progress", response_model=APIResponse[KidsProgressItem])
+def update_kids_progress(
+    request: UpdateKidsProgressRequest,
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> APIResponse[KidsProgressItem]:
+    """Create or update kids game progress (stars take max value)."""
+    from datetime import datetime, timezone
+
+    from app.models.kids import KidsGameProgress
+
+    user_id = current_user["user_id"]
+
+    row = (
+        db.query(KidsGameProgress)
+        .filter(
+            KidsGameProgress.user_id == user_id,
+            KidsGameProgress.game_type == request.game_type,
+            KidsGameProgress.level == request.level,
+        )
+        .first()
+    )
+
+    if row is None:
+        row = KidsGameProgress(
+            user_id=user_id,
+            game_type=request.game_type,
+            level=request.level,
+            stars=request.stars,
+            completed=request.stars > 0,
+            completed_at=datetime.now(timezone.utc) if request.stars > 0 else None,
+        )
+        db.add(row)
+    else:
+        # Stars only go up
+        if request.stars > row.stars:
+            row.stars = request.stars
+        if not row.completed and request.stars > 0:
+            row.completed = True
+            row.completed_at = datetime.now(timezone.utc)
+
+    db.commit()
+    db.refresh(row)
+
+    item = KidsProgressItem(
+        game_type=row.game_type,
+        level=row.level,
+        completed=row.completed,
+        stars=row.stars,
+    )
+    return APIResponse.success(data=item)
 
 
 @router.get("/lessons/{lesson_id}", response_model=APIResponse[LessonContent])

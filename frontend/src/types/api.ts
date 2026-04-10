@@ -666,6 +666,20 @@ export interface ExerciseOverviewResponse {
   lessons: ExerciseOverviewLesson[]
 }
 
+// ── Kids Playground ────────────────────────────────────────────
+
+export interface KidsProgressItem {
+  game: string
+  completed_levels: number[]
+  stars: Record<number, number>
+}
+
+export interface UpdateKidsProgressRequest {
+  game: string
+  level: number
+  stars: number
+}
+
 export interface AITeachRequest {
   message: string
   context?: Record<string, unknown>
