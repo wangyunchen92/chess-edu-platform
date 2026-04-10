@@ -47,9 +47,9 @@ const CAPTURE_GROUPS: GroupConfig[] = [
     emoji: '\u2656',
     image: 'wR',
     levels: [
-      { level: 1, fen: '8/8/8/3p4/8/8/8/R7 w - - 0 1', targets: ['d5'], minMoves: 1 },
-      { level: 2, fen: '8/8/8/8/8/2p5/8/R7 w - - 0 1', targets: ['c3'], minMoves: 1 },
-      { level: 3, fen: '8/8/2p5/8/8/8/5p2/R7 w - - 0 1', targets: ['c6', 'f2'], minMoves: 2 },
+      { level: 1, fen: '4k3/8/8/3p4/8/8/8/R3K3 w - - 0 1', targets: ['d5'], minMoves: 1 },
+      { level: 2, fen: '4k3/8/8/8/8/2p5/8/R3K3 w - - 0 1', targets: ['c3'], minMoves: 1 },
+      { level: 3, fen: '4k3/8/2p5/8/8/8/5p2/R3K3 w - - 0 1', targets: ['c6', 'f2'], minMoves: 2 },
     ],
   },
   {
@@ -58,9 +58,9 @@ const CAPTURE_GROUPS: GroupConfig[] = [
     emoji: '\u2657',
     image: 'wB',
     levels: [
-      { level: 1, fen: '8/8/8/8/3p4/8/8/B7 w - - 0 1', targets: ['d4'], minMoves: 1 },
-      { level: 2, fen: '8/8/8/8/8/8/6p1/B7 w - - 0 1', targets: ['g2'], minMoves: 1 },
-      { level: 3, fen: '8/8/5p2/8/3p4/8/8/B7 w - - 0 1', targets: ['d4', 'f6'], minMoves: 2 },
+      { level: 1, fen: '4k3/8/8/8/3p4/8/8/B3K3 w - - 0 1', targets: ['d4'], minMoves: 1 },
+      { level: 2, fen: '4k3/8/8/8/8/8/6p1/B3K3 w - - 0 1', targets: ['g2'], minMoves: 1 },
+      { level: 3, fen: '4k3/8/5p2/8/3p4/8/8/B3K3 w - - 0 1', targets: ['d4', 'f6'], minMoves: 2 },
     ],
   },
   {
@@ -69,9 +69,9 @@ const CAPTURE_GROUPS: GroupConfig[] = [
     emoji: '\u2655',
     image: 'wQ',
     levels: [
-      { level: 1, fen: '8/8/8/3p4/8/8/8/Q7 w - - 0 1', targets: ['d5'], minMoves: 1 },
-      { level: 2, fen: '8/8/8/8/8/5p2/8/Q7 w - - 0 1', targets: ['f3'], minMoves: 1 },
-      { level: 3, fen: '8/5p2/8/8/8/2p5/8/Q7 w - - 0 1', targets: ['c3', 'f8'], minMoves: 2 },
+      { level: 1, fen: '4k3/8/8/3p4/8/8/8/Q3K3 w - - 0 1', targets: ['d5'], minMoves: 1 },
+      { level: 2, fen: '4k3/8/8/8/8/5p2/8/Q3K3 w - - 0 1', targets: ['f3'], minMoves: 1 },
+      { level: 3, fen: '4k3/5p2/8/8/8/2p5/8/Q3K3 w - - 0 1', targets: ['c3', 'f8'], minMoves: 2 },
     ],
   },
   {
@@ -80,9 +80,9 @@ const CAPTURE_GROUPS: GroupConfig[] = [
     emoji: '\u2658',
     image: 'wN',
     levels: [
-      { level: 1, fen: '8/8/8/8/8/5p2/8/N7 w - - 0 1', targets: ['f3'], minMoves: 2 },
-      { level: 2, fen: '8/8/8/3p4/8/8/8/N7 w - - 0 1', targets: ['d5'], minMoves: 2 },
-      { level: 3, fen: '8/8/5p2/8/2p5/8/8/4N3 w - - 0 1', targets: ['c4', 'f6'], minMoves: 3 },
+      { level: 1, fen: '4k3/8/8/8/8/5p2/8/N3K3 w - - 0 1', targets: ['f3'], minMoves: 2 },
+      { level: 2, fen: '4k3/8/8/3p4/8/8/8/N3K3 w - - 0 1', targets: ['d5'], minMoves: 2 },
+      { level: 3, fen: '4k3/8/5p2/8/2p5/8/8/4NK2 w - - 0 1', targets: ['c4', 'f6'], minMoves: 3 },
     ],
   },
 ]

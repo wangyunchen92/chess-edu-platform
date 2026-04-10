@@ -2,15 +2,16 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { learnApi } from '@/api/learn'
 
-interface KidsProgress {
-  game: string
-  completed_levels: number[]
-  stars: Record<number, number>
+interface ProgressItem {
+  game_type: string
+  level: number
+  completed: boolean
+  stars: number
 }
 
 const KidsPlayground: React.FC = () => {
   const navigate = useNavigate()
-  const [progress, setProgress] = useState<KidsProgress[]>([])
+  const [progressItems, setProgressItems] = useState<ProgressItem[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -20,7 +21,7 @@ const KidsPlayground: React.FC = () => {
         const raw = res?.data as any
         const data = raw?.data ?? raw
         if (Array.isArray(data)) {
-          setProgress(data)
+          setProgressItems(data)
         }
       })
       .catch((err) => {
@@ -29,11 +30,13 @@ const KidsPlayground: React.FC = () => {
       .finally(() => setLoading(false))
   }, [])
 
-  const recognizeProgress = progress.find((p) => p.game === 'recognize')
-  const captureProgress = progress.find((p) => p.game === 'capture')
-
-  const recognizeCompleted = recognizeProgress?.completed_levels?.length ?? 0
-  const captureCompleted = captureProgress?.completed_levels?.length ?? 0
+  // Count completed levels per game_type
+  const recognizeCompleted = progressItems.filter(
+    (p) => p.game_type === 'recognize' && p.completed
+  ).length
+  const captureCompleted = progressItems.filter(
+    (p) => p.game_type === 'capture' && p.completed
+  ).length
 
   const games = [
     {
