@@ -118,9 +118,9 @@ interface RadarChartProps {
 }
 
 const RadarChart: React.FC<RadarChartProps> = ({ scores }) => {
-  const size = 280
+  const size = 340
   const center = size / 2
-  const radius = 110
+  const radius = 100
   const levels = [20, 40, 60, 80, 100]
 
   const dims = DIMENSIONS
@@ -214,7 +214,7 @@ const RadarChart: React.FC<RadarChartProps> = ({ scores }) => {
       {/* Labels */}
       {dims.map((dim, i) => {
         const angle = startAngle + i * angleStep
-        const labelR = radius + 28
+        const labelR = radius + 30
         const [x, y] = getPoint(angle, labelR)
         return (
           <text
@@ -223,10 +223,10 @@ const RadarChart: React.FC<RadarChartProps> = ({ scores }) => {
             y={y}
             textAnchor="middle"
             dominantBaseline="middle"
-            className="text-[11px] font-medium"
+            className="text-[12px] font-medium"
             fill="var(--text-sub)"
           >
-            {dim.emoji} {dim.label}
+            {dim.label}
           </text>
         )
       })}
@@ -234,7 +234,7 @@ const RadarChart: React.FC<RadarChartProps> = ({ scores }) => {
       {/* Score values */}
       {scoreValues.map((val, i) => {
         const angle = startAngle + i * angleStep
-        const labelR = radius + 45
+        const labelR = radius + 50
         const [x, y] = getPoint(angle, labelR)
         return (
           <text
