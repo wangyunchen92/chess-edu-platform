@@ -441,7 +441,7 @@ export interface GameReviewResponse {
 }
 
 export interface CreateFreeGameRequest {
-  game_type: 'free_play' | 'imported'
+  game_type: 'free_play' | 'imported' | 'vs_ai_editor'
   opponent_name?: string
   user_color?: string
   time_control?: number
