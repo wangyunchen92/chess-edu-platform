@@ -167,7 +167,7 @@ class CompleteGameRequest(BaseModel):
 class CreateFreeGameRequest(BaseModel):
     """Create a free play or imported game."""
 
-    game_type: Literal["free_play", "imported"]
+    game_type: Literal["free_play", "imported", "vs_ai_editor"]
     opponent_name: Optional[str] = Field(None, max_length=100, description="Opponent name")
     user_color: str = Field(default="white", description="User's color: white or black")
     time_control: int = Field(default=0, ge=0, le=3600, description="Time control in seconds, 0=unlimited")
