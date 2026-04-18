@@ -17,17 +17,22 @@
 | 冒险模式 | `/adventure` | AdventureMapPage | 地图探索、晋级挑战 |
 | 成长体系 | `/gamification` | AchievementsPage, ProfilePage | 经验值/金币/段位/成就徽章 |
 | 设置 | `/user` | SettingsPage | 个人资料、主题、通知偏好 |
-| 后台管理 | `/admin` | UserManagePage | 用户管理（管理员） |
+| 荣誉记录 | `/honor` | HonorPage | 光荣榜（公开赛事荣誉）+ 我的荣誉（赛事+成长里程碑24个） |
+| 积分 | `/credits` | - | 积分余额/流水/消耗/奖励/老师分发/管理员充值 |
+| 弱点诊断 | `/diagnosis` | DiagnosisPage | 雷达图+推荐训练+Dashboard摘要 |
+| 后台管理 | `/admin` | AdminDashboard, AdminUserListPage, AdminUserDetailPage | 用户管理、会员管理、积分管理、数据概览 |
+| 儿童乐园 | `/learn/kids` | KidsPlayground + 5个游戏页 | 找朋友/贪吃棋手/棋子迷宫/安全格子/数一数 |
 | 通知 | `/notifications` | - | 系统通知 |
 
-## 数据模型 (25张表)
+## 数据模型 (37张表)
 
 ### 用户域
-- **users** — 账号、角色(student/teacher/admin)、会员等级、登录信息
+- **users** — 账号、角色(student/teacher/admin)、会员等级、登录信息、referral_code、referred_by
 - **user_profiles** — 昵称、出生年、棋龄、评估状态、初始评分
 - **user_ratings** — 对弈评分、谜题评分、段位(rank_title/tier/region)、经验值、金币
 - **user_streaks** — 登录连续天数、训练连续天数、最高纪录
 - **user_daily_quotas** — 每日配额（对弈/谜题/AI问答/经验值上限）
+- **user_remarks** — 备注名（老师/管理员为学生设置的别名）
 
 ### 对弈域
 - **characters** — AI角色（名称、性格、棋风、基础评分、失误率）
@@ -62,6 +67,28 @@
 
 ### 冒险域
 - **promotion_challenges** — 晋级挑战记录（类型/目标段位/对局/答题/通过状态）
+
+### 积分域
+- **credit_balances** — 用户积分余额（balance/total_earned/total_spent）
+- **credit_transactions** — 积分流水（金额/类型/描述/关联ID）
+- **credit_packages** — 积分套餐
+
+### 诊断域
+- **user_weakness_profiles** — 用户弱点画像
+- **weakness_recommendations** — 弱点推荐训练
+
+### 荣誉域
+- **honor_records** — 荣誉记录（赛事荣誉+系统里程碑，type区分，milestone_key去重）
+
+### 师生域
+- **invite_codes** — 老师邀请码（6位码/72h过期/max_uses）
+- **teacher_students** — 师生绑定关系
+
+### 儿童域
+- **kids_game_progress** — 儿童乐园游戏进度（5个游戏×多关卡）
+
+### 自适应域
+- **adaptive_difficulty_configs** — AI对弈自适应难度配置
 
 ### 系统域
 - **notifications** — 通知（类型/标题/内容/已读状态）
@@ -348,43 +375,81 @@ cd frontend && npm run dev
 与建筑ERP共用同一台阿里云服务器，按路径分发：
 
 - **IP**: 118.31.237.111
+- **域名**: chess.ccwu.cc（HTTPS，Let's Encrypt）
 - **SSH**: `ssh root@118.31.237.111`
-- **棋育路径**: `http://118.31.237.111/chess/`
+- **棋育路径**: `http://118.31.237.111/chess/` 或 `https://chess.ccwu.cc/`
 - **后端端口**: :8001（建筑ERP用:8000）
 - **服务目录**: `/opt/chess-edu/`
 - **systemd**: `chess-edu.service`
+- **数据库**: PostgreSQL 15（Docker容器 `chess_edu_postgres`，端口5432）
 
 ```
-Nginx(:80)
-  ├── /          → 建筑ERP 前端 + /api/ → :8000
-  └── /chess/    → 棋育 前端   + /chess/api/ → :8001
+Nginx(:80/:443)
+  ├── chess.ccwu.cc  → 棋育域名前端(/opt/chess-edu/www/domain/) + /api/ → :8001
+  ├── /              → 建筑ERP 前端 + /api/ → :8000
+  └── /chess/        → 棋育IP前端(/opt/chess-edu/www/chess/)   + /chess/api/ → :8001
 ```
+
+### 数据库架构（重要）
+
+**本地开发**: SQLite（backend/data.db），.env 中 `DATABASE_URL=sqlite:///./data.db`
+**线上生产**: PostgreSQL 15，systemd Environment 覆盖为 `DATABASE_URL=postgresql://chess:chess_edu_2026@localhost:5432/chess_edu`
+
+⚠️ **关键区别**：.env文件写的是SQLite，但线上通过systemd环境变量覆盖为PostgreSQL。
+
+**线上PG操作命令**：
+```bash
+# 进入PG命令行
+docker exec -it chess_edu_postgres psql -U chess -d chess_edu
+
+# 执行单条SQL
+docker exec chess_edu_postgres psql -U chess -d chess_edu -c "SQL语句"
+
+# 备份
+docker exec chess_edu_postgres pg_dump -U chess -d chess_edu > backup.sql
+```
+
+**数据库迁移规则**：
+- 新增表/字段时，必须同时在本地SQLite和线上PostgreSQL执行DDL
+- 本地：SQLite迁移脚本 `scripts/add_xxx.py` 或 SQLAlchemy `create_all()`
+- 线上：`docker exec chess_edu_postgres psql -U chess -d chess_edu -c "ALTER TABLE / CREATE TABLE ..."`
+- **部署检查清单**：新增了model字段？→ 线上PG执行了对应DDL吗？
 
 ### 部署步骤
 
 ```bash
-# 1. 本地构建前端（设置 base 路径）
-cd frontend && VITE_BASE=/chess/ npm run build
-
-# 2. 部署前备份数据库
-ssh root@118.31.237.111 "/opt/chess-edu/backup.sh"
-
-# 3. 清理旧assets+上传（重要：先删旧assets再传新的，避免缓存问题）
+# 1. 本地构建前端（两套：IP路径 + 域名）
+cd frontend
+VITE_BASE=/chess/ npm run build
+# 部署IP版本
 ssh root@118.31.237.111 "rm -rf /opt/chess-edu/www/chess/assets"
-scp -r frontend/dist/* root@118.31.237.111:/opt/chess-edu/www/chess/
-rsync -av --exclude='__pycache__' --exclude='*.pyc' --exclude='data.db' backend/ root@118.31.237.111:/opt/chess-edu/backend/
-rsync -av content/ root@118.31.237.111:/opt/chess-edu/content/
+scp -r dist/* root@118.31.237.111:/opt/chess-edu/www/chess/
+# 构建+部署域名版本
+npm run build
+ssh root@118.31.237.111 "rm -rf /opt/chess-edu/www/domain/assets"
+scp -r dist/* root@118.31.237.111:/opt/chess-edu/www/domain/
 
-# 4. 重启后端（不删data.db！用户数据在里面）
+# 2. 部署后端代码
+rsync -av --exclude='__pycache__' --exclude='*.pyc' --exclude='data.db' --exclude='venv' \
+  backend/ root@118.31.237.111:/opt/chess-edu/backend/
+
+# 3. 如有新表/新字段，在线上PG执行DDL（重要！）
+ssh root@118.31.237.111 "docker exec chess_edu_postgres psql -U chess -d chess_edu -c '你的DDL'"
+
+# 4. 重启后端
 ssh root@118.31.237.111 "systemctl restart chess-edu"
+
+# 5. 验证
+curl -s http://118.31.237.111/chess/api/v1/honor/wall | python3 -m json.tool
 ```
 
 ### 部署注意事项（重要）
 
-- **绝对不要删 data.db** — 线上用户数据、对弈记录、学习进度都在里面，删了就全没了
-- 只有首次部署或确认需要重建数据库时才能删 data.db
-- 新增表/字段通过 `init_db()` 的 `create_all()` 自动创建（SQLite 支持 ADD TABLE，不支持 ALTER）
-- 如果需要修改已有表结构，手动执行 `ALTER TABLE` 或导出数据重建
+- **线上数据库是PostgreSQL**，不是SQLite，新增model字段必须手动在PG执行DDL
+- 前端有两套构建：`VITE_BASE=/chess/`（IP访问）和默认（域名访问），都要部署
+- 前端目录：IP版 `/opt/chess-edu/www/chess/`，域名版 `/opt/chess-edu/www/domain/`
+- 后端部署用 rsync 整目录，不挑单个文件（避免漏传）
+- 部署前建议备份：`ssh root@118.31.237.111 "/opt/chess-edu/backup.sh"`
 
 ### 数据备份
 
@@ -479,6 +544,13 @@ ssh root@118.31.237.111 "systemctl restart chess-edu"
 | 积分提示标签 | 8个页面添加消耗型(琥珀)和奖励型(绿色)积分说明标签 | ✅ 完成 |
 | 会员系统重构 | 前端paywall改为空实现，后端TIER_FEATURES全部-1放开，积分制替代次数限制 | ✅ 完成 |
 | 登录提示优化 | 401→"用户名或密码错误"中文提示，深色背景red-400可见 | ✅ 完成 |
+| 儿童乐园 | 5个游戏（找朋友6关/贪吃棋手40关/棋子迷宫30关/安全格子30关/数一数30关），卡通emoji棋子，进度保存 | ✅ 完成 |
+| 分享有礼 | 用户推荐码(6位)+邀请链接，注册带ref双方各得100积分，ProfilePage邀请卡片 | ✅ 完成 |
+| 荣誉记录 | 光荣榜（公开赛事荣誉）+我的荣誉（赛事+24个系统里程碑），老师/管理员录入表单，里程碑自动检查 | ✅ 完成 |
+| 备注名 | 老师/管理员为学生设置备注名，学生列表+详情页显示备注，useRemarks hook | ✅ 完成 |
+| 侧边栏分组 | 5组（首页/学习/实战/成长/管理）+分隔线，可配置 | ✅ 完成 |
+| 域名配置 | chess.ccwu.cc HTTPS（Let's Encrypt），双前端构建（IP+域名） | ✅ 完成 |
+| 数据库修复 | SQLite schema损坏修复（dump→rebuild），PG迁移DDL补执行 | ✅ 完成 |
 
 ## 常见陷阱
 
@@ -505,3 +577,8 @@ ssh root@118.31.237.111 "systemctl restart chess-edu"
 - 每日谜题是按用户 puzzle_rating 个性化匹配的，不是全站统一题目
 - 谜题库约15,000道（Lichess精选），rating 399~2799，themes字段含69种战术标签（逗号分隔）
 - 导入新题用 `backend/scripts/import_lichess_puzzles.py`（采样）+ `backend/scripts/load_puzzles_to_db.py`（入库）
+- **线上是PostgreSQL，不是SQLite**！.env写的sqlite是默认值，被systemd覆盖为PG。新增表/字段必须在PG执行DDL
+- 前端Toast用法：`addToast(type, message)` 不是 `addToast(message, type)`，type在前
+- 前端有两套构建（IP版base=/chess/，域名版base=/），部署时都要更新
+- `honor_records` 表的 `milestone_key` 有唯一约束 `(user_id, milestone_key)`，同一里程碑不会重复记录
+- `user_remarks` 有唯一约束 `(user_id, target_user_id)`，一个人只能给另一个人设一个备注

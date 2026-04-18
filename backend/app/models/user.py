@@ -56,6 +56,12 @@ class User(Base):
     created_by: Mapped[Optional[str]] = mapped_column(
         String(36), ForeignKey("users.id"), nullable=True
     )
+    referral_code: Mapped[Optional[str]] = mapped_column(
+        String(6), unique=True, nullable=True
+    )
+    referred_by: Mapped[Optional[str]] = mapped_column(
+        String(36), ForeignKey("users.id"), nullable=True
+    )
 
     # Relationships
     profile: Mapped[Optional["UserProfile"]] = relationship(

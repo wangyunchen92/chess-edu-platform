@@ -6,7 +6,10 @@ import Avatar from '@/components/common/Avatar'
 import Badge from '@/components/common/Badge'
 import ProgressBar from '@/components/common/ProgressBar'
 import Loading from '@/components/common/Loading'
+import AddHonorModal from '@/components/honor/AddHonorModal'
 import apiClient from '@/api/client'
+import { useRemarks } from '@/hooks/useRemarks'
+import RemarkEditButton from '@/components/common/RemarkEditButton'
 
 function translateRank(code: string): string {
   const map: Record<string, string> = {
@@ -54,6 +57,8 @@ const AdminUserDetailPage: React.FC = () => {
   const [detail, setDetail] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [honorModalOpen, setHonorModalOpen] = useState(false)
+  const { remarkMap, promptRemark } = useRemarks()
 
   const load = useCallback(async () => {
     if (!id) return
@@ -102,19 +107,35 @@ const AdminUserDetailPage: React.FC = () => {
         </button>
         <Avatar
           src={detail.avatar_url}
-          name={detail.nickname || detail.username}
+          name={(id && remarkMap.get(id)) || detail.nickname || detail.username}
           size="lg"
         />
-        <div>
-          <h1 className="text-[var(--text-xl)] font-bold text-[var(--text)]">
-            {detail.nickname || detail.username}
-          </h1>
+        <div className="flex-1">
+          <div className="flex items-center gap-2">
+            <h1 className="text-[var(--text-xl)] font-bold text-[var(--text)]">
+              {(id && remarkMap.get(id)) || detail.nickname || detail.username}
+            </h1>
+            {id && <RemarkEditButton onClick={() => promptRemark(id, remarkMap.get(id))} />}
+          </div>
           <div className="flex items-center gap-2 text-[var(--text-sm)] text-[var(--text-muted)]">
             <span>@{detail.username}</span>
+            {id && remarkMap.get(id) && detail.nickname && (
+              <span>{detail.nickname}</span>
+            )}
             {ratings?.rank_title && <Badge color="primary">{translateRank(ratings.rank_title)}</Badge>}
           </div>
         </div>
+        <Button variant="secondary" size="sm" onClick={() => setHonorModalOpen(true)}>
+          添加荣誉
+        </Button>
       </div>
+
+      <AddHonorModal
+        open={honorModalOpen}
+        onClose={() => setHonorModalOpen(false)}
+        userId={id!}
+        userNickname={detail.nickname || detail.username}
+      />
 
       {/* Login info card */}
       <Card padding="md" hoverable={false}>

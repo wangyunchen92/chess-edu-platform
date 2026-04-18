@@ -31,6 +31,12 @@ export interface RegisterRequest {
   password: string
   nickname?: string
   invite_code: string
+  ref?: string
+}
+
+export interface ReferralInfoResponse {
+  code: string
+  invited_count: number
 }
 
 export interface ChangePasswordRequest {
@@ -1052,4 +1058,54 @@ export interface CreditPackageItem {
   name: string
   credits: number
   price_cents: number
+}
+
+// ── Honor Records ──
+
+export interface HonorWallItem {
+  id: string
+  user_nickname: string
+  user_avatar_url: string | null
+  title: string
+  description: string | null
+  rank: string | null
+  competition_name: string
+  competition_date: string
+  created_at: string
+}
+
+export interface CompetitionHonorItem {
+  id: string
+  title: string
+  description: string | null
+  rank: string | null
+  competition_name: string
+  competition_date: string
+  is_public: boolean
+  created_at: string
+}
+
+export interface MilestoneItem {
+  milestone_key: string
+  title: string
+  category: string
+  target_value: number
+  achieved: boolean
+  achieved_at: string | null
+  current_value: number
+}
+
+export interface MyHonorResponse {
+  competitions: CompetitionHonorItem[]
+  milestones: MilestoneItem[]
+}
+
+export interface CreateHonorRequest {
+  user_id: string
+  title: string
+  description?: string
+  rank?: string
+  competition_name: string
+  competition_date: string
+  is_public?: boolean
 }

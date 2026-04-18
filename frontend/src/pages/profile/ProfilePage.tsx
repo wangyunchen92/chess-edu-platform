@@ -333,6 +333,26 @@ const ProfilePage: React.FC = () => {
         </Card>
       </div>
 
+      {/* ── Referral Invite Card ── */}
+      <ReferralCard />
+
+      {/* ── Honor Records Link ── */}
+      <button
+        onClick={() => navigate('/honor')}
+        className="w-full bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border border-amber-200 dark:border-amber-800/50 rounded-xl p-4 text-left transition-all hover:shadow-md"
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">{'\uD83C\uDFC6'}</span>
+            <div>
+              <h3 className="font-semibold text-[var(--text)]">我的荣誉</h3>
+              <p className="text-xs text-[var(--text-muted)]">赛事荣誉与成长里程碑</p>
+            </div>
+          </div>
+          <span className="text-[var(--text-muted)]">{'\u203A'}</span>
+        </div>
+      </button>
+
       {/* ── Stats Grid ── */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {/* Game Stats */}
@@ -826,6 +846,104 @@ const StudentJoinSection: React.FC = () => {
         </div>
       </Modal>
     </Card>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Referral: Invite friends card
+// ---------------------------------------------------------------------------
+
+const ReferralCard: React.FC = () => {
+  const addToast = useUIStore((s) => s.addToast)
+  const [referralCode, setReferralCode] = useState<string | null>(null)
+  const [invitedCount, setInvitedCount] = useState(0)
+  const [loading, setLoading] = useState(true)
+  const [copied, setCopied] = useState(false)
+
+  useEffect(() => {
+    userApi.getReferralInfo()
+      .then((res) => {
+        const d: any = (res.data as any)?.data ?? res.data
+        setReferralCode(d.code ?? null)
+        setInvitedCount(d.invited_count ?? 0)
+      })
+      .catch(() => {
+        // API not available yet, hide the card gracefully
+        setReferralCode(null)
+      })
+      .finally(() => setLoading(false))
+  }, [])
+
+  const handleCopyLink = async () => {
+    if (!referralCode) return
+    const link = `https://chess.ccwu.cc/register?ref=${referralCode}`
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(link)
+      } else {
+        const ta = document.createElement('textarea')
+        ta.value = link
+        ta.style.position = 'fixed'
+        ta.style.opacity = '0'
+        document.body.appendChild(ta)
+        ta.select()
+        document.execCommand('copy')
+        document.body.removeChild(ta)
+      }
+      setCopied(true)
+      addToast('success', '邀请链接已复制')
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      addToast('error', '复制失败，请手动复制')
+    }
+  }
+
+  // Don't render if loading or API failed
+  if (loading || referralCode === null) return null
+
+  return (
+    <div
+      className="rounded-[var(--radius-xl)] p-5 md:p-6"
+      style={{
+        background: 'linear-gradient(135deg, rgba(99,102,241,0.12) 0%, rgba(168,85,247,0.12) 50%, rgba(236,72,153,0.08) 100%)',
+        border: '1px solid rgba(139,92,246,0.2)',
+      }}
+    >
+      {/* Title row */}
+      <div className="flex items-center gap-2 mb-1">
+        <span className="text-xl">{'\uD83C\uDF81'}</span>
+        <h3 className="text-[var(--text-md)] font-semibold text-[var(--text)]">邀请好友</h3>
+      </div>
+      <p className="text-[var(--text-xs)] text-[var(--text-muted)] mb-4">
+        邀请好友注册，双方各得100积分
+      </p>
+
+      {/* Referral code display */}
+      <div className="flex flex-col sm:flex-row items-center gap-3 mb-4">
+        <div
+          className="flex-1 w-full sm:w-auto text-center px-5 py-3 rounded-[var(--radius-sm)]"
+          style={{
+            background: 'rgba(255,255,255,0.06)',
+            border: '1px dashed rgba(139,92,246,0.4)',
+          }}
+        >
+          <p className="text-[var(--text-xs)] text-[var(--text-muted)] mb-1">我的邀请码</p>
+          <span className="font-mono text-2xl md:text-3xl font-bold tracking-[0.15em] text-purple-300 select-all">
+            {referralCode}
+          </span>
+        </div>
+      </div>
+
+      {/* Copy button + invited count */}
+      <div className="flex items-center justify-between gap-3">
+        <Button variant="primary" size="sm" onClick={handleCopyLink} className="flex-shrink-0">
+          {copied ? '\u2713 已复制' : '复制邀请链接'}
+        </Button>
+        <span className="text-[var(--text-xs)] text-[var(--text-muted)]">
+          已邀请 <span className="font-semibold text-[var(--accent)] tabular-nums">{invitedCount}</span> 人
+        </span>
+      </div>
+    </div>
   )
 }
 

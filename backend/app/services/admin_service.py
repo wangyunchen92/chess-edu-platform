@@ -163,6 +163,7 @@ def list_users(
     role: Optional[str] = None,
     status: Optional[str] = None,
     membership_tier: Optional[str] = None,
+    requester_id: Optional[str] = None,
 ) -> UserListResponse:
     """List users with pagination and optional search/filters.
 
@@ -211,8 +212,21 @@ def list_users(
 
     total_pages = (total + page_size - 1) // page_size if page_size > 0 else 0
 
+    # Batch fetch remarks for the requester
+    remarks_map: dict = {}
+    if requester_id and users:
+        from app.services.remark_service import get_remarks_map
+        user_ids = [str(u.id) for u in users]
+        remarks_map = get_remarks_map(db, requester_id, user_ids)
+
+    items = []
+    for u in users:
+        item = UserListItem.model_validate(u)
+        item.remark_name = remarks_map.get(str(u.id))
+        items.append(item)
+
     return UserListResponse(
-        items=[UserListItem.model_validate(u) for u in users],
+        items=items,
         total=total,
         page=page,
         page_size=page_size,

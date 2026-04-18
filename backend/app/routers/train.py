@@ -59,6 +59,13 @@ def complete_plan_item(
     except Exception:
         pass
 
+    # Check milestone achievements after training completion
+    try:
+        from app.services.honor_service import check_milestones
+        check_milestones(db, user_id, context="train")
+    except Exception:
+        pass
+
     return APIResponse.success(data=result)
 
 

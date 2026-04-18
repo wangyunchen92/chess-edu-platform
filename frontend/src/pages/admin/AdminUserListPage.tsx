@@ -4,6 +4,8 @@ import Card from '@/components/common/Card'
 import Badge from '@/components/common/Badge'
 import Loading from '@/components/common/Loading'
 import { getUsers, type UserListItem, type UserListParams } from '@/api/admin'
+import { useRemarks } from '@/hooks/useRemarks'
+import RemarkEditButton from '@/components/common/RemarkEditButton'
 
 const ROLE_LABEL: Record<string, string> = { student: '学生', teacher: '教师', admin: '管理员' }
 const ROLE_COLOR: Record<string, 'primary' | 'success' | 'danger'> = { student: 'primary', teacher: 'success', admin: 'danger' }
@@ -25,6 +27,7 @@ function formatRelativeTime(dateStr: string | null): string {
 
 const AdminUserListPage: React.FC = () => {
   const navigate = useNavigate()
+  const { remarkMap, promptRemark } = useRemarks()
   const [users, setUsers] = useState<UserListItem[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -121,15 +124,20 @@ const AdminUserListPage: React.FC = () => {
                 className="w-11 h-11 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0"
                 style={{ background: u.role === 'admin' ? 'var(--danger)' : u.role === 'teacher' ? 'var(--success)' : 'var(--accent)' }}
               >
-                {(u.nickname || u.username || '?').charAt(0)}
+                {(remarkMap.get(u.id) || u.nickname || u.username || '?').charAt(0)}
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-0.5">
-                  <span className="text-[var(--text-md)] font-semibold text-[var(--text)] truncate">{u.nickname}</span>
+                  <span className="text-[var(--text-md)] font-semibold text-[var(--text)] truncate">
+                    {remarkMap.get(u.id) || u.nickname}
+                  </span>
+                  <RemarkEditButton onClick={() => promptRemark(u.id, remarkMap.get(u.id))} />
                   <Badge color={ROLE_COLOR[u.role] ?? 'primary'}>{ROLE_LABEL[u.role] ?? u.role}</Badge>
                   {u.status === 'disabled' && <Badge color="neutral">已禁用</Badge>}
                 </div>
-                <p className="text-[var(--text-xs)] text-[var(--text-muted)]">@{u.username}</p>
+                <p className="text-[var(--text-xs)] text-[var(--text-muted)]">
+                  @{u.username}{remarkMap.get(u.id) && u.nickname ? ` ${u.nickname}` : ''}
+                </p>
                 <div className="flex flex-wrap gap-x-4 gap-y-1 mt-1.5 text-[var(--text-xs)] text-[var(--text-sub)]">
                   <span>登录 <strong className="text-[var(--text)]">{u.login_count}</strong> 次</span>
                   <span>最近: <strong className="text-[var(--text)]">{formatRelativeTime(u.last_login_at)}</strong></span>

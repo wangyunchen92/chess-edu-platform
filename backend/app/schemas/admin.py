@@ -129,6 +129,7 @@ class UserListItem(BaseModel):
     username: str
     nickname: str
     avatar_url: Optional[str] = None
+    remark_name: Optional[str] = None
     role: str
     status: str
     membership_tier: str

@@ -4,6 +4,7 @@ from fastapi import APIRouter
 
 from app.routers.admin import router as admin_router
 from app.routers.credits import router as credits_router
+from app.routers.honor import router as honor_router
 from app.routers.adventure import router as adventure_router
 from app.routers.assessment import router as assessment_router
 from app.routers.auth import router as auth_router
@@ -37,3 +38,4 @@ router.include_router(diagnosis_router, prefix="/diagnosis", tags=["Diagnosis"])
 router.include_router(teacher_router, prefix="/teacher", tags=["Teacher"])
 router.include_router(student_extra_router, prefix="/student", tags=["Student"])
 router.include_router(credits_router, prefix="/credits", tags=["Credits"])
+router.include_router(honor_router, prefix="/honor", tags=["Honor"])

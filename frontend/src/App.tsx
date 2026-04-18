@@ -56,6 +56,9 @@ const PromotionChallengePage = React.lazy(() => import('@/pages/adventure/Promot
 const DailyPlanPage = React.lazy(() => import('@/pages/train/DailyPlanPage'))
 const TrainStatsPage = React.lazy(() => import('@/pages/train/TrainStatsPage'))
 
+// Honor
+const HonorPage = React.lazy(() => import('@/pages/honor/HonorPage'))
+
 // Profile
 const ProfilePage = React.lazy(() => import('@/pages/profile/ProfilePage'))
 const AchievementsPage = React.lazy(() => import('@/pages/profile/AchievementsPage'))
@@ -213,6 +216,9 @@ function App() {
             {/* Profile */}
             <Route path="/profile" element={<SuspenseWrapper><ProfilePage /></SuspenseWrapper>} />
             <Route path="/profile/achievements" element={<SuspenseWrapper><AchievementsPage /></SuspenseWrapper>} />
+
+            {/* Honor */}
+            <Route path="/honor" element={<SuspenseWrapper><HonorPage /></SuspenseWrapper>} />
 
             {/* Settings */}
             <Route path="/settings" element={<SuspenseWrapper><SettingsPage /></SuspenseWrapper>} />

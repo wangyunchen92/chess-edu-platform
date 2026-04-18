@@ -173,6 +173,13 @@ def complete_game(
     except Exception:
         pass
 
+    # Check milestone achievements after game completion
+    try:
+        from app.services.honor_service import check_milestones
+        check_milestones(db, user_id, context="game")
+    except Exception:
+        pass
+
     return APIResponse.success(data=detail)
 
 
