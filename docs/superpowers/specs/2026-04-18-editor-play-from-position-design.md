@@ -12,7 +12,7 @@
 
 ### 目标
 - 编辑器新增「开始对弈」按钮，点击即跳转到对弈页
-- AI 为满血 Stockfish（不放水），适合残局验算场景
+- AI 为满血 Stockfish（depth=18、不放水），适合残局验算场景
 - 对局归入「自由对弈」体系，不计评分，但保留复盘
 - 非法局面可感知（按钮禁用 + 原因）
 - 改动面集中、不污染现有正式对弈（角色 AI 对弈）路径
@@ -28,7 +28,7 @@
 | 维度 | 决策 |
 |---|---|
 | 入口形式 | 编辑器页底部一个「开始对弈」按钮，无弹窗，直接跳对弈页 |
-| AI 强度 | 固定 Stockfish 满血，depth 15-18，失误率 0 |
+| AI 强度 | 固定 Stockfish 满血，depth 18，失误率 0 |
 | 执子颜色 | 跟随编辑器的「走棋方」（白先 → 用户执白） |
 | 时间控制 | 不计时 |
 | 对局归属 | 自由对弈（`/play/free-games`），新增 `game_type='vs_ai_editor'` |
@@ -54,9 +54,9 @@
 
 ### 3.2 不新增数据库字段
 
-`games` 表已有 `final_fen`。自由对弈场景下把起手 FEN 存入 `final_fen`（游戏开始即终局 FEN），走子过程中 **不回写** `final_fen`，仅在 `complete` 时更新为真正的终局 FEN。
+`games` 表已有 `final_fen`。**当前 `create_free_game` service 已经把 `request.initial_fen` 存入 `final_fen` 字段**（`game_service.py:519`），走子过程中不回写，仅在 `complete` 时更新为真正的终局 FEN。本次直接复用此数据流。
 
-避免为这一个场景新增 migration（两套 DDL 风险，历史有 case）。
+`games.character_id` 字段是 NOT NULL，现有自由对弈实现使用字符串 `"none"` 作为占位值（`game_service.py:512`），本次沿用同样做法。**不需要 DDL**。
 
 ## 4. 组件细节
 
@@ -149,6 +149,8 @@ export function useAiOpponent(
 
 ### 4.4 后端 service 分支
 
+`create_free_game()` 现有实现已经把 `initial_fen` 存到 `final_fen`、用 `character_id="none"` 占位，只需扩展 `game_type` 字面量 + 新增 `vs_ai_editor` 分支的必填字段校验：
+
 ```python
 # app/services/game_service.py - create_free_game()
 if request.game_type == 'vs_ai_editor':
@@ -158,12 +160,21 @@ if request.game_type == 'vs_ai_editor':
         chess.Board(request.initial_fen)  # python-chess 校验
     except Exception:
         raise HTTPException(422, 'FEN 非法')
-    opponent_name = request.opponent_name or 'Stockfish · 大师级'
-    final_fen = request.initial_fen
-    user_color = request.user_color or 'white'
-    # character_id = None, time_control = 0
-    ...
+    # 补全默认对手名
+    if not request.opponent_name:
+        request = request.model_copy(update={'opponent_name': 'Stockfish · 大师级'})
 ```
+
+其余字段走已有逻辑（character_id="none"、final_fen=initial_fen、time_control=0、status='playing'）。
+
+### 4.5 FEN 校验职责
+
+| 层 | 工具 | 目的 |
+|---|---|---|
+| 前端（编辑器 `validateEditorFen`） | chess.js + 自定义规则 | UX：按钮禁用 + 红字提示 |
+| 后端（`create_free_game`） | python-chess | 安全边界：防止绕过前端校验（直接调 API）的非法请求，返回 422 |
+
+两层校验规则保持一致：FEN 合法、双方恰 1 王、双王不相邻、被将方为走棋方。
 
 ## 5. 数据流
 
@@ -261,4 +272,4 @@ if request.game_type == 'vs_ai_editor':
 - Stockfish 满血 depth=18 在性能较弱的设备上单步思考可能达 3-5s，属预期
 - 引擎为前端 WASM，断网不影响 AI 对弈
 - 「再来一局」每次都创建新 game_id，若用户反复刷残局，对局历史会积累大量短对局——可接受，历史页已支持分页
-- 后端 `games` 表 `character_id` 字段当前是 NOT NULL 还是 nullable？需在实现前确认；若 NOT NULL 则需为自由对弈场景允许 NULL（现有面对面/PGN 模式已解决过此问题，沿用）
+- `games.character_id` 为 NOT NULL，现有自由对弈用字符串 `"none"` 占位，本次沿用（已确认，无需 DDL）
