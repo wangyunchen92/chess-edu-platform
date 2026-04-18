@@ -12,11 +12,12 @@ test.describe('编辑器 · 和 AI 对弈', () => {
     // 清空棋盘
     await page.getByRole('button', { name: '清空棋盘' }).click()
 
-    // 摆 K+Q(白) vs K(黑)：白王 e1、白后 h5、黑王 e8
+    // 摆 K+Q(白) vs K(黑)：白王 e1、白后 a5、黑王 e8
+    // （白后 a5 不将军黑王 e8 —— 用例 1 只要求局面合法，不需要一步杀）
     await page.locator('button[title="King"]').first().click()
     await page.locator('[data-square="e1"]').click()
     await page.locator('button[title="Queen"]').first().click()
-    await page.locator('[data-square="h5"]').click()
+    await page.locator('[data-square="a5"]').click()
     await page.locator('button[title="King"]').nth(1).click()
     await page.locator('[data-square="e8"]').click()
 
