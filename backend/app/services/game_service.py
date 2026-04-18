@@ -4,6 +4,8 @@ import uuid
 from datetime import datetime, timezone
 from typing import Optional
 
+import chess as pychess  # python-chess library
+from fastapi import HTTPException
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
@@ -500,6 +502,25 @@ def create_free_game(
     """
     now = datetime.now(timezone.utc)
 
+    # vs_ai_editor 分支：校验 initial_fen，默认 opponent_name
+    opponent_name = request.opponent_name
+    if request.game_type == "vs_ai_editor":
+        if not request.initial_fen:
+            raise HTTPException(status_code=422, detail="initial_fen is required for vs_ai_editor")
+        try:
+            board = pychess.Board(request.initial_fen)
+        except Exception:
+            raise HTTPException(status_code=422, detail="invalid FEN format")
+        if not board.is_valid():
+            raise HTTPException(status_code=422, detail="illegal position (kings/check/adjacency)")
+        placement = request.initial_fen.split(" ")[0]
+        if placement.count("K") != 1:
+            raise HTTPException(status_code=422, detail="white must have exactly 1 king")
+        if placement.count("k") != 1:
+            raise HTTPException(status_code=422, detail="black must have exactly 1 king")
+        if not opponent_name:
+            opponent_name = "Stockfish · 大师级"
+
     # For imported games with PGN, status is completed immediately
     if request.game_type == "imported" and request.pgn:
         status = "completed"
@@ -513,7 +534,7 @@ def create_free_game(
         user_color=request.user_color,
         time_control=request.time_control,
         game_type=request.game_type,
-        opponent_name=request.opponent_name,
+        opponent_name=opponent_name,
         status=status,
         pgn=request.pgn if request.game_type == "imported" else None,
         final_fen=request.initial_fen,
