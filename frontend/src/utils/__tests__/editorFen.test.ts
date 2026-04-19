@@ -12,6 +12,11 @@ describe('validateEditorFen', () => {
     expect(validateEditorFen('4k3/8/8/Q7/8/8/8/4K3 w - - 0 1')).toBeNull()
   })
 
+  it('accepts endgame with no castling rights (editor output)', () => {
+    // 编辑器摆的典型残局：K+Q vs K，无易位权
+    expect(validateEditorFen('4k3/8/8/Q7/8/8/8/4K3 w - - 0 1')).toBeNull()
+  })
+
   it('rejects when white king is missing', () => {
     expect(validateEditorFen('4k3/8/8/8/8/8/8/8 w - - 0 1')).toMatch(/白方.*国王/)
   })

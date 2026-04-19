@@ -88,7 +88,27 @@ function boardMapToFen(
     if (empty > 0) row += empty
     rows.push(row)
   }
-  return `${rows.join('/')} ${turn} KQkq - 0 1`
+  return `${rows.join('/')} ${turn} ${computeCastlingRights(boardMap)} - 0 1`
+}
+
+/**
+ * Compute FEN castling rights from a board map.
+ * A side's castling right is retained only if:
+ * - White K is on e1 and white R is on the corresponding corner (h1→K, a1→Q)
+ * - Black K is on e8 and black R is on the corresponding corner (h8→k, a8→q)
+ * Returns '-' when no castling is possible (typical for editor-crafted endgames).
+ */
+function computeCastlingRights(boardMap: Record<string, string>): string {
+  let rights = ''
+  if (boardMap['e1'] === 'K') {
+    if (boardMap['h1'] === 'R') rights += 'K'
+    if (boardMap['a1'] === 'R') rights += 'Q'
+  }
+  if (boardMap['e8'] === 'k') {
+    if (boardMap['h8'] === 'r') rights += 'k'
+    if (boardMap['a8'] === 'r') rights += 'q'
+  }
+  return rights || '-'
 }
 
 /**
