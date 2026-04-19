@@ -376,7 +376,7 @@ const FreeGamePage: React.FC = () => {
       <div className="flex-1 overflow-auto">
         <div className="flex flex-col lg:flex-row h-full">
           {/* Left: Board */}
-          <div className="w-full lg:w-[60%] flex flex-col items-center justify-center p-4 gap-3">
+          <div className="w-full lg:w-[60%] flex flex-col items-center justify-start p-4 gap-3">
             {/* Opponent side info (top) */}
             <div className="w-full max-w-[560px] flex items-center justify-between px-1">
               <div className="flex items-center gap-2">
