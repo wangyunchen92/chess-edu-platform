@@ -377,14 +377,16 @@ const FreeGamePage: React.FC = () => {
         <div className="flex flex-col lg:flex-row h-full">
           {/* Left: Board */}
           <div className="w-full lg:w-[60%] flex flex-col items-center justify-center p-4 gap-3">
-            {/* Black side info */}
+            {/* Opponent side info (top) */}
             <div className="w-full max-w-[560px] flex items-center justify-between px-1">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-sm">
                   {orientation === 'white' ? '\u265A' : '\u2654'}
                 </div>
                 <span className="text-sm text-slate-300">
-                  {orientation === 'white' ? '黑方' : '白方'}
+                  {isAiEditor
+                    ? opponentLabel
+                    : orientation === 'white' ? '黑方' : '白方'}
                 </span>
               </div>
               <CapturedPieces
@@ -404,14 +406,16 @@ const FreeGamePage: React.FC = () => {
               interactive={!gameOver}
             />
 
-            {/* White side info */}
+            {/* User side info (bottom) */}
             <div className="w-full max-w-[560px] flex items-center justify-between px-1">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-sm">
                   {orientation === 'white' ? '\u2654' : '\u265A'}
                 </div>
                 <span className="text-sm text-slate-300">
-                  {orientation === 'white' ? '白方' : '黑方'}
+                  {isAiEditor
+                    ? '我'
+                    : orientation === 'white' ? '白方' : '黑方'}
                 </span>
               </div>
               <CapturedPieces
