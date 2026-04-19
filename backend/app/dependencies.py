@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models.user import User
+from app.services.streak_service import touch_activity
 from app.utils.security import decode_token
 
 
@@ -50,6 +51,9 @@ def get_current_user(
 
     user_id = payload.get("sub")
     _check_user_status(db, user_id)
+
+    # Track daily activity (fire-and-forget, never raises)
+    touch_activity(db, user_id)
 
     return {
         "user_id": user_id,
