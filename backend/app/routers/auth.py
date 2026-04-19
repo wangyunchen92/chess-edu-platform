@@ -102,6 +102,14 @@ def register(
             detail=str(e),
         )
 
+    # Process referral code if provided (failure does not block registration)
+    if request.ref:
+        try:
+            from app.services.referral_service import process_referral
+            process_referral(db, new_user_id=str(user.id), referral_code=request.ref)
+        except Exception:
+            pass  # Invalid referral code should not block registration
+
     update_login_info(db, user)
     tokens = create_tokens(user)
     user_resp = UserResponse.model_validate(user)

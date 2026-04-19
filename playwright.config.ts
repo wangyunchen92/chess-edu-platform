@@ -32,5 +32,11 @@ export default defineConfig({
       testMatch: 'pages.spec.ts',
       dependencies: [],
     },
+    // 编辑器摆残局 + 和 AI 对弈（测试内自行以 student 账号登录）
+    {
+      name: 'editor-vs-ai',
+      testMatch: 'editor-vs-ai.spec.ts',
+      use: { storageState: undefined },
+    },
   ],
 })

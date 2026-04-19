@@ -26,12 +26,19 @@ test.describe('认证流程', () => {
   })
 
   test('错误密码登录失败', async ({ page }) => {
-    await page.goto('/login')
+    // 不走 login() helper：helper 内部 waitForURL 会等 15s 直到离开 /login，
+    // 而错误密码场景永远不会跳走，会超时失败。此处直接手动操作。
+    await page.context().clearCookies()
+    await page.goto('/login', { waitUntil: 'domcontentloaded' })
+    await page.evaluate(() => { localStorage.clear(); sessionStorage.clear() })
+    await page.waitForSelector('input[autocomplete="username"]', { timeout: 10_000 })
+
     await page.fill('input[autocomplete="username"]', 'admin')
     await page.fill('input[autocomplete="current-password"]', 'wrongpassword')
     await page.click('button[type="submit"]')
+
     // 应该还在登录页
-    await page.waitForTimeout(1000)
+    await page.waitForTimeout(2000)
     await expect(page).toHaveURL(/login/)
   })
 })

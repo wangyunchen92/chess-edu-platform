@@ -94,6 +94,13 @@ class RegisterRequest(BaseModel):
     password: str = Field(..., min_length=6, max_length=128, description="密码")
     nickname: Optional[str] = Field(None, max_length=50, description="昵称")
     invite_code: str = Field(..., min_length=1, max_length=50, description="邀请码")
+    ref: Optional[str] = Field(None, max_length=6, description="推荐码（好友邀请）")
+
+
+class ReferralInfoResponse(BaseModel):
+    """Referral info response."""
+    code: str = Field(..., description="用户的推荐码")
+    invited_count: int = Field(default=0, description="已邀请人数")
 
 
 class ChangePasswordRequest(BaseModel):

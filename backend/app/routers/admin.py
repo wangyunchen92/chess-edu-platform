@@ -119,6 +119,7 @@ def list_users(
     result = admin_service.list_users(
         db, page, page_size, search,
         role=role, status=status, membership_tier=membership_tier,
+        requester_id=admin_user["user_id"],
     )
     return APIResponse.success(data=result)
 

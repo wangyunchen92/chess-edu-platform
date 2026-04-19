@@ -180,6 +180,9 @@ def list_students(
     course_stats = _aggregate_course_completion(db, student_ids)
     # Ratings
     ratings_map = _get_ratings(db, student_ids)
+    # Remarks (备注名)
+    from app.services.remark_service import get_remarks_map
+    remarks_map = get_remarks_map(db, teacher_id, student_ids)
 
     items = []
     for r in rows:
@@ -200,6 +203,7 @@ def list_students(
             username=r.username,
             nickname=r.nickname,
             avatar_url=r.avatar_url,
+            remark_name=remarks_map.get(sid),
             bindtime=r.bindtime,
             summary=StudentSummary(
                 total_games=total_games,

@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useState, useMemo } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
 import { useUIStore } from '@/stores/uiStore'
 import apiClient from '@/api/client'
@@ -16,6 +16,8 @@ const RegisterPage: React.FC = () => {
   const login = useAuthStore((s) => s.login)
   const addToast = useUIStore((s) => s.addToast)
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const refCode = useMemo(() => searchParams.get('ref') || '', [searchParams])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -48,6 +50,7 @@ const RegisterPage: React.FC = () => {
         phone,
         password,
         invite_code: inviteCode,
+        ...(refCode ? { ref: refCode } : {}),
       })
       const { user, tokens } = res.data.data
       login(tokens.access_token, tokens.refresh_token, user)
@@ -125,6 +128,21 @@ const RegisterPage: React.FC = () => {
             棋境大陆 · 在线棋类教育平台
           </p>
         </div>
+
+        {/* Referral banner */}
+        {refCode && (
+          <div className="mb-4 px-4 py-3 rounded-[var(--radius-sm)] text-center"
+            style={{
+              background: 'linear-gradient(135deg, rgba(99,102,241,0.15), rgba(168,85,247,0.15))',
+              border: '1px solid rgba(139,92,246,0.3)',
+            }}
+          >
+            <span className="text-lg mr-1.5">{'\uD83C\uDF81'}</span>
+            <span className="text-[var(--text-sm)] font-medium text-purple-300">
+              好友邀请你来学棋！
+            </span>
+          </div>
+        )}
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-3.5">

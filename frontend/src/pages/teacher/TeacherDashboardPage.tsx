@@ -10,6 +10,8 @@ import Badge from '@/components/common/Badge'
 import Modal from '@/components/common/Modal'
 import Loading from '@/components/common/Loading'
 import * as teacherApi from '@/api/teacher'
+import { useRemarks } from '@/hooks/useRemarks'
+import RemarkEditButton from '@/components/common/RemarkEditButton'
 import type { TeacherStudentItem, InviteCodeResponse } from '@/types/api'
 
 /** Translate rank_title code to Chinese display name */
@@ -72,6 +74,7 @@ const TeacherDashboardPage: React.FC = () => {
   const [transferAmount, setTransferAmount] = useState('')
   const [transferring, setTransferring] = useState(false)
   const fetchBalance = useCreditStore((s) => s.fetchBalance)
+  const { remarkMap, promptRemark } = useRemarks()
 
   const loadStudents = useCallback(async () => {
     setLoading(true)
@@ -266,19 +269,27 @@ const TeacherDashboardPage: React.FC = () => {
               {/* Avatar + Name */}
               <Avatar
                 src={student.avatar_url}
-                name={student.nickname || student.username}
+                name={remarkMap.get(student.student_id) || student.nickname || student.username}
                 size="lg"
               />
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-[var(--text-md)] font-semibold text-[var(--text)] truncate">
-                    {student.nickname || student.username}
+                    {remarkMap.get(student.student_id) || student.nickname || student.username}
                   </span>
-                  <span className="text-[var(--text-xs)] text-[var(--text-muted)]">
-                    @{student.username}
-                  </span>
+                  <RemarkEditButton onClick={() => promptRemark(student.student_id, remarkMap.get(student.student_id))} />
                   <Badge color="primary">{translateRank(student.summary.rank_title)}</Badge>
                 </div>
+                {remarkMap.get(student.student_id) && (
+                  <p className="text-[var(--text-xs)] text-[var(--text-muted)] mb-0.5">
+                    @{student.username} {student.nickname || ''}
+                  </p>
+                )}
+                {!remarkMap.get(student.student_id) && (
+                  <p className="text-[var(--text-xs)] text-[var(--text-muted)] mb-0.5">
+                    @{student.username}
+                  </p>
+                )}
 
                 {/* Stats row */}
                 <div className="flex flex-wrap gap-x-5 gap-y-1 text-[var(--text-xs)] text-[var(--text-sub)]">
@@ -434,11 +445,11 @@ const TeacherDashboardPage: React.FC = () => {
                 />
                 <Avatar
                   src={student.avatar_url}
-                  name={student.nickname || student.username}
+                  name={remarkMap.get(student.student_id) || student.nickname || student.username}
                   size="sm"
                 />
                 <span className="text-[var(--text-sm)] text-[var(--text)] font-medium">
-                  {student.nickname || student.username}
+                  {remarkMap.get(student.student_id) || student.nickname || student.username}
                 </span>
               </label>
             ))}

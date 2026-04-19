@@ -6,6 +6,8 @@ import Modal from '@/components/common/Modal'
 import CapturedPieces from '@/components/chess/CapturedPieces'
 import { Chess } from 'chess.js'
 import { freePlayApi } from '@/api/freePlay'
+import { useAiOpponent } from '@/hooks/useAiOpponent'
+import { playApi } from '@/api/play'
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -52,6 +54,39 @@ const FreeGamePage: React.FC = () => {
   const [showDrawModal, setShowDrawModal] = useState(false)
   const [showResultModal, setShowResultModal] = useState(false)
   const [resultSubmitted, setResultSubmitted] = useState(false)
+
+  // vs_ai_editor mode state
+  const [isAiEditor, setIsAiEditor] = useState(false)
+  const [initialFen, setInitialFen] = useState<string>(INITIAL_FEN)
+  const [userColor, setUserColor] = useState<'w' | 'b'>('w')
+  const [opponentLabel, setOpponentLabel] = useState<string>('对手')
+
+  // Load game detail to detect vs_ai_editor mode
+  useEffect(() => {
+    if (!id) return
+    playApi.getGameDetail(id)
+      .then((res) => {
+        const data = (res.data as any)?.data ?? res.data
+        if (!data) return
+        if (data.game_type === 'vs_ai_editor') {
+          setIsAiEditor(true)
+          const fen = data.final_fen ?? INITIAL_FEN
+          setInitialFen(fen)
+          // 重置 chess 实例到目标 FEN（清空既有走棋历史），
+          // 因为 SPA 导航到新 :id 时组件不会卸载，chess 实例会保留上一局 history。
+          chess.reset()
+          chess.load(fen)
+          setFen(fen)
+          const uc = data.user_color === 'black' ? 'b' : 'w'
+          setUserColor(uc)
+          setOrientation(uc === 'b' ? 'black' : 'white')
+          setOpponentLabel(data.opponent_name || 'Stockfish · 大师级')
+        }
+      })
+      .catch((err) => {
+        console.error('[FreeGamePage] load detail failed:', err)
+      })
+  }, [id])
 
   // ---------------------------------------------------------------------------
   // Current turn display
@@ -118,6 +153,34 @@ const FreeGamePage: React.FC = () => {
   )
 
   // ---------------------------------------------------------------------------
+  // Finish game (shared terminal detector)
+  // ---------------------------------------------------------------------------
+
+  const maybeFinishGame = useCallback(() => {
+    if (!chess.isGameOver()) return
+    setGameOver(true)
+    if (chess.isCheckmate()) {
+      const loserColor = chess.turn()  // 'w' or 'b'
+      const userIsWinner = loserColor !== userColor
+      setGameResult(userIsWinner ? 'win' : 'loss')
+      setGameReason(`将杀! ${loserColor === 'w' ? '黑方' : '白方'}获胜`)
+    } else if (chess.isStalemate()) {
+      setGameResult('draw')
+      setGameReason('逼和 - 无子可动')
+    } else if (chess.isThreefoldRepetition()) {
+      setGameResult('draw')
+      setGameReason('和棋 - 三次重复')
+    } else if (chess.isInsufficientMaterial()) {
+      setGameResult('draw')
+      setGameReason('和棋 - 子力不足')
+    } else {
+      setGameResult('draw')
+      setGameReason('和棋')
+    }
+    setTimeout(() => setShowResultModal(true), 500)
+  }, [chess, userColor])
+
+  // ---------------------------------------------------------------------------
   // Make move
   // ---------------------------------------------------------------------------
 
@@ -141,34 +204,54 @@ const FreeGamePage: React.FC = () => {
           { san: result.san, fen: newFen, from, to },
         ])
 
-        // Check game over
-        if (chess.isGameOver()) {
-          setGameOver(true)
-          if (chess.isCheckmate()) {
-            const winner = chess.turn() === 'w' ? '黑方' : '白方'
-            setGameResult(chess.turn() === 'w' ? 'loss' : 'win')
-            setGameReason(`将杀! ${winner}获胜`)
-          } else if (chess.isStalemate()) {
-            setGameResult('draw')
-            setGameReason('逼和 - 无子可动')
-          } else if (chess.isThreefoldRepetition()) {
-            setGameResult('draw')
-            setGameReason('和棋 - 三次重复')
-          } else if (chess.isInsufficientMaterial()) {
-            setGameResult('draw')
-            setGameReason('和棋 - 子力不足')
-          } else {
-            setGameResult('draw')
-            setGameReason('和棋')
-          }
-          setTimeout(() => setShowResultModal(true), 500)
-        }
+        maybeFinishGame()
       } catch {
         // Invalid move
       }
     },
-    [chess, gameOver],
+    [chess, gameOver, maybeFinishGame],
   )
+
+  // ---------------------------------------------------------------------------
+  // AI opponent (vs_ai_editor only)
+  // ---------------------------------------------------------------------------
+
+  const aiShouldMove = useMemo(() => {
+    if (!isAiEditor || gameOver) return false
+    return chess.turn() !== userColor
+  }, [fen, isAiEditor, gameOver, userColor])
+
+  const handleAiMove = useCallback((uci: string) => {
+    const from = uci.slice(0, 2)
+    const to = uci.slice(2, 4)
+    const promotion = uci.length > 4 ? uci[4] : undefined
+    try {
+      const move = chess.move({ from, to, promotion: promotion as any })
+      if (!move) return
+      const newFen = chess.fen()
+      setFen(newFen)
+      setLastMove({ from, to })
+      setMoves((prev) => [...prev, {
+        san: move.san,
+        fen: newFen,
+        from,
+        to,
+      }])
+      maybeFinishGame()
+    } catch (e) {
+      console.warn('[FreeGamePage] AI move invalid:', uci, e)
+    }
+  }, [chess, maybeFinishGame])
+
+  const { thinking: aiThinking, error: aiError } = useAiOpponent(
+    fen,
+    aiShouldMove,
+    handleAiMove,
+    18,
+  )
+  // Keep refs to avoid unused-var lint (thinking/error intentionally unused for now)
+  void aiThinking
+  void aiError
 
   // ---------------------------------------------------------------------------
   // Resign
@@ -177,11 +260,17 @@ const FreeGamePage: React.FC = () => {
   const handleResign = useCallback(() => {
     setShowResignModal(false)
     setGameOver(true)
-    const loser = chess.turn() === 'w' ? '白方' : '黑方'
-    setGameResult(chess.turn() === 'w' ? 'loss' : 'win')
-    setGameReason(`${loser}认输`)
+    const userSideLabel = userColor === 'w' ? '白方' : '黑方'
+    if (isAiEditor) {
+      setGameResult('loss')
+      setGameReason(`${userSideLabel}认输`)
+    } else {
+      const loser = chess.turn() === 'w' ? '白方' : '黑方'
+      setGameResult(chess.turn() === userColor ? 'loss' : 'win')
+      setGameReason(`${loser}认输`)
+    }
     setTimeout(() => setShowResultModal(true), 300)
-  }, [chess])
+  }, [chess, userColor, isAiEditor])
 
   // ---------------------------------------------------------------------------
   // Draw
@@ -215,11 +304,11 @@ const FreeGamePage: React.FC = () => {
         result: gameResult,
         pgn: pgnMoves,
         moves_count: moves.length,
-        user_color: 'white',
+        user_color: userColor === 'w' ? 'white' : 'black',
         final_fen: chess.fen(),
       })
       .catch((err) => console.error('[FreeGamePage] Failed to submit result:', err))
-  }, [gameOver, id, resultSubmitted, gameResult, moves, chess])
+  }, [gameOver, id, resultSubmitted, gameResult, moves, chess, userColor])
 
   // ---------------------------------------------------------------------------
   // Flip board
@@ -261,7 +350,7 @@ const FreeGamePage: React.FC = () => {
         {/* Center */}
         <div className="text-center">
           <span className="text-sm font-medium text-slate-200">
-            自由对弈
+            {isAiEditor ? opponentLabel : '自由对弈'}
           </span>
           {!gameOver && (
             <span className="text-xs text-slate-500 ml-2">
@@ -287,15 +376,17 @@ const FreeGamePage: React.FC = () => {
       <div className="flex-1 overflow-auto">
         <div className="flex flex-col lg:flex-row h-full">
           {/* Left: Board */}
-          <div className="w-full lg:w-[60%] flex flex-col items-center justify-center p-4 gap-3">
-            {/* Black side info */}
+          <div className="w-full lg:w-[60%] flex flex-col items-center justify-start p-4 gap-3">
+            {/* Opponent side info (top) */}
             <div className="w-full max-w-[560px] flex items-center justify-between px-1">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-sm">
                   {orientation === 'white' ? '\u265A' : '\u2654'}
                 </div>
                 <span className="text-sm text-slate-300">
-                  {orientation === 'white' ? '黑方' : '白方'}
+                  {isAiEditor
+                    ? opponentLabel
+                    : orientation === 'white' ? '黑方' : '白方'}
                 </span>
               </div>
               <CapturedPieces
@@ -315,14 +406,16 @@ const FreeGamePage: React.FC = () => {
               interactive={!gameOver}
             />
 
-            {/* White side info */}
+            {/* User side info (bottom) */}
             <div className="w-full max-w-[560px] flex items-center justify-between px-1">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-sm">
                   {orientation === 'white' ? '\u2654' : '\u265A'}
                 </div>
                 <span className="text-sm text-slate-300">
-                  {orientation === 'white' ? '白方' : '黑方'}
+                  {isAiEditor
+                    ? '我'
+                    : orientation === 'white' ? '白方' : '黑方'}
                 </span>
               </div>
               <CapturedPieces
@@ -482,7 +575,7 @@ const FreeGamePage: React.FC = () => {
           <p className="text-[var(--text-sm)] text-[var(--text-sub)]">
             共走了 {moves.length} 步
           </p>
-          <div className="flex justify-center gap-3 pt-2">
+          <div className="flex flex-wrap justify-center gap-3 pt-2">
             <Button variant="secondary" onClick={() => navigate('/play/free')}>
               返回
             </Button>
@@ -492,6 +585,41 @@ const FreeGamePage: React.FC = () => {
             }}>
               查看分析
             </Button>
+            {isAiEditor && (
+              <>
+                <Button
+                  variant="secondary"
+                  onClick={async () => {
+                    try {
+                      const res = await freePlayApi.createFreeGame({
+                        game_type: 'vs_ai_editor',
+                        initial_fen: initialFen,
+                        user_color: userColor === 'w' ? 'white' : 'black',
+                      })
+                      const data = (res.data as any)?.data ?? res.data
+                      const gid = data?.game_id ?? data?.id
+                      if (gid) {
+                        // 用 SPA 导航避免跨环境的 basename 差异；React Router 的 basename 会自动处理
+                        // 生产环境的 /chess/ 前缀。关闭 Result Modal，然后重置关键对弈状态以便 hook 重新触发。
+                        setShowResultModal(false)
+                        setGameOver(false)
+                        setResultSubmitted(false)
+                        setMoves([])
+                        setLastMove(undefined)
+                        navigate(`/play/free/game/${gid}`, { replace: true })
+                      }
+                    } catch {
+                      /* ignore */
+                    }
+                  }}
+                >
+                  再来一局
+                </Button>
+                <Button variant="secondary" onClick={() => navigate('/play/editor')}>
+                  返回编辑器
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </Modal>

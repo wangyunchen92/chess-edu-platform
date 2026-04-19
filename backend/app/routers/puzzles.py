@@ -221,4 +221,11 @@ def submit_puzzle_attempt(
             import logging
             logging.getLogger("chess_edu").error(f"auto_complete_item failed: {e}", exc_info=True)
 
+    # Check milestone achievements after puzzle attempt
+    try:
+        from app.services.honor_service import check_milestones
+        check_milestones(db, user_id, context="puzzle")
+    except Exception:
+        pass
+
     return APIResponse.success(data=result)

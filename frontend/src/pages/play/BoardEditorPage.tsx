@@ -5,6 +5,7 @@ import { Chess } from 'chess.js'
 import { EngineManager } from '@/engine'
 import { freePlayApi } from '@/api/freePlay'
 import { uciToSan, createGame } from '@/utils/chess'
+import { validateEditorFen } from '@/utils/editorFen'
 import InsufficientCreditsModal from '@/components/common/InsufficientCreditsModal'
 import { useCreditStore } from '@/stores/creditStore'
 import type { MoveEvaluation } from '@/engine/types'
@@ -87,7 +88,27 @@ function boardMapToFen(
     if (empty > 0) row += empty
     rows.push(row)
   }
-  return `${rows.join('/')} ${turn} KQkq - 0 1`
+  return `${rows.join('/')} ${turn} ${computeCastlingRights(boardMap)} - 0 1`
+}
+
+/**
+ * Compute FEN castling rights from a board map.
+ * A side's castling right is retained only if:
+ * - White K is on e1 and white R is on the corresponding corner (h1→K, a1→Q)
+ * - Black K is on e8 and black R is on the corresponding corner (h8→k, a8→q)
+ * Returns '-' when no castling is possible (typical for editor-crafted endgames).
+ */
+function computeCastlingRights(boardMap: Record<string, string>): string {
+  let rights = ''
+  if (boardMap['e1'] === 'K') {
+    if (boardMap['h1'] === 'R') rights += 'K'
+    if (boardMap['a1'] === 'R') rights += 'Q'
+  }
+  if (boardMap['e8'] === 'k') {
+    if (boardMap['h8'] === 'r') rights += 'k'
+    if (boardMap['a8'] === 'r') rights += 'q'
+  }
+  return rights || '-'
 }
 
 /**
@@ -160,6 +181,10 @@ const BoardEditorPage: React.FC = () => {
   const [saveTitle, setSaveTitle] = useState('')
   const [saveSuccess, setSaveSuccess] = useState(false)
 
+  // Start vs AI state
+  const [startingVsAi, setStartingVsAi] = useState(false)
+  const [startVsAiError, setStartVsAiError] = useState<string | null>(null)
+
   // ---------------------------------------------------------------------------
   // Computed FEN
   // ---------------------------------------------------------------------------
@@ -167,6 +192,12 @@ const BoardEditorPage: React.FC = () => {
   const currentFen = useMemo(() => {
     return boardMapToFen(boardMap, turn)
   }, [boardMap, turn])
+
+  // FEN legality error (derived)
+  const fenLegalityError = useMemo(
+    () => validateEditorFen(currentFen),
+    [currentFen],
+  )
 
   // ---------------------------------------------------------------------------
   // Handle square click: place or remove a piece
@@ -306,6 +337,35 @@ const BoardEditorPage: React.FC = () => {
   }, [currentFen, saveTitle])
 
   // ---------------------------------------------------------------------------
+  // Start vs AI from current position
+  // ---------------------------------------------------------------------------
+
+  const handleStartVsAi = useCallback(async () => {
+    setStartVsAiError(null)
+    if (fenLegalityError) return
+    setStartingVsAi(true)
+    try {
+      const res = await freePlayApi.createFreeGame({
+        game_type: 'vs_ai_editor',
+        initial_fen: currentFen,
+        user_color: turn === 'w' ? 'white' : 'black',
+      })
+      const data = (res.data as any)?.data ?? res.data
+      const gameId = data?.game_id ?? data?.id
+      if (gameId) {
+        navigate(`/play/free/game/${gameId}`)
+      } else {
+        setStartVsAiError('创建对局失败，请稍后重试')
+      }
+    } catch (err) {
+      console.error('[BoardEditor] start vs AI failed:', err)
+      setStartVsAiError('创建对局失败，请稍后重试')
+    } finally {
+      setStartingVsAi(false)
+    }
+  }, [currentFen, turn, fenLegalityError, navigate])
+
+  // ---------------------------------------------------------------------------
   // Convert UCI top moves to SAN for display
   // ---------------------------------------------------------------------------
 
@@ -389,6 +449,7 @@ const BoardEditorPage: React.FC = () => {
                   {WHITE_PIECES.map((p) => (
                     <button
                       key={p.fen}
+                      data-palette-piece={p.fen}
                       className={[
                         'w-11 h-11 rounded-lg flex items-center justify-center transition-all',
                         selectedPiece === p.fen
@@ -418,6 +479,7 @@ const BoardEditorPage: React.FC = () => {
                   {BLACK_PIECES.map((p) => (
                     <button
                       key={p.fen}
+                      data-palette-piece={p.fen}
                       className={[
                         'w-11 h-11 rounded-lg flex items-center justify-center transition-all',
                         selectedPiece === p.fen
@@ -674,6 +736,34 @@ const BoardEditorPage: React.FC = () => {
                   {saving ? '保存中...' : saveSuccess ? '已保存' : '保存到云端'}
                 </button>
               </div>
+            </div>
+
+            {/* Play vs AI section */}
+            <div className="rounded-xl p-4" style={darkCardStyle}>
+              <h3 className="text-sm font-medium text-slate-300 mb-3">
+                和 AI 对弈
+              </h3>
+              <p className="text-xs text-slate-500 mb-3">
+                摆好残局或练习题，与满血 Stockfish（大师级）直接开局。不计评分。
+              </p>
+              <button
+                onClick={handleStartVsAi}
+                disabled={!!fenLegalityError || startingVsAi}
+                className={[
+                  'w-full py-2.5 rounded text-sm font-medium transition-colors',
+                  fenLegalityError || startingVsAi
+                    ? 'bg-white/[0.06] text-slate-500 cursor-not-allowed'
+                    : 'bg-blue-600 text-white hover:bg-blue-500',
+                ].join(' ')}
+              >
+                {startingVsAi ? '创建中...' : '开始对弈'}
+              </button>
+              {fenLegalityError && (
+                <p className="text-xs text-red-400 mt-2">{fenLegalityError}</p>
+              )}
+              {startVsAiError && (
+                <p className="text-xs text-red-400 mt-2">{startVsAiError}</p>
+              )}
             </div>
           </div>
         </div>
