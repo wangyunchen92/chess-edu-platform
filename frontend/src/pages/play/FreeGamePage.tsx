@@ -72,6 +72,9 @@ const FreeGamePage: React.FC = () => {
           setIsAiEditor(true)
           const fen = data.final_fen ?? INITIAL_FEN
           setInitialFen(fen)
+          // 重置 chess 实例到目标 FEN（清空既有走棋历史），
+          // 因为 SPA 导航到新 :id 时组件不会卸载，chess 实例会保留上一局 history。
+          chess.reset()
           chess.load(fen)
           setFen(fen)
           const uc = data.user_color === 'black' ? 'b' : 'w'
@@ -592,7 +595,14 @@ const FreeGamePage: React.FC = () => {
                       const data = (res.data as any)?.data ?? res.data
                       const gid = data?.game_id ?? data?.id
                       if (gid) {
-                        window.location.href = `/chess/play/free/game/${gid}`
+                        // 用 SPA 导航避免跨环境的 basename 差异；React Router 的 basename 会自动处理
+                        // 生产环境的 /chess/ 前缀。关闭 Result Modal，然后重置关键对弈状态以便 hook 重新触发。
+                        setShowResultModal(false)
+                        setGameOver(false)
+                        setResultSubmitted(false)
+                        setMoves([])
+                        setLastMove(undefined)
+                        navigate(`/play/free/game/${gid}`, { replace: true })
                       }
                     } catch {
                       /* ignore */
