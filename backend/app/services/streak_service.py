@@ -76,4 +76,10 @@ def touch_activity(db: Session, user_id: Optional[str]) -> None:
         _touch_cache[user_id] = today
     except Exception as e:
         logger.warning("touch_activity failed for user %s: %s", user_id, e)
+        # Roll back so subsequent caller commits on the same session don't
+        # fail with PendingRollbackError.
+        try:
+            db.rollback()
+        except Exception:
+            pass
         # Do NOT update _touch_cache so the next request retries
