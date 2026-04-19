@@ -5,21 +5,29 @@ import { Page, expect } from '@playwright/test'
  * Waits for redirect to dashboard.
  */
 export async function login(page: Page, username: string, password: string) {
-  // Clear any existing auth state first
+  // Need to clear localStorage at the localhost:5173 origin before the app's JS
+  // runs — otherwise a leftover token auto-redirects us to /dashboard and the login
+  // inputs never render. Strategy: land on /login once, run clear in that origin,
+  // then reload so the app re-reads the now-empty localStorage. Use domcontentloaded
+  // (Vite HMR WebSocket never lets networkidle fire). reload() — unlike back-to-back
+  // page.goto — does not ERR_ABORTED when the previous nav has already settled.
+  await page.context().clearCookies()
   await page.goto('/login', { waitUntil: 'domcontentloaded' })
-  await page.evaluate(() => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('refresh_token')
-    localStorage.removeItem('user')
+  const hadAuth = await page.evaluate(() => {
+    const had = !!localStorage.getItem('token')
+    localStorage.clear()
+    sessionStorage.clear()
+    return had
   })
-  // Reload to ensure clean state
-  await page.goto('/login', { waitUntil: 'networkidle' })
+  if (hadAuth || !/\/login(\?|$|#)/.test(page.url())) {
+    await page.reload({ waitUntil: 'domcontentloaded' })
+  }
+  await page.waitForSelector('input[autocomplete="username"]', { timeout: 10_000 })
 
   await page.fill('input[autocomplete="username"]', username)
   await page.fill('input[autocomplete="current-password"]', password)
   await page.click('button[type="submit"]')
   await page.waitForURL((url) => !url.pathname.endsWith('/login'), { timeout: 15_000 })
-  await page.waitForLoadState('networkidle')
 }
 
 /**
