@@ -1,0 +1,69 @@
+{
+  "challenge_id": "meadow_exam",
+  "pass_threshold": 3,
+  "total_questions": 5,
+  "reward_xp": 100,
+  "passed_achievement_slug": "meadow_exam_passed",
+  "questions": [
+    {
+      "id": "q1",
+      "text": "国王一次能走几步？",
+      "options": [
+        {"key": "A", "text": "1 步（任意方向）"},
+        {"key": "B", "text": "2 步"},
+        {"key": "C", "text": "8 步"},
+        {"key": "D", "text": "想走多远走多远"}
+      ],
+      "answer": "A",
+      "explanation": "国王很威严但行动慢，一次只能走到相邻的 8 个格子之一。"
+    },
+    {
+      "id": "q2",
+      "text": "棋局里哪个子最重要，被将死就输？",
+      "options": [
+        {"key": "A", "text": "皇后"},
+        {"key": "B", "text": "车"},
+        {"key": "C", "text": "主教"},
+        {"key": "D", "text": "国王"}
+      ],
+      "answer": "D",
+      "explanation": "国王棋力不强，但被将死就输了——它是整个棋局的核心。"
+    },
+    {
+      "id": "q3",
+      "text": "皇后可以怎么走？",
+      "options": [
+        {"key": "A", "text": "只能横竖走"},
+        {"key": "B", "text": "只能斜着走"},
+        {"key": "C", "text": "横竖 + 斜着都行，想走多远走多远"},
+        {"key": "D", "text": "像马一样跳日"}
+      ],
+      "answer": "C",
+      "explanation": "皇后是最强的子，既有车的能力又有象的能力。"
+    },
+    {
+      "id": "q4",
+      "text": "兵第一次走的时候，可以走几步？",
+      "options": [
+        {"key": "A", "text": "只能 1 步"},
+        {"key": "B", "text": "1 步或 2 步"},
+        {"key": "C", "text": "必须 2 步"},
+        {"key": "D", "text": "想走多远走多远"}
+      ],
+      "answer": "B",
+      "explanation": "每个兵「第一次走」可以选 1 或 2 步，之后每次只能走 1 步。"
+    },
+    {
+      "id": "q5",
+      "text": "什么叫「将军」（check）？",
+      "options": [
+        {"key": "A", "text": "国王被对方子力攻击到，必须逃开"},
+        {"key": "B", "text": "对方认输了"},
+        {"key": "C", "text": "棋盘上只剩国王"},
+        {"key": "D", "text": "所有兵都被吃掉"}
+      ],
+      "answer": "A",
+      "explanation": "将军是对方发出的警告——你的国王下一步会被吃掉，必须立刻化解。"
+    }
+  ]
+}
