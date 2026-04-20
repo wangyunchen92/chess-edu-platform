@@ -9,8 +9,8 @@ interface GameRecord {
   id: string
   opponent: string
   opponent_emoji: string
-  result: 'win' | 'loss' | 'draw'
-  rating_change: number
+  result: 'win' | 'loss' | 'draw' | null
+  rating_change: number | null
   date: string
   total_moves: number
   time_control: number
@@ -20,6 +20,51 @@ const RESULT_MAP = {
   win:  { label: '胜利', color: 'success' as const, emoji: '\uD83C\uDFC6' },
   loss: { label: '失败', color: 'danger' as const, emoji: '\uD83D\uDCAA' },
   draw: { label: '和棋', color: 'warning' as const, emoji: '\uD83E\uDD1D' },
+}
+
+// Map character slug (avatar_key) to emoji. Keep in sync with CharacterHallPage.
+const CHARACTER_EMOJI: Record<string, string> = {
+  douding: '\uD83D\uDC30',
+  mianhuatang: '\uD83E\uDDC1',
+  guigui: '\uD83D\uDC22',
+  dongdong: '\uD83D\uDC66',
+  lihuahua: '\uD83D\uDC31',
+  tiedundun: '\uD83E\uDD16',
+  yinzong: '\u2694\uFE0F',
+  gulu: '\uD83E\uDD8A',
+  yunduo: '\u2601\uFE0F',
+  yunduoshifu: '\u2601\uFE0F',
+  lieyanbird: '\uD83D\uDD25',
+  qiboshi: '\uD83E\uDDD1',
+  anyingwang: '\uD83D\uDC79',
+}
+
+// Derive opponent display label + emoji from raw API item.
+function mapOpponent(item: any): { opponent: string; opponent_emoji: string } {
+  const gameType = item.game_type || 'ai_character'
+  const characterName = item.character_name
+  const avatarKey = item.character_avatar_key
+  const opponentName = item.opponent_name
+
+  // Name
+  let opponent = characterName || opponentName || ''
+  if (!opponent) {
+    opponent = gameType === 'imported' ? 'PGN 棋谱'
+      : gameType === 'free_play' ? '自由对局'
+      : gameType === 'vs_ai_editor' ? 'Stockfish · 大师级'
+      : '未知对手'
+  }
+
+  // Emoji
+  let opponent_emoji = (avatarKey && CHARACTER_EMOJI[avatarKey]) || ''
+  if (!opponent_emoji) {
+    opponent_emoji = gameType === 'vs_ai_editor' ? '\uD83E\uDD16'  // 🤖
+      : gameType === 'imported' ? '\uD83D\uDCCB'  // 📋
+      : gameType === 'free_play' ? '\uD83E\uDD1D'  // 🤝
+      : '\u265E'  // ♞
+  }
+
+  return { opponent, opponent_emoji }
 }
 
 const GameHistoryPage: React.FC = () => {
@@ -35,9 +80,29 @@ const GameHistoryPage: React.FC = () => {
       .then((res) => {
         // Handle nested {code, data: {...}} format
         const payload = res.data?.data ?? res.data
-        const items = Array.isArray(payload) ? payload : (payload?.items ?? [])
-        setGames((prev) => (page === 1 ? items : [...prev, ...items]))
-        setHasMore(items.length >= 10)
+        const items: any[] = Array.isArray(payload) ? payload : (payload?.items ?? [])
+        // Map raw API items (character_name/opponent_name/character_avatar_key/...)
+        // into GameRecord shape used by the renderer.
+        const mapped: GameRecord[] = items.map((item) => {
+          const { opponent, opponent_emoji } = mapOpponent(item)
+          const startedAt: string = item.ended_at || item.started_at || ''
+          const date = startedAt ? startedAt.split('T')[0] : ''
+          const result = (item.result === 'win' || item.result === 'loss' || item.result === 'draw')
+            ? item.result
+            : null
+          return {
+            id: item.id,
+            opponent,
+            opponent_emoji,
+            result,
+            rating_change: typeof item.rating_change === 'number' ? item.rating_change : null,
+            date,
+            total_moves: item.total_moves ?? 0,
+            time_control: item.time_control ?? 0,
+          }
+        })
+        setGames((prev) => (page === 1 ? mapped : [...prev, ...mapped]))
+        setHasMore(mapped.length >= 10)
       })
       .catch((err) => {
         console.error('[GameHistoryPage] Failed to load game history:', err)
@@ -85,7 +150,10 @@ const GameHistoryPage: React.FC = () => {
       {/* Game list */}
       <div className="space-y-3">
         {games.map((game) => {
-          const result = RESULT_MAP[game.result] ?? { label: '进行中', color: 'neutral' as const, emoji: '\u265E' }
+          const result = game.result
+            ? RESULT_MAP[game.result]
+            : { label: '进行中', color: 'neutral' as const, emoji: '\u265E' }
+          const rc = game.rating_change
           return (
             <Card
               key={game.id}
@@ -101,7 +169,9 @@ const GameHistoryPage: React.FC = () => {
                       ? 'rgba(16,185,129,0.1)'
                       : game.result === 'loss'
                         ? 'rgba(239,68,68,0.1)'
-                        : 'rgba(245,158,11,0.1)',
+                        : game.result === 'draw'
+                          ? 'rgba(245,158,11,0.1)'
+                          : 'rgba(148,163,184,0.1)',
                   }}
                 >
                   {game.opponent_emoji}
@@ -116,9 +186,9 @@ const GameHistoryPage: React.FC = () => {
                     <Badge color={result.color}>{result.label}</Badge>
                   </div>
                   <div className="flex items-center gap-3 mt-1 text-[var(--text-xs)] text-[var(--text-muted)]">
-                    <span>{game.date}</span>
+                    {game.date && <span>{game.date}</span>}
                     <span>{game.total_moves} 步</span>
-                    <span>{game.time_control / 60} 分钟</span>
+                    <span>{Math.round(game.time_control / 60)} 分钟</span>
                   </div>
                 </div>
 
@@ -127,14 +197,14 @@ const GameHistoryPage: React.FC = () => {
                   <div
                     className="text-[var(--text-md)] font-bold tabular-nums"
                     style={{
-                      color: game.rating_change > 0
+                      color: rc != null && rc > 0
                         ? 'var(--success)'
-                        : game.rating_change < 0
+                        : rc != null && rc < 0
                           ? 'var(--danger)'
                           : 'var(--text-muted)',
                     }}
                   >
-                    {game.rating_change > 0 ? '+' : ''}{game.rating_change}
+                    {rc == null ? '--' : (rc > 0 ? `+${rc}` : `${rc}`)}
                   </div>
                   <div className="text-[var(--text-xs)] text-[var(--text-muted)]">评分</div>
                 </div>

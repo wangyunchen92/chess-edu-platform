@@ -189,18 +189,22 @@ const AdventureMapPage: React.FC = () => {
 
   const handleStartChallenge = useCallback(async () => {
     if (!selectedChallenge) return
+    // Quiz challenges (e.g. 草原小考) are product-incomplete — no
+    // solving page exists for them. Skip navigation; Modal shows a
+    // "coming soon" hint + disabled button instead.
+    if (selectedChallenge.type === 'quiz') return
     setStarting(true)
     try {
       const res = await adventureApi.startChallenge(selectedChallenge.id)
       const record = res.data?.data ?? res.data
       const gameId = record?.game_id ?? selectedChallenge.id
-      if (selectedChallenge.type === 'quiz' || selectedChallenge.type === 'puzzle') {
+      if (selectedChallenge.type === 'puzzle') {
         navigate(`/puzzles/solve/${gameId}`)
       } else {
         navigate(`/play/game/${gameId}`)
       }
     } catch {
-      if (selectedChallenge.type === 'quiz' || selectedChallenge.type === 'puzzle') {
+      if (selectedChallenge.type === 'puzzle') {
         navigate(`/puzzles/solve/${selectedChallenge.id}`)
       } else {
         navigate(`/play/game/local?character=douding&time=600`)
@@ -508,6 +512,19 @@ const AdventureMapPage: React.FC = () => {
               </div>
             </div>
 
+            {/* Quiz "coming soon" hint (product-incomplete feature) */}
+            {selectedChallenge.type === 'quiz' && (
+              <div
+                className="text-center text-[var(--text-xs)] rounded-lg py-2 px-3"
+                style={{
+                  background: 'rgba(148,163,184,0.08)',
+                  color: 'var(--text-muted)',
+                }}
+              >
+                该挑战正在开发中，敬请期待 🚧
+              </div>
+            )}
+
             {/* Actions */}
             <div className="flex gap-3 pt-2">
               <Button
@@ -521,9 +538,14 @@ const AdventureMapPage: React.FC = () => {
                 variant="primary"
                 className="flex-1"
                 loading={starting}
+                disabled={selectedChallenge.type === 'quiz'}
                 onClick={handleStartChallenge}
               >
-                {selectedChallenge.is_completed ? '再次挑战' : '开始挑战'}
+                {selectedChallenge.type === 'quiz'
+                  ? '暂未开放'
+                  : selectedChallenge.is_completed
+                    ? '再次挑战'
+                    : '开始挑战'}
               </Button>
             </div>
           </div>
