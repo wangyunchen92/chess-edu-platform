@@ -413,6 +413,56 @@ def _batch_check_condition_values(
     return values
 
 
+def grant_achievement_by_slug(db: Session, user_id: str, slug: str) -> bool:
+    """Grant a specific achievement by slug (event-triggered).
+
+    Idempotent: returns False if already unlocked or slug not found.
+    Awards xp_reward (via award_xp) and coin_reward (directly onto
+    user_ratings.coins, matching check_achievements convention).
+
+    Args:
+        db: SQLAlchemy Session.
+        user_id: The user to grant the achievement to.
+        slug: Achievement.slug (e.g. 'meadow_exam_passed').
+
+    Returns:
+        True if newly granted; False if already unlocked or slug unknown.
+    """
+    ach = db.execute(
+        select(Achievement).where(Achievement.slug == slug)
+    ).scalar_one_or_none()
+    if ach is None:
+        return False
+
+    existing = db.execute(
+        select(UserAchievement).where(
+            UserAchievement.user_id == user_id,
+            UserAchievement.achievement_id == ach.id,
+        )
+    ).scalar_one_or_none()
+    if existing:
+        return False  # idempotent
+
+    db.add(UserAchievement(
+        id=str(uuid.uuid4()),
+        user_id=user_id,
+        achievement_id=ach.id,
+    ))
+
+    if ach.xp_reward > 0:
+        award_xp(db, user_id, ach.xp_reward, reason=f"achievement:{slug}")
+
+    if ach.coin_reward > 0:
+        ur = db.execute(
+            select(UserRating).where(UserRating.user_id == user_id)
+        ).scalar_one_or_none()
+        if ur:
+            ur.coins += ach.coin_reward
+            db.add(ur)
+
+    return True
+
+
 def check_achievements(db: Session, user_id: str) -> list[dict]:
     """Check and unlock any new achievements. Returns list of newly unlocked.
 
