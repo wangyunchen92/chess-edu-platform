@@ -89,3 +89,24 @@ class CompleteChallengeRequest(BaseModel):
     game_id: Optional[str] = Field(None, description="Associated game ID (for battle type)")
     quiz_answers: Optional[dict] = Field(None, description="Quiz answers (for quiz type)")
     quiz_score: Optional[int] = Field(None, description="Quiz score (for quiz type)")
+
+
+class QuizOptionDTO(BaseModel):
+    key: str
+    text: str
+
+
+class QuizQuestionDTO(BaseModel):
+    id: str
+    text: str
+    options: list[QuizOptionDTO]
+    answer: str  # Q5A: 下发正确答案给前端做即时反馈
+    explanation: str
+
+
+class QuizBankResponse(BaseModel):
+    challenge_id: str
+    pass_threshold: int
+    total_questions: int
+    reward_xp: int
+    questions: list[QuizQuestionDTO]

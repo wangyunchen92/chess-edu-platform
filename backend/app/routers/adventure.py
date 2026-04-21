@@ -9,6 +9,7 @@ from app.schemas.adventure import (
     AdventureMapResponse,
     ChallengeRecord,
     CompleteChallengeRequest,
+    QuizBankResponse,
     RegionDetail,
 )
 from app.schemas.common import APIResponse
@@ -49,6 +50,31 @@ def get_region_detail(
 
 
 # ── Challenge endpoints ──────────────────────────────────────────
+
+
+# ── Quiz endpoint ────────────────────────────────────────────────
+
+
+@router.get(
+    "/quiz/{challenge_id}",
+    response_model=APIResponse[QuizBankResponse],
+)
+def get_quiz(
+    challenge_id: str,
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> APIResponse[QuizBankResponse]:
+    """Return the quiz bank (questions + answers + explanations) for
+    a challenge. Requires auth but no record ownership check — a user
+    can peek at any quiz before starting.
+    """
+    bank = adventure_service.get_quiz_bank(challenge_id)
+    if bank is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Quiz bank not found",
+        )
+    return APIResponse.success(data=QuizBankResponse(**bank))
 
 
 @router.post(
