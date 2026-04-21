@@ -189,12 +189,16 @@ const AdventureMapPage: React.FC = () => {
 
   const handleStartChallenge = useCallback(async () => {
     if (!selectedChallenge) return
-    // Quiz challenges (e.g. 草原小考) are product-incomplete — no
-    // solving page exists for them. Skip navigation; Modal shows a
-    // "coming soon" hint + disabled button instead.
-    if (selectedChallenge.type === 'quiz') return
+    // Already-passed quiz: button disabled in Modal, don't navigate
+    if (selectedChallenge.type === 'quiz' && selectedChallenge.is_completed) return
+
     setStarting(true)
     try {
+      if (selectedChallenge.type === 'quiz') {
+        // QuizPage will call startChallenge itself — just navigate
+        navigate(`/adventure/quiz/${selectedChallenge.id}`)
+        return
+      }
       const res = await adventureApi.startChallenge(selectedChallenge.id)
       const record = res.data?.data ?? res.data
       const gameId = record?.game_id ?? selectedChallenge.id
@@ -512,16 +516,16 @@ const AdventureMapPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Quiz "coming soon" hint (product-incomplete feature) */}
-            {selectedChallenge.type === 'quiz' && (
+            {/* Quiz already-passed hint */}
+            {selectedChallenge.type === 'quiz' && selectedChallenge.is_completed && (
               <div
                 className="text-center text-[var(--text-xs)] rounded-lg py-2 px-3"
                 style={{
-                  background: 'rgba(148,163,184,0.08)',
-                  color: 'var(--text-muted)',
+                  background: 'rgba(16,185,129,0.08)',
+                  color: 'var(--success)',
                 }}
               >
-                该挑战正在开发中，敬请期待 🚧
+                🌿 已通过，无需重考
               </div>
             )}
 
@@ -538,14 +542,16 @@ const AdventureMapPage: React.FC = () => {
                 variant="primary"
                 className="flex-1"
                 loading={starting}
-                disabled={selectedChallenge.type === 'quiz'}
+                disabled={selectedChallenge.type === 'quiz' && selectedChallenge.is_completed}
                 onClick={handleStartChallenge}
               >
-                {selectedChallenge.type === 'quiz'
-                  ? '暂未开放'
-                  : selectedChallenge.is_completed
-                    ? '再次挑战'
-                    : '开始挑战'}
+                {selectedChallenge.type === 'quiz' && selectedChallenge.is_completed
+                  ? '已通过'
+                  : selectedChallenge.type === 'quiz'
+                    ? '开始答题'
+                    : selectedChallenge.is_completed
+                      ? '再次挑战'
+                      : '开始挑战'}
               </Button>
             </div>
           </div>

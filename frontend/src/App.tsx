@@ -51,6 +51,7 @@ const DiagnosisPage = React.lazy(() => import('@/pages/diagnosis/DiagnosisPage')
 // Adventure
 const AdventureMapPage = React.lazy(() => import('@/pages/adventure/AdventureMapPage'))
 const PromotionChallengePage = React.lazy(() => import('@/pages/adventure/PromotionChallengePage'))
+const QuizPage = React.lazy(() => import('@/pages/adventure/QuizPage'))
 
 // Train
 const DailyPlanPage = React.lazy(() => import('@/pages/train/DailyPlanPage'))
@@ -208,6 +209,7 @@ function App() {
             {/* Adventure */}
             <Route path="/adventure" element={<SuspenseWrapper><AdventureMapPage /></SuspenseWrapper>} />
             <Route path="/adventure/challenge/:id" element={<SuspenseWrapper><PromotionChallengePage /></SuspenseWrapper>} />
+            <Route path="/adventure/quiz/:challengeId" element={<SuspenseWrapper><QuizPage /></SuspenseWrapper>} />
 
             {/* Train */}
             <Route path="/train" element={<SuspenseWrapper><DailyPlanPage /></SuspenseWrapper>} />
