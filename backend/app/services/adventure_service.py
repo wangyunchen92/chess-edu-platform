@@ -275,7 +275,11 @@ def start_challenge(db: Session, user_id: str, challenge_id: str) -> Optional[Ch
         PromotionChallenge.challenge_type == challenge_id,
         PromotionChallenge.status == "pending",
     )
-    existing = db.execute(existing_stmt).scalar_one_or_none()
+    # Use scalars().first() (not scalar_one_or_none) to tolerate
+    # historical duplicate pending rows from pre-existing race
+    # conditions (StrictMode double-mount, etc.). Returning any one
+    # pending row is correct — caller will update it to passed/failed.
+    existing = db.execute(existing_stmt).scalars().first()
     if existing:
         return ChallengeRecord(
             id=existing.id,
@@ -345,7 +349,8 @@ def complete_challenge(
         PromotionChallenge.challenge_type == challenge_id,
         PromotionChallenge.status == "pending",
     )
-    record = db.execute(stmt).scalar_one_or_none()
+    # Tolerate duplicate pending rows (see start_challenge comment).
+    record = db.execute(stmt).scalars().first()
     if record is None:
         return None
 

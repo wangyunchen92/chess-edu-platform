@@ -38,5 +38,11 @@ export default defineConfig({
       testMatch: 'editor-vs-ai.spec.ts',
       use: { storageState: undefined },
     },
+    // 冒险 · 草原小考（测试内自行登录）
+    {
+      name: 'adventure-quiz',
+      testMatch: 'adventure-quiz.spec.ts',
+      use: { storageState: undefined },
+    },
   ],
 })
