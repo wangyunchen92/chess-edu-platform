@@ -1,7 +1,9 @@
 """Adventure service layer (B3-3, B3-4)."""
 
+import json
 import uuid
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Optional
 
 from sqlalchemy import select
@@ -73,6 +75,35 @@ REGIONS = [
         "unlock_condition": {"type": "rating", "value": 1600},
     },
 ]
+
+
+# ── Quiz bank (lazy-loaded from content/quizzes/<id>.json) ──────
+
+_QUIZ_BANK_CACHE: dict[str, dict] = {}
+
+
+def _load_quiz(challenge_id: str) -> Optional[dict]:
+    """Lazy-load quiz bank JSON into process-level cache."""
+    if challenge_id in _QUIZ_BANK_CACHE:
+        return _QUIZ_BANK_CACHE[challenge_id]
+    # content/quizzes/<id>.json, relative to project root
+    path = Path(__file__).resolve().parents[3] / "content" / "quizzes" / f"{challenge_id}.json"
+    if not path.exists():
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        _QUIZ_BANK_CACHE[challenge_id] = data
+        return data
+    except Exception:
+        return None
+
+
+def get_quiz_bank(challenge_id: str) -> Optional[dict]:
+    """Get the full quiz bank (including answers + explanations) for a
+    challenge. Returns None if not found. Callers (router) are
+    responsible for mapping to QuizBankResponse schema.
+    """
+    return _load_quiz(challenge_id)
 
 
 def _get_region_by_id(region_id: str) -> Optional[dict]:
