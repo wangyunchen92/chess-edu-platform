@@ -1109,3 +1109,26 @@ export interface CreateHonorRequest {
   competition_date: string
   is_public?: boolean
 }
+
+// ── Adventure Quiz ──────────────────────────────────────────
+
+export interface QuizOption {
+  key: string
+  text: string
+}
+
+export interface QuizQuestion {
+  id: string
+  text: string
+  options: QuizOption[]
+  answer: string
+  explanation: string
+}
+
+export interface QuizBank {
+  challenge_id: string
+  pass_threshold: number
+  total_questions: number
+  reward_xp: number
+  questions: QuizQuestion[]
+}

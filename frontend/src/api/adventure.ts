@@ -5,6 +5,7 @@ import type {
   RegionDetail,
   ChallengeRecord,
   CompleteChallengeRequest,
+  QuizBank,
 } from '@/types/api'
 
 export const adventureApi = {
@@ -19,4 +20,7 @@ export const adventureApi = {
 
   completeChallenge: (challengeId: string, data: CompleteChallengeRequest) =>
     apiClient.put<APIResponse<ChallengeRecord>>(`/adventure/promotion-challenge/${challengeId}/complete`, data),
+
+  getQuiz: (challengeId: string) =>
+    apiClient.get<APIResponse<QuizBank>>(`/adventure/quiz/${challengeId}`),
 }
