@@ -1,6 +1,7 @@
 """Adventure service layer (B3-3, B3-4)."""
 
 import json
+import logging
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
@@ -8,6 +9,8 @@ from typing import Optional
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
+
+logger = logging.getLogger(__name__)
 
 from app.models.adventure import PromotionChallenge
 from app.models.gamification import UserRating
@@ -329,23 +332,14 @@ def complete_challenge(
     result: str,
     game_id: Optional[str] = None,
     quiz_answers: Optional[dict] = None,
-    quiz_score: Optional[int] = None,
+    quiz_score: Optional[int] = None,  # accepted for backward compat, ignored if bank exists
 ) -> Optional[ChallengeRecord]:
     """Complete a promotion challenge.
 
-    Args:
-        db: Database session.
-        user_id: Current user ID.
-        challenge_id: Challenge ID.
-        result: "pass" or "fail".
-        game_id: Associated game ID (for battle challenges).
-        quiz_answers: Quiz answers dict (for quiz challenges).
-        quiz_score: Quiz score (for quiz challenges).
-
-    Returns:
-        Updated ChallengeRecord or None if no pending challenge found.
+    For quiz-type challenges with quiz_answers: the server independently
+    computes quiz_score from the loaded bank and overrides the client's
+    result/quiz_score. Rewards (XP + achievement) fire on first pass.
     """
-    # Find pending challenge
     stmt = select(PromotionChallenge).where(
         PromotionChallenge.user_id == user_id,
         PromotionChallenge.challenge_type == challenge_id,
@@ -355,7 +349,6 @@ def complete_challenge(
     if record is None:
         return None
 
-    # Look up challenge data for type info
     challenge_data = None
     for r in REGIONS:
         for ch in r["challenges"]:
@@ -365,23 +358,50 @@ def complete_challenge(
         if challenge_data:
             break
 
-    # Update record
-    if result == "pass":
-        record.status = "passed"
-        record.passed_at = datetime.now(timezone.utc)
+    # ── Quiz branch: server-side scoring ─────────────────────
+    bank = _load_quiz(challenge_id) if quiz_answers else None
+    if bank and quiz_answers is not None:
+        score = sum(
+            1 for q in bank["questions"]
+            if quiz_answers.get(q["id"]) == q["answer"]
+        )
+        record.quiz_answers = quiz_answers
+        record.quiz_score = score
 
-        # Award XP if challenge data found
-        if challenge_data:
-            _award_challenge_xp(db, user_id, challenge_data["reward_xp"])
+        if score >= bank["pass_threshold"]:
+            record.status = "passed"
+            record.passed_at = datetime.now(timezone.utc)
+            try:
+                from app.services.gamification_service import award_xp
+                award_xp(db, user_id, bank["reward_xp"], reason="meadow_exam_passed")
+            except Exception as e:
+                logger.warning("award_xp failed for user %s: %s", user_id, e)
+            try:
+                from app.services.gamification_service import grant_achievement_by_slug
+                grant_achievement_by_slug(
+                    db, user_id, bank["passed_achievement_slug"]
+                )
+            except Exception as e:
+                logger.warning("grant_achievement failed for user %s: %s", user_id, e)
+        else:
+            record.status = "failed"
     else:
-        record.status = "failed"
+        # ── Non-quiz (battle) branch or quiz with no bank: trust client ──
+        if result == "pass":
+            record.status = "passed"
+            record.passed_at = datetime.now(timezone.utc)
+            if challenge_data:
+                _award_challenge_xp(db, user_id, challenge_data["reward_xp"])
+        else:
+            record.status = "failed"
+
+        if quiz_answers:
+            record.quiz_answers = quiz_answers
+        if quiz_score is not None:
+            record.quiz_score = quiz_score
 
     if game_id:
         record.game_id = game_id
-    if quiz_answers:
-        record.quiz_answers = quiz_answers
-    if quiz_score is not None:
-        record.quiz_score = quiz_score
 
     db.add(record)
     db.flush()
