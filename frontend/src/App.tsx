@@ -80,6 +80,9 @@ const AdminUserDetailPage = React.lazy(() => import('@/pages/admin/AdminUserDeta
 const TeacherDashboardPage = React.lazy(() => import('@/pages/teacher/TeacherDashboardPage'))
 const StudentDetailPage = React.lazy(() => import('@/pages/teacher/StudentDetailPage'))
 
+// Landing
+const LandingPage = React.lazy(() => import('@/pages/landing/LandingPage'))
+
 /**
  * Suspense wrapper providing a loading fallback for lazy-loaded pages.
  */
@@ -145,6 +148,7 @@ function App() {
         <Route element={<PublicRoute />}>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/landing" element={<SuspenseWrapper><LandingPage /></SuspenseWrapper>} />
         </Route>
 
         {/* Assessment (protected, no layout) */}
