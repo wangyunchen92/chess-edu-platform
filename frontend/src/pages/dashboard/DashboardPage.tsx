@@ -11,6 +11,7 @@ import StreakBadge from '@/components/gamification/StreakBadge'
 import ProgressBar from '@/components/common/ProgressBar'
 import Loading from '@/components/common/Loading'
 import { translateRankTitle } from '@/utils/rank'
+import DoudingWelcome from '@/components/onboarding/DoudingWelcome'
 
 interface DashboardData {
   trainProgress: { completed: number; total: number }
@@ -150,6 +151,26 @@ const DashboardPage: React.FC = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [diagnosisSummary, setDiagnosisSummary] = useState<DiagnosisSummaryResponse | null>(null)
+  const [showWelcome, setShowWelcome] = useState(false)
+
+  useEffect(() => {
+    // Show one-time welcome if localStorage flag is absent
+    const shown = localStorage.getItem('chess_edu_welcome_shown')
+    if (!shown) {
+      setShowWelcome(true)
+    }
+  }, [])
+
+  const handleWelcomeClose = () => {
+    localStorage.setItem('chess_edu_welcome_shown', '1')
+    setShowWelcome(false)
+  }
+
+  const handleWelcomeAccept = () => {
+    localStorage.setItem('chess_edu_welcome_shown', '1')
+    setShowWelcome(false)
+    navigate('/play?autoSelect=douding')
+  }
 
   // Reload dashboard data every time the page becomes visible (returning from game/puzzle/etc)
   const loadDashboard = useCallback(() => {
@@ -473,6 +494,12 @@ const DashboardPage: React.FC = () => {
           ))}
         </div>
       </Card>
+
+      <DoudingWelcome
+        open={showWelcome}
+        onClose={handleWelcomeClose}
+        onAccept={handleWelcomeAccept}
+      />
     </div>
   )
 }
