@@ -1,4 +1,4 @@
-import { defineConfig } from '@playwright/test'
+import { defineConfig, devices } from '@playwright/test'
 
 export default defineConfig({
   testDir: './e2e',
@@ -43,6 +43,14 @@ export default defineConfig({
       name: 'adventure-quiz',
       testMatch: 'adventure-quiz.spec.ts',
       use: { storageState: undefined },
+    },
+    {
+      name: 'landing',
+      testMatch: 'landing.spec.ts',
+      use: {
+        ...devices['Desktop Chrome'],
+        storageState: 'e2e/.auth/empty.json',
+      },
     },
   ],
 })
