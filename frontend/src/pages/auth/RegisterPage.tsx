@@ -9,15 +9,16 @@ const RegisterPage: React.FC = () => {
   const [phone, setPhone] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const [inviteCode, setInviteCode] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-
   const login = useAuthStore((s) => s.login)
   const addToast = useUIStore((s) => s.addToast)
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const refCode = useMemo(() => searchParams.get('ref') || '', [searchParams])
+  const codeFromUrl = useMemo(() => searchParams.get('code') || '', [searchParams])
+
+  const [inviteCode, setInviteCode] = useState(codeFromUrl)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -142,6 +143,11 @@ const RegisterPage: React.FC = () => {
               好友邀请你来学棋！
             </span>
           </div>
+        )}
+        {codeFromUrl && (
+          <p className="text-xs text-emerald-400 mb-2">
+            🎉 邀请码已自动填入
+          </p>
         )}
 
         {/* Form */}
